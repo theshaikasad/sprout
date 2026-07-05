@@ -127,7 +127,9 @@ chmod +x scripts/grant-github-deployer-iam.sh
 ./scripts/grant-github-deployer-iam.sh
 ```
 
-Or manually add `roles/serviceusage.serviceUsageConsumer` and `roles/storage.admin` to `github-deployer@….iam.gserviceaccount.com`, plus `roles/iam.serviceAccountUser` on `{PROJECT_NUMBER}@cloudbuild.gserviceaccount.com`.
+Or manually add `roles/serviceusage.serviceUsageConsumer` and `roles/storage.admin` to `github-deployer@….iam.gserviceaccount.com`. The legacy `{PROJECT_NUMBER}@cloudbuild.gserviceaccount.com` may not exist on newer GCP projects — that is OK; `storage.admin` on the deploy SA is what matters.
+
+If the grant script errors on the Cloud Build SA, pull latest `main` and re-run — it now skips missing SAs.
 
 ### `PERMISSION_DENIED: secretmanager.secrets.get`
 

@@ -12,10 +12,21 @@ SA_NAME="github-deployer"
 SA="${SA_NAME}@${PROJECT}.iam.gserviceaccount.com"
 PROJECT_NUMBER=$(gcloud projects describe "$PROJECT" --format='value(projectNumber)')
 CLOUDBUILD_SA="${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com"
+COMPUTE_SA="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
 CLOUDBUILD_BUCKET="${PROJECT}_cloudbuild"
 
 echo "Project: ${PROJECT}"
 echo "Deploy SA: ${SA}"
+
+echo "Enabling required APIs (creates Cloud Build SA on first enable)..."
+gcloud services enable \
+  cloudbuild.googleapis.com \
+  storage.googleapis.com \
+  artifactregistry.googleapis.com \
+  run.googleapis.com \
+  secretmanager.googleapis.com \
+  --project="$PROJECT" \
+  --quiet
 
 for role in \
   roles/run.admin \
@@ -34,17 +45,30 @@ for role in \
 done
 
 # gcloud builds submit uploads source to gs://PROJECT_cloudbuild
-echo "  + storage.objectAdmin on gs://${CLOUDBUILD_BUCKET}"
-gsutil iam ch "serviceAccount:${SA}:roles/storage.objectAdmin" "gs://${CLOUDBUILD_BUCKET}" 2>/dev/null \
-  || echo "    (bucket may not exist yet — Cloud Build creates it on first build; storage.admin above covers it)"
+echo "  + storage.objectAdmin on gs://${CLOUDBUILD_BUCKET} (if bucket exists)"
+if gsutil ls -b "gs://${CLOUDBUILD_BUCKET}" >/dev/null 2>&1; then
+  gsutil iam ch "serviceAccount:${SA}:roles/storage.objectAdmin" "gs://${CLOUDBUILD_BUCKET}"
+else
+  echo "    bucket not created yet — roles/storage.admin on the project covers the first build"
+fi
 
-# Cloud Build runs as the default Cloud Build service account
-echo "  + serviceAccountUser on ${CLOUDBUILD_SA}"
-gcloud iam service-accounts add-iam-policy-binding "$CLOUDBUILD_SA" \
-  --project="$PROJECT" \
-  --member="serviceAccount:${SA}" \
-  --role="roles/iam.serviceAccountUser" \
-  --quiet >/dev/null
+# Optional: let deploy SA act as build runtime SAs (legacy Cloud Build SA may not exist on new projects)
+bind_sa_user() {
+  local target_sa="$1"
+  if gcloud iam service-accounts describe "$target_sa" --project="$PROJECT" >/dev/null 2>&1; then
+    echo "  + serviceAccountUser on ${target_sa}"
+    gcloud iam service-accounts add-iam-policy-binding "$target_sa" \
+      --project="$PROJECT" \
+      --member="serviceAccount:${SA}" \
+      --role="roles/iam.serviceAccountUser" \
+      --quiet >/dev/null
+  else
+    echo "  ~ skip ${target_sa} (not provisioned — OK on newer GCP projects)"
+  fi
+}
+
+bind_sa_user "$CLOUDBUILD_SA"
+bind_sa_user "$COMPUTE_SA"
 
 echo ""
 echo "Done. Re-run GitHub Actions → Deploy (or push to main)."

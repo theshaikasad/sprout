@@ -19,6 +19,8 @@ gcloud iam service-accounts create "$SA_NAME" \
   --project="$PROJECT" \
   --display-name="GitHub Actions deployer" 2>/dev/null || true
 
+gcloud services enable cloudbuild.googleapis.com --project="$PROJECT" --quiet 2>/dev/null || true
+
 for role in \
   roles/run.admin \
   roles/artifactregistry.writer \
@@ -35,11 +37,18 @@ for role in \
 done
 
 # gcloud builds submit stages source in gs://PROJECT_cloudbuild
-gcloud iam service-accounts add-iam-policy-binding "${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
-  --project="$PROJECT" \
-  --member="serviceAccount:${SA}" \
-  --role="roles/iam.serviceAccountUser" \
-  --quiet >/dev/null 2>/dev/null || true
+bind_build_sa() {
+  local target="$1"
+  if gcloud iam service-accounts describe "$target" --project="$PROJECT" >/dev/null 2>&1; then
+    gcloud iam service-accounts add-iam-policy-binding "$target" \
+      --project="$PROJECT" \
+      --member="serviceAccount:${SA}" \
+      --role="roles/iam.serviceAccountUser" \
+      --quiet >/dev/null
+  fi
+}
+bind_build_sa "${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com"
+bind_build_sa "${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
 
 gcloud iam workload-identity-pools create github-pool \
   --project="$PROJECT" --location=global \
