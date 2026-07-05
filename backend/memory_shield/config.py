@@ -36,6 +36,10 @@ if _sprout_db_url:
         "VECTOR_DB_PASSWORD": _pg_pass,
     }.items():
         os.environ.setdefault(_key, _val)
+    if _pg_host.startswith("/cloudsql/"):
+        from .cognee_cloudsql import apply_cloudsql_patches
+
+        apply_cloudsql_patches(_pg_host)
 else:
     os.environ.setdefault("ENABLE_BACKEND_ACCESS_CONTROL", "false")
 
