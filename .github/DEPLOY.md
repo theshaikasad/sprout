@@ -33,7 +33,13 @@ gcloud iam service-accounts create github-deployer \
 
 SA="github-deployer@${PROJECT_ID}.iam.gserviceaccount.com"
 
-for role in roles/run.admin roles/artifactregistry.writer roles/cloudbuild.builds.editor roles/iam.serviceAccountUser roles/secretmanager.secretAccessor; do
+for role in \
+  roles/run.admin \
+  roles/artifactregistry.writer \
+  roles/cloudbuild.builds.editor \
+  roles/iam.serviceAccountUser \
+  roles/secretmanager.secretAccessor \
+  roles/secretmanager.viewer; do
   gcloud projects add-iam-policy-binding "$PROJECT_ID" \
     --member="serviceAccount:${SA}" --role="$role"
 done
@@ -108,7 +114,19 @@ If WIF setup is blocked, store the JSON key as `GCP_SA_KEY` and change the auth 
 
 Prefer WIF — keys don't rotate automatically and are easier to leak.
 
-## 6. Manual deploy (local)
+## 6. Troubleshooting
+
+### `PERMISSION_DENIED: secretmanager.secrets.get`
+
+The deploy workflow verifies secrets with `gcloud secrets versions access` (needs `secretAccessor`). Older workflow versions used `gcloud secrets describe`, which needs `secretmanager.viewer`. If you still see this on an old run, re-run deploy after pulling latest `main`, or grant viewer to the deploy SA:
+
+```bash
+gcloud projects add-iam-policy-binding sprout-cognee-hackathon \
+  --member="serviceAccount:github-deployer@sprout-cognee-hackathon.iam.gserviceaccount.com" \
+  --role="roles/secretmanager.viewer"
+```
+
+## 7. Manual deploy (local)
 
 ```bash
 ./scripts/gcp-provision-sql.sh    # once

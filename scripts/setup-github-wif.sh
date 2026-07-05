@@ -19,7 +19,13 @@ gcloud iam service-accounts create "$SA_NAME" \
   --project="$PROJECT" \
   --display-name="GitHub Actions deployer" 2>/dev/null || true
 
-for role in roles/run.admin roles/artifactregistry.writer roles/cloudbuild.builds.editor roles/iam.serviceAccountUser roles/secretmanager.secretAccessor; do
+for role in \
+  roles/run.admin \
+  roles/artifactregistry.writer \
+  roles/cloudbuild.builds.editor \
+  roles/iam.serviceAccountUser \
+  roles/secretmanager.secretAccessor \
+  roles/secretmanager.viewer; do
   gcloud projects add-iam-policy-binding "$PROJECT" \
     --member="serviceAccount:${SA}" \
     --role="$role" \

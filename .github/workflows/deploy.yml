@@ -76,6 +76,8 @@ jobs:
       - name: Verify GCP Secret Manager secrets exist
         run: |
           set -euo pipefail
+          # secretAccessor can read versions (not describe metadata). Avoids needing
+          # secretmanager.secrets.get, which is only in roles/secretmanager.viewer.
           for secret in \
             sprout-db-root-pass \
             sprout-database-url \
@@ -88,8 +90,10 @@ jobs:
             sprout-telegram-link-secret \
             sprout-firebase-service-account
           do
-            gcloud secrets describe "$secret" --project="${{ env.GCP_PROJECT_ID }}" >/dev/null \
-              || { echo "::error::Missing Secret Manager secret: $secret — run scripts/bootstrap-gcp-secrets.sh"; exit 1; }
+            gcloud secrets versions access latest \
+              --secret="$secret" \
+              --project="${{ env.GCP_PROJECT_ID }}" >/dev/null \
+              || { echo "::error::Missing or empty Secret Manager secret: $secret — run scripts/bootstrap-gcp-secrets.sh"; exit 1; }
           done
 
       - name: Build and push backend image
