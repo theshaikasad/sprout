@@ -10,6 +10,14 @@
 
 set -euo pipefail
 
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [[ -f "$ROOT/.env" ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source "$ROOT/.env"
+  set +a
+fi
+
 PROJECT="${GCP_PROJECT_ID:-sprout-cognee-hackathon}"
 REGION="${GCP_REGION:-us-central1}"
 INSTANCE="${CLOUD_SQL_INSTANCE:-sprout-db}"
@@ -45,6 +53,18 @@ upsert_secret sprout-youtube-api-key "$YOUTUBE_API_KEY"
 upsert_secret sprout-telegram-bot-token "${TELEGRAM_BOT_TOKEN:-}"
 upsert_secret sprout-google-oauth-client-id "${GOOGLE_OAUTH_CLIENT_ID:-}"
 upsert_secret sprout-google-oauth-client-secret "${GOOGLE_OAUTH_CLIENT_SECRET:-}"
+
+if [[ -n "${FIREBASE_SERVICE_ACCOUNT_JSON:-}" ]]; then
+  upsert_secret sprout-firebase-service-account "$FIREBASE_SERVICE_ACCOUNT_JSON"
+elif [[ -n "${FIREBASE_SERVICE_ACCOUNT_FILE:-}" ]]; then
+  SA_FILE="$FIREBASE_SERVICE_ACCOUNT_FILE"
+  [[ "$SA_FILE" != /* ]] && SA_FILE="$ROOT/$SA_FILE"
+  if [[ -f "$SA_FILE" ]]; then
+    upsert_secret sprout-firebase-service-account "$(cat "$SA_FILE")"
+  else
+    echo "  ⚠ FIREBASE_SERVICE_ACCOUNT_FILE not found: $SA_FILE"
+  fi
+fi
 upsert_secret sprout-cron-secret "${CRON_SECRET:-$(openssl rand -hex 24)}"
 upsert_secret sprout-telegram-link-secret "${TELEGRAM_LINK_SECRET:-$(openssl rand -hex 24)}"
 
@@ -58,7 +78,7 @@ RUNTIME_SA="${CLOUD_RUN_RUNTIME_SA:-$(gcloud iam service-accounts list \
 if [[ -n "$RUNTIME_SA" ]]; then
   for secret in sprout-db-root-pass sprout-database-url sprout-llm-api-key sprout-youtube-api-key \
     sprout-telegram-bot-token sprout-google-oauth-client-id sprout-google-oauth-client-secret \
-    sprout-cron-secret sprout-telegram-link-secret; do
+    sprout-cron-secret sprout-telegram-link-secret sprout-firebase-service-account; do
     gcloud secrets add-iam-policy-binding "$secret" \
       --project="$PROJECT" \
       --member="serviceAccount:${RUNTIME_SA}" \

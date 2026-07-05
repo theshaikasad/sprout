@@ -23,7 +23,7 @@ echo "Building frontend..."
 gcloud builds submit "$ROOT/frontend" \
   --config "$ROOT/frontend/cloudbuild.yaml" \
   --project="$PROJECT" \
-  --substitutions="_API_BASE=${API_BASE},_FIREBASE_API_KEY=${NEXT_PUBLIC_FIREBASE_API_KEY:-},_FIREBASE_AUTH_DOMAIN=${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:-},_FIREBASE_PROJECT_ID=${NEXT_PUBLIC_FIREBASE_PROJECT_ID:-}"
+  --substitutions="_API_BASE=${API_BASE},_FIREBASE_API_KEY=${NEXT_PUBLIC_FIREBASE_API_KEY:-},_FIREBASE_AUTH_DOMAIN=${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:-},_FIREBASE_PROJECT_ID=${NEXT_PUBLIC_FIREBASE_PROJECT_ID:-},_FIREBASE_APP_ID=${NEXT_PUBLIC_FIREBASE_APP_ID:-}"
 
 CONN="${PROJECT}:${REGION}:sprout-db"
 
@@ -38,8 +38,8 @@ gcloud run deploy sprout-backend \
   --timeout 3600 \
   --add-cloudsql-instances "$CONN" \
   --allow-unauthenticated \
-  --set-env-vars "^@^FRONTEND_URL=${FRONTEND_URL}@CORS_ORIGINS=${CORS}@DB_HOST=/cloudsql/${CONN}@DB_PORT=5432@DB_NAME=cognee_meta@DB_USERNAME=postgres@CREATOR_HANDLE=${CREATOR_HANDLE:-@LanaBlakely}@GOOGLE_OAUTH_REDIRECT_URI=${API_BASE}/auth/youtube/callback" \
-  --set-secrets="SPROUT_DATABASE_URL=sprout-database-url:latest,DB_PASSWORD=sprout-db-root-pass:latest,LLM_API_KEY=sprout-llm-api-key:latest,YOUTUBE_API_KEY=sprout-youtube-api-key:latest,TELEGRAM_BOT_TOKEN=sprout-telegram-bot-token:latest,GOOGLE_OAUTH_CLIENT_ID=sprout-google-oauth-client-id:latest,GOOGLE_OAUTH_CLIENT_SECRET=sprout-google-oauth-client-secret:latest,CRON_SECRET=sprout-cron-secret:latest,TELEGRAM_LINK_SECRET=sprout-telegram-link-secret:latest"
+  --set-env-vars "^##^FRONTEND_URL=${FRONTEND_URL}##CORS_ORIGINS=${CORS}##DB_HOST=/cloudsql/${CONN}##DB_PORT=5432##DB_NAME=cognee_meta##DB_USERNAME=postgres##CREATOR_HANDLE=${CREATOR_HANDLE:-@LanaBlakely}##GOOGLE_OAUTH_REDIRECT_URI=${API_BASE}/auth/youtube/callback" \
+  --set-secrets="SPROUT_DATABASE_URL=sprout-database-url:latest,DB_PASSWORD=sprout-db-root-pass:latest,LLM_API_KEY=sprout-llm-api-key:latest,YOUTUBE_API_KEY=sprout-youtube-api-key:latest,TELEGRAM_BOT_TOKEN=sprout-telegram-bot-token:latest,GOOGLE_OAUTH_CLIENT_ID=sprout-google-oauth-client-id:latest,GOOGLE_OAUTH_CLIENT_SECRET=sprout-google-oauth-client-secret:latest,CRON_SECRET=sprout-cron-secret:latest,TELEGRAM_LINK_SECRET=sprout-telegram-link-secret:latest,FIREBASE_SERVICE_ACCOUNT_JSON=sprout-firebase-service-account:latest"
 
 gcloud run deploy sprout-frontend \
   --image "$IMAGE_FRONTEND" \
