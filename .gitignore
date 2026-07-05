@@ -1,0 +1,22 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Env & secrets
+.env
+
+# Caches (raw YouTube JSON, transcripts, format classifications)
+.cache/
+data/cache/
+
+# Cognee local stores
+.cognee/
+.cognee_system/
+.data_storage/
+cognee_data/
+graph.html
+
+# OS
+.DS_Store

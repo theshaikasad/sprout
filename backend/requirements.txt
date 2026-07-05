@@ -1,0 +1,16 @@
+cognee==1.2.2
+fastapi>=0.115
+uvicorn[standard]>=0.30
+openai>=2.0
+google-api-python-client>=2.190
+youtube-transcript-api>=1.2
+python-dotenv>=1.0
+pandas>=2.0
+numpy>=1.26
+sqlmodel>=0.0.22
+asyncpg>=0.29
+aiosqlite>=0.20
+psycopg2-binary>=2.9
+firebase-admin>=6.5
+cryptography>=42.0
+pgvector>=0.3

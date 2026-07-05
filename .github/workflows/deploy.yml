@@ -1,0 +1,160 @@
+# Deploy Sprout to Cloud Run (GCP).
+#
+# Secrets live in TWO places (by design):
+#   1. GitHub Secrets  → CI auth to GCP only (Workload Identity Federation)
+#   2. GCP Secret Manager → runtime keys mounted into Cloud Run (never in logs)
+#
+# Setup: see .github/DEPLOY.md
+
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_frontend:
+        description: Deploy frontend
+        type: boolean
+        default: true
+      deploy_backend:
+        description: Deploy backend
+        type: boolean
+        default: true
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID != '' && vars.GCP_PROJECT_ID || 'sprout-cognee-hackathon' }}
+  GCP_REGION: ${{ vars.GCP_REGION != '' && vars.GCP_REGION || 'us-central1' }}
+  CLOUD_SQL_INSTANCE: ${{ vars.CLOUD_SQL_INSTANCE != '' && vars.CLOUD_SQL_INSTANCE || 'sprout-db' }}
+  FRONTEND_URL: ${{ vars.FRONTEND_URL != '' && vars.FRONTEND_URL || 'https://sprout.asad.codes' }}
+  API_BASE: ${{ vars.NEXT_PUBLIC_API_BASE != '' && vars.NEXT_PUBLIC_API_BASE || 'https://api.sprout.asad.codes' }}
+  CORS_ORIGINS: ${{ vars.CORS_ORIGINS != '' && vars.CORS_ORIGINS || 'https://sprout.asad.codes,http://localhost:3000' }}
+  CREATOR_HANDLE: ${{ vars.CREATOR_HANDLE != '' && vars.CREATOR_HANDLE || '@LanaBlakely' }}
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    name: Deploy to Cloud Run
+    needs: ci
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev --quiet
+
+      - name: Ensure Artifact Registry repository
+        run: |
+          gcloud artifacts repositories describe sprout \
+            --location="${{ env.GCP_REGION }}" \
+            --project="${{ env.GCP_PROJECT_ID }}" 2>/dev/null \
+          || gcloud artifacts repositories create sprout \
+            --repository-format=docker \
+            --location="${{ env.GCP_REGION }}" \
+            --project="${{ env.GCP_PROJECT_ID }}"
+
+      - name: Verify GCP Secret Manager secrets exist
+        run: |
+          set -euo pipefail
+          for secret in \
+            sprout-db-root-pass \
+            sprout-database-url \
+            sprout-llm-api-key \
+            sprout-youtube-api-key \
+            sprout-telegram-bot-token \
+            sprout-google-oauth-client-id \
+            sprout-google-oauth-client-secret \
+            sprout-cron-secret \
+            sprout-telegram-link-secret
+          do
+            gcloud secrets describe "$secret" --project="${{ env.GCP_PROJECT_ID }}" >/dev/null \
+              || { echo "::error::Missing Secret Manager secret: $secret — run scripts/bootstrap-gcp-secrets.sh"; exit 1; }
+          done
+
+      - name: Build and push backend image
+        if: github.event_name == 'push' || inputs.deploy_backend
+        run: |
+          gcloud builds submit backend \
+            --tag "${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/sprout/backend:${{ github.sha }}" \
+            --tag "${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/sprout/backend:latest" \
+            --project "${{ env.GCP_PROJECT_ID }}"
+
+      - name: Deploy backend to Cloud Run
+        if: github.event_name == 'push' || inputs.deploy_backend
+        env:
+          CLOUDSQL_CONN: ${{ env.GCP_PROJECT_ID }}:${{ env.GCP_REGION }}:${{ env.CLOUD_SQL_INSTANCE }}
+        run: |
+          set -euo pipefail
+          IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/sprout/backend:${{ github.sha }}"
+          gcloud run deploy sprout-backend \
+            --image "$IMAGE" \
+            --region "${{ env.GCP_REGION }}" \
+            --project "${{ env.GCP_PROJECT_ID }}" \
+            --platform managed \
+            --min-instances 1 \
+            --max-instances 3 \
+            --cpu 2 \
+            --memory 2Gi \
+            --timeout 3600 \
+            --port 8080 \
+            --add-cloudsql-instances "$CLOUDSQL_CONN" \
+            --allow-unauthenticated \
+            --set-env-vars "^@^FRONTEND_URL=${{ env.FRONTEND_URL }}@CORS_ORIGINS=${{ env.CORS_ORIGINS }}@DB_HOST=/cloudsql/$CLOUDSQL_CONN@DB_PORT=5432@DB_NAME=cognee_meta@DB_USERNAME=postgres@CREATOR_HANDLE=${{ env.CREATOR_HANDLE }}@GOOGLE_OAUTH_REDIRECT_URI=${{ env.API_BASE }}/auth/youtube/callback" \
+            --set-secrets="SPROUT_DATABASE_URL=sprout-database-url:latest,DB_PASSWORD=sprout-db-root-pass:latest,LLM_API_KEY=sprout-llm-api-key:latest,YOUTUBE_API_KEY=sprout-youtube-api-key:latest,TELEGRAM_BOT_TOKEN=sprout-telegram-bot-token:latest,GOOGLE_OAUTH_CLIENT_ID=sprout-google-oauth-client-id:latest,GOOGLE_OAUTH_CLIENT_SECRET=sprout-google-oauth-client-secret:latest,CRON_SECRET=sprout-cron-secret:latest,TELEGRAM_LINK_SECRET=sprout-telegram-link-secret:latest"
+
+      - name: Build and push frontend image
+        if: github.event_name == 'push' || inputs.deploy_frontend
+        run: |
+          gcloud builds submit frontend \
+            --config frontend/cloudbuild.yaml \
+            --project "${{ env.GCP_PROJECT_ID }}" \
+            --substitutions="_API_BASE=${{ env.API_BASE }},_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }},_FIREBASE_AUTH_DOMAIN=${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }},_FIREBASE_PROJECT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }},_IMAGE_TAG=${{ github.sha }}"
+
+      - name: Deploy frontend to Cloud Run
+        if: github.event_name == 'push' || inputs.deploy_frontend
+        run: |
+          IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/sprout/frontend:${{ github.sha }}"
+          gcloud run deploy sprout-frontend \
+            --image "$IMAGE" \
+            --region "${{ env.GCP_REGION }}" \
+            --project "${{ env.GCP_PROJECT_ID }}" \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8080
+
+      - name: Smoke test backend health
+        if: github.event_name == 'push' || inputs.deploy_backend
+        run: |
+          URL=$(gcloud run services describe sprout-backend \
+            --region "${{ env.GCP_REGION }}" \
+            --project "${{ env.GCP_PROJECT_ID }}" \
+            --format='value(status.url)')
+          for i in 1 2 3 4 5; do
+            if curl -sf "$URL/health" | grep -q '"ok"'; then
+              echo "Backend healthy at $URL"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::Backend health check failed"
+          exit 1

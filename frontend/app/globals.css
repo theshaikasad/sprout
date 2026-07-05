@@ -1,0 +1,426 @@
+@import "tailwindcss";
+
+@theme {
+  /* Sprout daylight — warm paper, olive ink, moss signal. The studio is the
+     garden's interior: same world as the landing, lived-in. Accents are tuned
+     dark enough for 10px mono text on cream (≥4.5:1). */
+  --color-bg: #f3ead7;            /* warm paper */
+  --color-raised: #fcf7ec;        /* card */
+  --color-raised-2: #f1e6cf;      /* inset cream */
+  --color-line: rgba(74, 62, 34, 0.16);
+  --color-fg: #3a3f2c;            /* olive-brown ink */
+  --color-dim: #64684c;
+  --color-faint: #94916f;
+
+  --color-accent: #47702f;        /* moss · trends · primary actions */
+  --color-accent-soft: rgba(93, 138, 69, 0.14);
+  --color-blue: #3e6f8c;          /* competitors · lake */
+  --color-green: #47702f;         /* formats · success */
+  --color-amber: #96611e;         /* hooks · ochre, warm caution */
+  --color-topic: #75704d;         /* topics · dry grass */
+
+  --font-sans: var(--font-instrument), system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), Georgia, serif;
+  --font-mono: var(--font-jetbrains), monospace;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* daylight atmosphere: meadow sky bleeding into cream paper + a low sun,
+   with a faint gouache grain on top — depth without a single sharp edge */
+.atmosphere::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(90% 55% at 78% -12%, rgba(230, 181, 75, 0.22), transparent 55%),
+    radial-gradient(120% 70% at 20% -20%, rgba(182, 214, 228, 0.45), transparent 60%),
+    radial-gradient(100% 60% at 50% 118%, rgba(157, 191, 136, 0.28), transparent 62%);
+}
+.atmosphere::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.45;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+}
+/* quiet painted vignette panel */
+.vignette {
+  position: relative;
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+  background:
+    radial-gradient(ellipse 80% 90% at 50% 110%, rgba(93, 138, 69, 0.1), transparent 65%),
+    var(--color-raised);
+  overflow: hidden;
+}
+
+/* NOTE: reference --font-fraunces directly — next/font defines it on <body>,
+   so a :root-level @theme alias (var chain) fails to resolve. */
+.step-number {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--color-faint);
+}
+
+.panel {
+  background: var(--color-raised);
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(74, 62, 34, 0.05), 0 14px 40px -18px rgba(74, 62, 34, 0.2);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-dim);
+}
+
+/* the storybook voice — Fraunces italic */
+.serif-accent {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.display {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, #5d8a45 0%, #3f6a32 100%);
+  color: #f7fbef;
+  font-weight: 600;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px -12px rgba(63, 106, 50, 0.8);
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+.btn-primary:hover { filter: brightness(1.07); transform: translateY(-1px); }
+
+.btn-ghost {
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.4);
+  color: var(--color-fg);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.btn-ghost:hover { border-color: rgba(74, 62, 34, 0.35); background: var(--color-raised); }
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+.thinking-dot { animation: pulse-dot 1.2s ease-in-out infinite; }
+
+@keyframes shimmer {
+  0% { background-position: -300px 0; }
+  100% { background-position: 300px 0; }
+}
+.skeleton {
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(74, 62, 34, 0.06) 25%,
+    rgba(74, 62, 34, 0.12) 50%,
+    rgba(74, 62, 34, 0.06) 75%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.rise { animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+@keyframes slam {
+  0% { opacity: 0; transform: scale(1.6) rotate(-6deg); }
+  60% { opacity: 1; transform: scale(0.95) rotate(-2deg); }
+  100% { opacity: 1; transform: scale(1) rotate(-2deg); }
+}
+.stamp-slam { animation: slam 0.45s cubic-bezier(0.3, 1.4, 0.4, 1) 0.3s both; }
+
+::selection { background: #5d8a45; color: #f7fbef; }
+
+* { scrollbar-width: thin; scrollbar-color: rgba(74, 62, 34, 0.25) transparent; }
+
+/* native form widgets render in daylight */
+input, select, textarea { color-scheme: light; }
+
+/* ============================================================================
+   SPROUT — the warm, Ghibli-cozy landing skin.
+   Fully scoped under .sprout so the dark studio/signup app is untouched.
+   The whole surface answers to one metaphor: seed → planted → sprouted.
+   ========================================================================== */
+.sprout {
+  /* warm daylight palette — cream paper, moss, terracotta, meadow sky */
+  --paper: #f6eeddff;
+  --paper-2: #f0e6d0;
+  --card: #fcf7ec;
+  --card-2: #f7efdd;
+  --ink: #3a3f2c;          /* deep olive-brown ink */
+  --ink-soft: #6b6f54;
+  --ink-faint: #9a9c7f;
+  --moss: #5d8a45;         /* primary leaf green */
+  --moss-deep: #3f6a32;
+  --sage: #9dbf88;
+  --sky: #b6d6e4;
+  --sky-deep: #7fb0c9;
+  --clay: #cf7c4c;         /* terracotta */
+  --wheat: #e6b54b;        /* golden light */
+  --bloom: #e08aa0;        /* soft flower */
+  --line: rgba(74, 62, 34, 0.14);
+  --line-2: rgba(74, 62, 34, 0.07);
+  --shadow: 0 1px 2px rgba(74, 62, 34, 0.05), 0 14px 40px -18px rgba(74, 62, 34, 0.22);
+
+  /* pre-mixed moss tints — avoids fragile arbitrary opacity modifiers */
+  --moss-a08: rgba(93, 138, 69, 0.08);
+  --moss-a12: rgba(93, 138, 69, 0.12);
+  --moss-a15: rgba(93, 138, 69, 0.16);
+  --moss-a25: rgba(93, 138, 69, 0.26);
+  --moss-a40: rgba(93, 138, 69, 0.4);
+  --clay-a12: rgba(207, 124, 76, 0.12);
+  --wheat-a15: rgba(230, 181, 75, 0.18);
+
+  position: relative;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-instrument), system-ui, sans-serif;
+  overflow-x: clip;
+}
+
+/* fixed atmosphere: soft daylight sky bleeding into a cream meadow, a low sun
+   glow, and a faint paper grain — depth without a single sharp edge. */
+.sprout-sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(90% 55% at 78% -12%, rgba(230, 181, 75, 0.28), transparent 55%),
+    radial-gradient(120% 70% at 20% -20%, rgba(182, 214, 228, 0.55), transparent 60%),
+    radial-gradient(100% 60% at 50% 118%, rgba(157, 191, 136, 0.30), transparent 62%),
+    linear-gradient(180deg, #eaf1ea 0%, var(--paper) 42%, #f2e9d6 100%);
+}
+.sprout-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+}
+
+/* ---- typography ---- */
+.sprout .display {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.02;
+}
+.sprout .ital {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.sprout .label {
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--moss-deep);
+}
+.sprout .mono { font-family: var(--font-jetbrains), monospace; }
+
+/* ---- surfaces ---- */
+.sprout .card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+.sprout .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  padding: 0.22rem 0.7rem;
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+/* ---- buttons ---- */
+.sprout .btn-yt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #fffdf8;
+  color: var(--ink);
+  font-weight: 600;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 10px 26px -12px rgba(74, 62, 34, 0.4);
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.18s ease;
+}
+.sprout .btn-yt:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 16px 30px -12px rgba(74, 62, 34, 0.5);
+}
+.sprout .btn-moss {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(180deg, var(--moss) 0%, var(--moss-deep) 100%);
+  color: #f7fbef;
+  font-weight: 600;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px -12px rgba(63, 106, 50, 0.8);
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1), filter 0.18s ease;
+}
+.sprout .btn-moss:hover { transform: translateY(-2px); filter: brightness(1.06); }
+.sprout .btn-quiet {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ink-soft);
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.sprout .btn-quiet:hover { color: var(--ink); border-color: var(--line); }
+
+/* ---- painterly "concept-art" fills (the zero-cost gouache fallback) ---- */
+.sprout .art { position: relative; overflow: hidden; }
+.sprout .art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.4) 48%, transparent 66%);
+  transform: translateX(-120%);
+  animation: s-sheen 5.5s ease-in-out infinite;
+}
+.sprout .art-dawn {
+  background:
+    radial-gradient(120% 90% at 18% 8%, rgba(246, 201, 138, 0.95), transparent 58%),
+    radial-gradient(130% 100% at 92% 24%, rgba(224, 138, 111, 0.9), transparent 55%),
+    linear-gradient(160deg, #8fb6cf, #cf8f7a);
+}
+.sprout .art-meadow {
+  background:
+    radial-gradient(120% 90% at 20% 12%, rgba(230, 220, 150, 0.9), transparent 55%),
+    radial-gradient(120% 100% at 85% 90%, rgba(93, 138, 69, 0.95), transparent 60%),
+    linear-gradient(160deg, #bcd98f, #6f9a52);
+}
+.sprout .art-dusk {
+  background:
+    radial-gradient(120% 90% at 78% 10%, rgba(230, 181, 75, 0.85), transparent 55%),
+    radial-gradient(120% 110% at 15% 95%, rgba(120, 96, 160, 0.75), transparent 60%),
+    linear-gradient(160deg, #e0a06a, #6a6ba0);
+}
+.sprout .art-forest {
+  background:
+    radial-gradient(110% 90% at 25% 15%, rgba(157, 191, 136, 0.9), transparent 55%),
+    radial-gradient(120% 100% at 88% 88%, rgba(40, 74, 52, 0.95), transparent 62%),
+    linear-gradient(160deg, #6f9a68, #2f4a34);
+}
+
+/* ---- core-loop flow connectors: dashed lines marching in flow direction ---- */
+.sprout .cl-flow {
+  stroke: #5d8a45;
+  stroke-opacity: 0.6;
+  stroke-width: 1.8;
+  stroke-dasharray: 5 7;
+  animation: cl-dash 1.1s linear infinite;
+}
+@keyframes cl-dash {
+  to { stroke-dashoffset: -12; }
+}
+
+/* ---- motion keyframes ---- */
+@keyframes s-sheen {
+  0%, 62% { transform: translateX(-120%); }
+  80%, 100% { transform: translateX(120%); }
+}
+@keyframes s-sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+@keyframes s-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes s-drift {
+  from { transform: translateX(-6%); }
+  to { transform: translateX(6%); }
+}
+@keyframes s-spin-slow { to { transform: rotate(360deg); } }
+.sprout .sway { animation: s-sway 6s ease-in-out infinite; transform-origin: bottom center; }
+.sprout .float { animation: s-float 7s ease-in-out infinite; }
+
+/* ---- how-it-works pipeline (living painting + scroll steps) ---- */
+.sprout .garden-frame {
+  box-shadow:
+    0 2px 4px rgba(74, 62, 34, 0.06),
+    0 20px 50px -16px rgba(74, 62, 34, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+.sprout .garden-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 0 80px rgba(74, 62, 34, 0.08);
+}
+
+/* ---- how-it-works pipeline (living painting + scroll steps) ---- */
+.sprout .hiw-section {
+  margin-left: calc(-1 * min(4vw, 2rem));
+  margin-right: calc(-1 * min(4vw, 2rem));
+  padding-left: min(4vw, 2rem);
+  padding-right: min(4vw, 2rem);
+  border-radius: 28px;
+}
+.sprout .hiw-viz::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, transparent 55%);
+  pointer-events: none;
+}
+.sprout .hiw-step + .hiw-step {
+  border-top: 1px solid var(--line-2);
+}
+
+/* respect reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .sprout *,
+  .sprout *::after { animation: none !important; }
+}
