@@ -10,6 +10,7 @@ SPROUT_DATABASE_URL already uses this; graph/vector dataset creation did not.
 
 from __future__ import annotations
 
+import inspect
 import urllib.parse
 
 
@@ -20,48 +21,39 @@ def _cloudsql_url(username: str, password: str, db_name: str, socket_dir: str) -
     return f"postgresql+asyncpg://{user}:{pw}@/{db_name}?host={host_q}"
 
 
+def _bind_args(func, *args, **kwargs):
+    sig = inspect.signature(func)
+    bound = sig.bind(*args, **kwargs)
+    bound.apply_defaults()
+    return bound.arguments
+
+
 def apply_cloudsql_patches(socket_dir: str) -> None:
     """Monkey-patch Cognee postgres helpers to use unix-socket URLs."""
     from cognee.infrastructure.databases.graph.get_graph_engine import _create_graph_engine
     from cognee.infrastructure.databases.graph.postgres.adapter import PostgresAdapter
     from cognee.infrastructure.databases import postgres as pg_admin_mod
 
-    _orig_engine = _create_graph_engine
+    _orig_graph = _create_graph_engine
 
-    def _patched_create_graph_engine(
-        graph_database_provider="",
-        graph_database_url: str = "",
-        graph_database_username: str = "",
-        graph_database_password: str = "",
-        graph_database_host: str = "",
-        graph_database_port: str = "",
-        graph_database_name: str = "",
-        **kwargs,
-    ):
+    def _patched_create_graph_engine(*args, **kwargs):
+        p = _bind_args(_orig_graph, *args, **kwargs)
+        host = p.get("graph_database_host") or ""
         if (
-            graph_database_provider == "postgres"
-            and graph_database_host
-            and graph_database_host.startswith("/cloudsql/")
+            p.get("graph_database_provider") == "postgres"
+            and host.startswith("/cloudsql/")
+            and p.get("graph_database_username")
+            and p.get("graph_database_password")
+            and p.get("graph_database_name")
         ):
-            if not all([graph_database_username, graph_database_password, graph_database_name]):
-                raise EnvironmentError("Missing required Postgres graph credentials.")
             conn = _cloudsql_url(
-                graph_database_username,
-                graph_database_password,
-                graph_database_name,
-                graph_database_host,
+                p["graph_database_username"],
+                p["graph_database_password"],
+                p["graph_database_name"],
+                host,
             )
             return PostgresAdapter(connection_string=conn)
-        return _orig_engine(
-            graph_database_provider=graph_database_provider,
-            graph_database_url=graph_database_url,
-            graph_database_username=graph_database_username,
-            graph_database_password=graph_database_password,
-            graph_database_host=graph_database_host,
-            graph_database_port=graph_database_port,
-            graph_database_name=graph_database_name,
-            **kwargs,
-        )
+        return _orig_graph(*args, **kwargs)
 
     import cognee.infrastructure.databases.graph.get_graph_engine as ge_mod
 
@@ -138,46 +130,29 @@ def apply_cloudsql_patches(socket_dir: str) -> None:
     pg_admin_mod.create_pg_database_if_not_exists = _patched_create_pg_database_if_not_exists
     pg_admin_mod.drop_pg_database_if_exists = _patched_drop_pg_database_if_exists
 
-    # pgvector uses the same host:port URL builder
     import cognee.infrastructure.databases.vector.create_vector_engine as ve_mod
     from cognee.infrastructure.databases.vector.pgvector.PGVectorAdapter import PGVectorAdapter
     from cognee.infrastructure.databases.vector.embeddings import get_embedding_engine
 
     _orig_vector = ve_mod._create_vector_engine
 
-    def _patched_create_vector_engine(
-        vector_db_provider,
-        vector_db_url,
-        vector_db_key,
-        vector_db_name,
-        vector_db_username,
-        vector_db_password,
-        vector_db_host,
-        vector_db_port,
-        **kwargs,
-    ):
+    def _patched_create_vector_engine(*args, **kwargs):
+        p = _bind_args(_orig_vector, *args, **kwargs)
+        host = p.get("vector_db_host") or ""
         if (
-            str(vector_db_provider).lower() == "pgvector"
-            and vector_db_host
-            and str(vector_db_host).startswith("/cloudsql/")
-            and vector_db_username
-            and vector_db_password
-            and vector_db_name
+            str(p.get("vector_db_provider", "")).lower() == "pgvector"
+            and host.startswith("/cloudsql/")
+            and p.get("vector_db_username")
+            and p.get("vector_db_password")
+            and p.get("vector_db_name")
         ):
             conn = _cloudsql_url(
-                vector_db_username, vector_db_password, vector_db_name, vector_db_host
+                p["vector_db_username"],
+                p["vector_db_password"],
+                p["vector_db_name"],
+                host,
             )
-            return PGVectorAdapter(conn, vector_db_key, get_embedding_engine())
-        return _orig_vector(
-            vector_db_provider,
-            vector_db_url,
-            vector_db_key,
-            vector_db_name,
-            vector_db_username,
-            vector_db_password,
-            vector_db_host,
-            vector_db_port,
-            **kwargs,
-        )
+            return PGVectorAdapter(conn, p.get("vector_db_key", ""), get_embedding_engine())
+        return _orig_vector(*args, **kwargs)
 
     ve_mod._create_vector_engine = _patched_create_vector_engine
