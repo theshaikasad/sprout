@@ -39,7 +39,9 @@ for role in \
   roles/cloudbuild.builds.editor \
   roles/iam.serviceAccountUser \
   roles/secretmanager.secretAccessor \
-  roles/secretmanager.viewer; do
+  roles/secretmanager.viewer \
+  roles/serviceusage.serviceUsageConsumer \
+  roles/storage.admin; do
   gcloud projects add-iam-policy-binding "$PROJECT_ID" \
     --member="serviceAccount:${SA}" --role="$role"
 done
@@ -115,6 +117,17 @@ If WIF setup is blocked, store the JSON key as `GCP_SA_KEY` and change the auth 
 Prefer WIF — keys don't rotate automatically and are easier to leak.
 
 ## 6. Troubleshooting
+
+### `forbidden from accessing the bucket [PROJECT_cloudbuild]`
+
+`gcloud builds submit` uploads source to the default Cloud Build bucket and needs `serviceusage.services.use` plus storage access. Grant the deploy SA:
+
+```bash
+chmod +x scripts/grant-github-deployer-iam.sh
+./scripts/grant-github-deployer-iam.sh
+```
+
+Or manually add `roles/serviceusage.serviceUsageConsumer` and `roles/storage.admin` to `github-deployer@….iam.gserviceaccount.com`, plus `roles/iam.serviceAccountUser` on `{PROJECT_NUMBER}@cloudbuild.gserviceaccount.com`.
 
 ### `PERMISSION_DENIED: secretmanager.secrets.get`
 

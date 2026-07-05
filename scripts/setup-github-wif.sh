@@ -25,12 +25,21 @@ for role in \
   roles/cloudbuild.builds.editor \
   roles/iam.serviceAccountUser \
   roles/secretmanager.secretAccessor \
-  roles/secretmanager.viewer; do
+  roles/secretmanager.viewer \
+  roles/serviceusage.serviceUsageConsumer \
+  roles/storage.admin; do
   gcloud projects add-iam-policy-binding "$PROJECT" \
     --member="serviceAccount:${SA}" \
     --role="$role" \
     --quiet >/dev/null
 done
+
+# gcloud builds submit stages source in gs://PROJECT_cloudbuild
+gcloud iam service-accounts add-iam-policy-binding "${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+  --project="$PROJECT" \
+  --member="serviceAccount:${SA}" \
+  --role="roles/iam.serviceAccountUser" \
+  --quiet >/dev/null 2>/dev/null || true
 
 gcloud iam workload-identity-pools create github-pool \
   --project="$PROJECT" --location=global \
