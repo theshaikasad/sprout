@@ -128,7 +128,7 @@ jobs:
           CLOUDSQL_CONN: ${{ env.GCP_PROJECT_ID }}:${{ env.GCP_REGION }}:${{ env.CLOUD_SQL_INSTANCE }}
         run: |
           set -euo pipefail
-          IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/sprout/backend:${{ github.sha }}"
+          IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/sprout/backend:latest"
           gcloud run deploy sprout-backend \
             --image "$IMAGE" \
             --region "${{ env.GCP_REGION }}" \
@@ -173,7 +173,7 @@ jobs:
       - name: Deploy frontend to Cloud Run
         if: github.event_name == 'push' || inputs.deploy_frontend
         run: |
-          IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/sprout/frontend:${{ github.sha }}"
+          IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/sprout/frontend:latest"
           gcloud run deploy sprout-frontend \
             --image "$IMAGE" \
             --region "${{ env.GCP_REGION }}" \
