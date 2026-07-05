@@ -338,6 +338,7 @@ async function j<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
+  health: () => j<{ ok: boolean }>("/health"),
   trends: () => j<Trend[]>("/trends"),
   library: () => j<Library>("/library"),
   review: (idea: string) =>

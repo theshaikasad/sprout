@@ -1,0 +1,435 @@
+{
+ "generated_at": "2026-07-05T16:25:35.721776Z",
+ "creator_handle": "@LanaBlakely",
+ "cold_start": {
+  "tier": "established",
+  "live_video_count": 48,
+  "declared_niche": "",
+  "patterns_enabled": true,
+  "pattern_min_support": 3,
+  "established_at": 10,
+  "niche_query": "personal growth / self-reflection / self-improvement"
+ },
+ "genre": {
+  "label": "personal growth / self-reflection / self-improvement",
+  "summary": "Your last 48 videos lean toward personal growth / self-reflection / self-improvement, mostly as talking head — and your vulnerable personal essays convert best when they're honest and specific. Sound right?",
+  "topic_distribution": {
+   "personal growth": 0.0749,
+   "self-reflection": 0.0624,
+   "self-improvement": 0.0591,
+   "mental health": 0.0455,
+   "self-acceptance": 0.0364,
+   "vulnerable storytelling": 0.0304,
+   "self-expression": 0.0299,
+   "women's fashion": 0.0244,
+   "personal style": 0.0244,
+   "self-discovery": 0.0192,
+   "adult friendships": 0.0173,
+   "emotional connections": 0.0173,
+   "rest and rejuvenation": 0.0173,
+   "mindfulness": 0.0135,
+   "self-care": 0.0135,
+   "social withdrawal": 0.0116,
+   "slow living": 0.0111,
+   "dating experience": 0.0109,
+   "motivation": 0.0101,
+   "everyday luxuries": 0.01,
+   "budget-friendly tips": 0.01,
+   "mindful living": 0.01,
+   "cultural critique": 0.01,
+   "ordinary life": 0.01,
+   "literary analysis": 0.01,
+   "dating in your 30s": 0.0093,
+   "emotional exhaustion": 0.0093,
+   "modern relationships": 0.0093,
+   "youth and beauty": 0.0085,
+   "anxiety management": 0.0082,
+   "daily routines": 0.0082,
+   "introvert challenges": 0.0081,
+   "dinner party tips": 0.0081,
+   "social anxiety": 0.0081,
+   "narrative exploration": 0.008,
+   "constant reinvention": 0.0076,
+   "finding stability": 0.0076,
+   "dating life": 0.0076,
+   "emotional intelligence": 0.0073,
+   "poor decision making": 0.0073,
+   "self-awareness": 0.007,
+   "self-love": 0.0068,
+   "emotional vulnerability": 0.0068,
+   "traveling tips": 0.0061,
+   "curly hair care": 0.0061,
+   "authenticity": 0.0061,
+   "life lessons": 0.0061,
+   "embracing uncertainty": 0.0059,
+   "creative burnout": 0.0058,
+   "feeling lost": 0.0057,
+   "realistic self-love": 0.0056,
+   "confidence building": 0.0055,
+   "stuck in life": 0.0055,
+   "finding direction": 0.0055,
+   "luck and opportunity": 0.0055,
+   "preparation": 0.0055,
+   "networking": 0.0055,
+   "virginia woolf": 0.0054,
+   "ordinary moments": 0.0054,
+   "memory exploration": 0.0054,
+   "traveling greece": 0.0053,
+   "romantic longing": 0.0053,
+   "curly hair routine": 0.0053,
+   "nature therapy": 0.0052,
+   "mindfulness practice": 0.0052,
+   "journaling practice": 0.0051,
+   "writing habits": 0.0051,
+   "deep friendship": 0.0049,
+   "relationship struggles": 0.0049,
+   "social connections": 0.0049,
+   "embracing embarrassment": 0.0046,
+   "trying new things": 0.0046,
+   "day in life": 0.0046,
+   "stockholm living": 0.0046,
+   "weekend routine": 0.0046,
+   "exploring parks": 0.0044,
+   "london food": 0.0044,
+   "hidden gems": 0.0044,
+   "urban adventures": 0.0044,
+   "finding love": 0.0043,
+   "encouragement": 0.0043,
+   "relationship advice": 0.0043,
+   "young love": 0.0043,
+   "happiness": 0.0042,
+   "kindness": 0.0042,
+   "social dynamics": 0.004,
+   "friendship struggles": 0.004,
+   "ego vs passion": 0.0038,
+   "overwhelm management": 0.0037,
+   "podcast insights": 0.0037,
+   "creative balance": 0.0037,
+   "self-sabotage": 0.0036,
+   "decision making": 0.0032,
+   "podcast episode": 0.0032,
+   "digital communication": 0.0032,
+   "self-compassion": 0.0032,
+   "personal development": 0.0032,
+   "self-advocacy": 0.0032,
+   "simple skills": 0.0031,
+   "productivity hacks": 0.0026,
+   "journaling techniques": 0.0026
+  },
+  "format_distribution": {
+   "talking-head": 0.441,
+   "personal-essay": 0.271,
+   "vlog": 0.1712,
+   "interview": 0.043,
+   "voiceover-broll": 0.0413,
+   "listicle": 0.0323
+  },
+  "dominant_format": "talking-head"
+ },
+ "competitors": [
+  {
+   "handle": "@muchelleb",
+   "subscribers": 495000,
+   "topic_overlap": [
+    "mindfulness",
+    "personal growth",
+    "productivity hacks",
+    "self-acceptance",
+    "self-discovery",
+    "self-improvement"
+   ],
+   "overlap_score": 0.069,
+   "suggested_traffic_hits": 6,
+   "triangulation_score": 0.535,
+   "top_videos": [
+    {
+     "video_id": "2YxKpQtyb5I",
+     "title": "SLOW RESET WITH ME 🪩💫 life admin + productive prep",
+     "views": 14676,
+     "outlier_score": 1.27,
+     "velocity": 201.0,
+     "topic_match": "adjacent",
+     "published": "2026-04-23"
+    },
+    {
+     "video_id": "ZCxuFdIPqJk",
+     "title": "The shame→procrastination cycle.",
+     "views": 13257,
+     "outlier_score": 1.15,
+     "velocity": 144.1,
+     "topic_match": "in_lane",
+     "published": "2026-04-04"
+    },
+    {
+     "video_id": "6EmtPFYBqZY",
+     "title": "7 Simple Ideas that Save me 10+ Hours a Week",
+     "views": 10806,
+     "outlier_score": 0.93,
+     "velocity": 1350.8,
+     "topic_match": "in_lane",
+     "published": "2026-06-27"
+    },
+    {
+     "video_id": "d8qZR5Dgo-8",
+     "title": "A Mini Reset + Life Admin Day 💫",
+     "views": 12419,
+     "outlier_score": 1.07,
+     "velocity": 345.0,
+     "topic_match": "adjacent",
+     "published": "2026-05-30"
+    }
+   ]
+  },
+  {
+   "handle": "@lavendaire",
+   "subscribers": 2660000,
+   "topic_overlap": [
+    "mindfulness",
+    "mindfulness practice",
+    "personal growth",
+    "self-care",
+    "self-improvement",
+    "self-love"
+   ],
+   "overlap_score": 0.059,
+   "suggested_traffic_hits": 8,
+   "triangulation_score": 0.53,
+   "top_videos": [
+    {
+     "video_id": "jSWFCvAP7Qs",
+     "title": "Feel Good Manifestation Affirmations ✨ Raise Your Vibration & Manifest Your Best Life",
+     "views": 66235,
+     "outlier_score": 5.55,
+     "velocity": 2365.5,
+     "topic_match": "adjacent",
+     "published": "2026-06-07"
+    },
+    {
+     "video_id": "0fwZ4h9HKzg",
+     "title": "The Secret to Manifesting Most People Miss 💫",
+     "views": 27817,
+     "outlier_score": 2.33,
+     "velocity": 794.8,
+     "topic_match": "in_lane",
+     "published": "2026-05-31"
+    },
+    {
+     "video_id": "Xr-Y_bmm_To",
+     "title": "you’ve learned enough. now do this.",
+     "views": 17248,
+     "outlier_score": 1.44,
+     "velocity": 749.9,
+     "topic_match": "in_lane",
+     "published": "2026-06-12"
+    },
+    {
+     "video_id": "82hHiQZ10ok",
+     "title": "this is how you stay in your power ✨",
+     "views": 11944,
+     "outlier_score": 1.0,
+     "velocity": 314.3,
+     "topic_match": "in_lane",
+     "published": "2026-05-28"
+    }
+   ]
+  },
+  {
+   "handle": "@MattDAvella",
+   "subscribers": 4040000,
+   "topic_overlap": [
+    "personal growth",
+    "self-improvement",
+    "slow living"
+   ],
+   "overlap_score": 0.03,
+   "suggested_traffic_hits": 8,
+   "triangulation_score": 0.515,
+   "top_videos": [
+    {
+     "video_id": "--c3jT8R_VA",
+     "title": "I tried zone 2 training for 30 days (what I learned)",
+     "views": 653045,
+     "outlier_score": 1.25,
+     "velocity": 6732.4,
+     "topic_match": "in_lane",
+     "published": "2026-03-30"
+    },
+    {
+     "video_id": "e3tXybpViHY",
+     "title": "I ran 1 mile every day for 30 days",
+     "views": 280468,
+     "outlier_score": 0.54,
+     "velocity": 10787.2,
+     "topic_match": "adjacent",
+     "published": "2026-06-09"
+    },
+    {
+     "video_id": "9rH5eJCjhtg",
+     "title": "The problem with self-help gurus",
+     "views": 643217,
+     "outlier_score": 1.23,
+     "velocity": 2572.9,
+     "topic_match": "in_lane",
+     "published": "2025-10-28"
+    },
+    {
+     "video_id": "Jawt_HcJWeA",
+     "title": "The water bottle trend has gone too far",
+     "views": 605882,
+     "outlier_score": 1.16,
+     "velocity": 2941.2,
+     "topic_match": "in_lane",
+     "published": "2025-12-11"
+    }
+   ]
+  },
+  {
+   "handle": "@struthless",
+   "subscribers": 1210000,
+   "topic_overlap": [
+    "self-expression",
+    "self-improvement"
+   ],
+   "overlap_score": 0.02,
+   "suggested_traffic_hits": 11,
+   "triangulation_score": 0.51,
+   "top_videos": [
+    {
+     "video_id": "hvPwEWxQ_kQ",
+     "title": "The \"Epstein Files\" are a masterclass in propaganda",
+     "views": 652873,
+     "outlier_score": 3.5,
+     "velocity": 5100.6,
+     "topic_match": "adjacent",
+     "published": "2026-02-27"
+    },
+    {
+     "video_id": "CCXnZIjSj1Q",
+     "title": "I truly hope I'm just being paranoid about this",
+     "views": 637604,
+     "outlier_score": 3.42,
+     "velocity": 3188.0,
+     "topic_match": "adjacent",
+     "published": "2025-12-17"
+    },
+    {
+     "video_id": "j-TK_oWSg0g",
+     "title": "Replacing your phone is easy when it feels punk",
+     "views": 345537,
+     "outlier_score": 1.85,
+     "velocity": 3599.3,
+     "topic_match": "adjacent",
+     "published": "2026-03-31"
+    },
+    {
+     "video_id": "11FIIPmdpHo",
+     "title": "The Al question no one wants to ask",
+     "views": 186702,
+     "outlier_score": 1.0,
+     "velocity": 7180.8,
+     "topic_match": "adjacent",
+     "published": "2026-06-09"
+    }
+   ]
+  },
+  {
+   "handle": "@TheFinancialDiet",
+   "subscribers": 1340000,
+   "topic_overlap": [
+    "relationship advice",
+    "self-discovery"
+   ],
+   "overlap_score": 0.02,
+   "suggested_traffic_hits": 8,
+   "triangulation_score": 0.51,
+   "top_videos": [
+    {
+     "video_id": "EKjSpdBqu4s",
+     "title": "Missing the Point on TSwift",
+     "views": 184267,
+     "outlier_score": 6.59,
+     "velocity": 26323.9,
+     "topic_match": "adjacent",
+     "published": "2026-06-28"
+    },
+    {
+     "video_id": "mUUiEcTY1So",
+     "title": "I Saved Six Figures While Making Less Than $50K Per Year",
+     "views": 99587,
+     "outlier_score": 3.56,
+     "velocity": 11065.2,
+     "topic_match": "adjacent",
+     "published": "2026-06-26"
+    },
+    {
+     "video_id": "2lwPQ0goVqU",
+     "title": "The Hobosexual Man Is Everywhere, And He Loves 30-Something Women | Just Getting Good",
+     "views": 53916,
+     "outlier_score": 1.93,
+     "velocity": 17972.0,
+     "topic_match": "in_lane",
+     "published": "2026-07-02"
+    },
+    {
+     "video_id": "JvgmYeYeyMI",
+     "title": "Flopping Is Just Part of The Job",
+     "views": 20533,
+     "outlier_score": 0.73,
+     "velocity": 20533.0,
+     "topic_match": "adjacent",
+     "published": "2026-07-04"
+    }
+   ]
+  },
+  {
+   "handle": "@PickUpLimes",
+   "subscribers": 4370000,
+   "topic_overlap": [
+    "mindfulness practice",
+    "slow living"
+   ],
+   "overlap_score": 0.02,
+   "suggested_traffic_hits": 7,
+   "triangulation_score": 0.51,
+   "top_videos": [
+    {
+     "video_id": "ja16MqvDfuI",
+     "title": "Skincare salad in a jar 🥕",
+     "views": 937310,
+     "outlier_score": 3.1,
+     "velocity": 93731.0,
+     "topic_match": "adjacent",
+     "published": "2026-06-25"
+    },
+    {
+     "video_id": "KVXaLNeepc0",
+     "title": "The easiest summer SANGRIA ☀️🍊🍎",
+     "views": 191397,
+     "outlier_score": 0.63,
+     "velocity": 63799.0,
+     "topic_match": "adjacent",
+     "published": "2026-07-02"
+    },
+    {
+     "video_id": "_ckqGRUXTbI",
+     "title": "The art of noticing (colour walk) 🌼",
+     "views": 455901,
+     "outlier_score": 1.51,
+     "velocity": 18236.0,
+     "topic_match": "in_lane",
+     "published": "2026-06-10"
+    },
+    {
+     "video_id": "uEqv98IOrHw",
+     "title": "BUDGET MEAL PREP | 10 meals in 1 hour (+ FREE PDF!) 🌟",
+     "views": 206719,
+     "outlier_score": 0.68,
+     "velocity": 12159.9,
+     "topic_match": "adjacent",
+     "published": "2026-06-18"
+    }
+   ]
+  }
+ ],
+ "creator_subscribers": 1650000
+}

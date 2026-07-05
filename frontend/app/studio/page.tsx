@@ -13,7 +13,6 @@ import {
   type Garden,
   type Idea,
   type Library,
-  type Pulse,
   type SuggestResponse,
   type Trace,
   type Track,
@@ -28,7 +27,6 @@ import ChatDock from "@/components/ChatDock";
 import BacktestReveal from "@/components/BacktestReveal";
 import RagContrast from "@/components/RagContrast";
 import ChannelShelf from "@/components/ChannelShelf";
-import PitchBox from "@/components/PitchBox";
 import IdeasBoard from "@/components/IdeasBoard";
 import OutlierStrip from "@/components/OutlierStrip";
 import CoachMarks from "@/components/CoachMarks";
@@ -45,6 +43,35 @@ const THINKING = [
   "checking what actually converted…",
   "drafting concepts against the evidence…",
 ];
+
+const CHAT_ACTIONS = [
+  {
+    id: "concepts",
+    label: "Get concept ideas",
+    hint: "cited cards from your memory",
+    prompt: null as string | null,
+  },
+  {
+    id: "pitch",
+    label: "Pitch an idea",
+    hint: "memory pushes back",
+    prompt: "",
+  },
+  {
+    id: "niche",
+    label: "Niche pulse",
+    hint: "what's moving now",
+    prompt:
+      "What's overperforming in my true niche right now? Rank by velocity and tell me what fits my fingerprint.",
+  },
+  {
+    id: "retro",
+    label: "Retro last upload",
+    hint: "vs your median",
+    prompt:
+      "How did my last upload do vs my median retention and CTR? What pattern does it confirm?",
+  },
+] as const;
 
 type Tab = "today" | "board" | "library";
 
@@ -71,24 +98,25 @@ function Studio() {
   const [thinkStep, setThinkStep] = useState(0);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [pitchTrace, setPitchTrace] = useState<Trace | null>(null);
-  const [pitchSeed, setPitchSeed] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [backtest, setBacktest] = useState<BacktestResponse | null>(null);
   const [backtestBusy, setBacktestBusy] = useState(false);
   const [contrastOpen, setContrastOpen] = useState(false);
   const [offline, setOffline] = useState(false);
+  const [graphDegraded, setGraphDegraded] = useState(false);
   const [garden, setGarden] = useState<Garden | null>(null);
   const [lib, setLib] = useState<Library | null>(null);
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [cadence, setCadence] = useState<Cadence | null>(null);
   const [track, setTrack] = useState<Track | null>(null);
-  const [pulse, setPulse] = useState<Pulse | null>(null);
   const [savedTitles, setSavedTitles] = useState<Set<string>>(new Set());
   const [chatOpen, setChatOpen] = useState(false);
   const [graphOpen, setGraphOpen] = useState(false);
   const [graphQuerying, setGraphQuerying] = useState(false);
   const [chatGraphPending, setChatGraphPending] = useState(false);
   const [showAllConcepts, setShowAllConcepts] = useState(false);
+  const [conceptsRequested, setConceptsRequested] = useState(false);
+  const [chatSeed, setChatSeed] = useState<string | null>(null);
   const [me, setMe] = useState<User | null>(null);
   const [memorySharpened, setMemorySharpened] = useState(false);
   const improveToasted = useRef(false);
@@ -143,8 +171,12 @@ function Studio() {
   }, []);
 
   useEffect(() => {
-    api.trends().then(setTrends).catch(() => setOffline(true));
-    api.graph().then(setGraph).catch(() => setOffline(true));
+    api
+      .health()
+      .then(() => setOffline(false))
+      .catch(() => setOffline(true));
+    api.trends().then(setTrends).catch(() => setGraphDegraded(true));
+    api.graph().then(setGraph).catch(() => setGraphDegraded(true));
     api.library().then(setLib).catch(() => {});
     api.cadence().then(setCadence).catch(() => {});
     api
@@ -164,10 +196,8 @@ function Studio() {
         }
       })
       .catch(() => {});
-    api.pulse().then(setPulse).catch(() => {});
     refreshIdeas();
     api.garden().then(setGarden).catch(() => {});
-    runSuggest("slow living");
     if (search.get("proof") === "1") runBacktest(); // onboarding: earn trust first
     return watchAuth(setMe);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -268,10 +298,76 @@ function Studio() {
   const conceptCards = suggestion?.cards ?? [];
   const visibleCards = showAllConcepts ? conceptCards : conceptCards.slice(0, 2);
 
+  const sproutedIdeas = ideas.filter(
+    (i) => i.state === "sprouted" || i.status === "posted",
+  );
+  const plantedIdeas = ideas.filter(
+    (i) =>
+      i.state === "planted" ||
+      i.status === "saved" ||
+      i.status === "scripting" ||
+      i.status === "filming",
+  );
+  const sproutedPlants = (garden?.plants ?? []).filter((p) => p.from_idea);
+
+  function requestConcepts(trend?: string) {
+    setConceptsRequested(true);
+    setPitchTrace(null);
+    toggleGraph(true);
+    runSuggest(trend ?? activeTrend ?? "slow living");
+  }
+
+  function openChatAction(action: (typeof CHAT_ACTIONS)[number]) {
+    setChatOpen(true);
+    if (action.id === "concepts") {
+      requestConcepts();
+      return;
+    }
+    if (action.id === "pitch") {
+      setChatSeed("I want to make a video about ");
+      return;
+    }
+    if (action.prompt) {
+      setChatSeed(action.prompt);
+    }
+  }
+
+  const chatPanel = (
+    <ChatDock
+      seedMessage={chatSeed}
+      onSeedConsumed={() => setChatSeed(null)}
+      onGraphQueryStart={() => setGraphQuerying(true)}
+      onGraphQueryEnd={(tools) => {
+        setGraphQuerying(false);
+        if (touchesGraph(tools) && !graphOpen) {
+          setChatGraphPending(true);
+        }
+        if (touchesGraph(tools)) {
+          api.graph().then(setGraph).catch(() => {});
+          toggleGraph(true);
+        }
+      }}
+    />
+  );
+
+  const graphPanel = (
+    <GraphPanel graph={graph} trace={trace} querying={graphQuerying} />
+  );
+
   return (
     <>
       <DashboardBackdrop />
-      <main className="relative z-10 mx-auto max-w-6xl px-6 pb-24">
+      <main className="relative z-10 flex min-h-screen">
+      {/* left — chat companion */}
+      <aside className="hidden w-[min(22rem,26vw)] shrink-0 flex-col border-r border-line bg-raised/90 backdrop-blur-sm lg:flex">
+        <div className="flex items-baseline justify-between border-b border-line px-4 py-3">
+          <h2 className="serif-accent text-[15px]">Sprout</h2>
+          <span className="label !text-[9px]">talk · pitch · plan</span>
+        </div>
+        <div className="min-h-0 flex-1 p-4">{chatPanel}</div>
+      </aside>
+
+      <div className="min-w-0 flex-1 px-5 pb-24 sm:px-6">
       {/* top bar — brand · rooms · you */}
       <header className="flex flex-wrap items-center justify-between gap-3 py-4">
         <Link href="/">
@@ -299,11 +395,18 @@ function Studio() {
           <button
             onClick={() => toggleGraph()}
             title="Show the memory graph"
-            className={`btn-ghost px-3.5 py-2 text-xs font-medium ${
+            className={`btn-ghost px-3.5 py-2 text-xs font-medium lg:hidden ${
               graphOpen ? "border-accent/60 text-accent" : ""
             }`}
           >
             ⛁ Memory
+          </button>
+          <button
+            onClick={() => setChatOpen(true)}
+            title="Open chat"
+            className="btn-ghost px-3.5 py-2 text-xs font-medium lg:hidden"
+          >
+            🌿 Chat
           </button>
           <Link href="/signup" title={me ? `${me.displayName} — switch channel` : "switch channel"}>
             {avatar ? (
@@ -324,7 +427,15 @@ function Studio() {
 
       {offline && (
         <p className="panel mt-4 p-4 font-mono text-sm text-amber">
-          API unreachable — cd backend &amp;&amp; uvicorn memory_shield.api:app --port 8000
+          API unreachable — check {process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:8000"}/health
+          or run locally: cd backend &amp;&amp; uvicorn memory_shield.api:app --port 8000
+        </p>
+      )}
+
+      {!offline && graphDegraded && (
+        <p className="panel mt-4 p-4 font-mono text-sm text-amber">
+          Memory graph still loading — demo ingest may take a few minutes on first boot.
+          POST /connect with @LanaBlakely or refresh shortly.
         </p>
       )}
 
@@ -355,7 +466,8 @@ function Studio() {
                       <button
                         onClick={() => {
                           setTab("board");
-                          setPitchSeed(`Still worth filming: ${idea.title}`);
+                          setChatSeed(`Still worth filming: ${idea.title}`);
+                          setChatOpen(true);
                         }}
                         className="font-mono text-[10px] text-accent underline decoration-dotted"
                       >
@@ -374,17 +486,95 @@ function Studio() {
             )}
           </section>
 
+          <section>
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 className="display text-[1.35rem]">What you&apos;ve grown</h2>
+              {plantedIdeas.length > 0 && (
+                <button
+                  onClick={() => setTab("board")}
+                  className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent"
+                >
+                  {plantedIdeas.length} planted · ready to film →
+                </button>
+              )}
+            </div>
+            <p className="mt-1 text-sm text-faint">
+              Sprouted ideas and videos — your garden&apos;s history, not suggestions thrown back at you.
+            </p>
+
+            {sproutedIdeas.length === 0 && sproutedPlants.length === 0 ? (
+              <div className="panel mt-4 p-5">
+                <p className="text-sm text-dim">
+                  Nothing sprouted yet — plant an idea from chat, then mark it posted when you film it.
+                </p>
+              </div>
+            ) : (
+              <ul className="mt-4 space-y-2">
+                {sproutedIdeas.map((idea) => (
+                  <li
+                    key={idea.id}
+                    className="panel flex items-center gap-3 px-4 py-3"
+                  >
+                    <span aria-hidden>🌸</span>
+                    <button
+                      type="button"
+                      onClick={() => setTab("board")}
+                      className="min-w-0 flex-1 truncate text-left text-sm font-medium hover:text-accent"
+                    >
+                      {idea.title}
+                    </button>
+                    <span className="font-mono text-[10px] text-faint">sprouted</span>
+                  </li>
+                ))}
+                {sproutedPlants.map((p) => (
+                  <li
+                    key={p.video_id}
+                    className="panel flex items-center gap-3 px-4 py-3"
+                  >
+                    <Thumb videoId={p.video_id} title={p.title} w={56} />
+                    <a
+                      href={`https://youtube.com/watch?v=${p.video_id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="min-w-0 flex-1 truncate text-sm font-medium hover:text-accent"
+                    >
+                      {p.title}
+                    </a>
+                    <span className="font-mono text-[10px] text-accent">from idea</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section>
+            <p className="label">ask sprout</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {CHAT_ACTIONS.map((action) => (
+                <button
+                  key={action.id}
+                  onClick={() => openChatAction(action)}
+                  className="panel px-3.5 py-2.5 text-left transition-colors hover:border-accent/40"
+                >
+                  <span className="block text-sm font-medium">{action.label}</span>
+                  <span className="mt-0.5 block font-mono text-[10px] text-faint">{action.hint}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {conceptsRequested && (
           <section id="concepts">
             <div className="flex items-baseline justify-between">
               <h2 className="display text-[1.35rem]">
-                Ready to film
+                Concept ideas
                 {activeTrend && (
                   <span className="serif-accent text-accent"> · {activeTrend}</span>
                 )}
               </h2>
               <button
                 onClick={() => {
-                  runSuggest(activeTrend ?? undefined);
+                  requestConcepts(activeTrend ?? undefined);
                   if (memorySharpened) flash("regenerated with sharpened memory");
                 }}
                 className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent"
@@ -457,6 +647,7 @@ function Studio() {
               </button>
             )}
           </section>
+          )}
 
           <details className="panel group p-4">
             <summary className="cursor-pointer text-sm font-medium text-fg hover:text-accent">
@@ -546,19 +737,13 @@ function Studio() {
               <OutlierStrip
                 trends={trends}
                 activeTrend={activeTrend}
-                onPick={(label) => runSuggest(label)}
+                onPick={(label) => {
+                  setConceptsRequested(true);
+                  runSuggest(label);
+                  toggleGraph(true);
+                }}
                 onForget={decay}
               />
-            </div>
-          </details>
-
-          <details className="panel group p-4" id="pitch">
-            <summary className="cursor-pointer text-sm font-medium text-fg hover:text-accent">
-              Pitch your own idea
-              <span className="ml-2 font-mono text-[10px] text-faint">memory pushes back</span>
-            </summary>
-            <div className="mt-4">
-              <PitchBox onTrace={setPitchTrace} onSaved={refreshIdeas} seed={pitchSeed} />
             </div>
           </details>
 
@@ -621,9 +806,31 @@ function Studio() {
         </div>
       )}
 
-      {/* ————— the memory: hidden until queried ————— */}
+      </div>
+
+      {/* right — memory graph */}
+      <aside className="hidden w-[min(24rem,30vw)] shrink-0 flex-col border-l border-line bg-[#faf4e6]/95 backdrop-blur-sm lg:flex">
+        <div className="flex items-center justify-between border-b border-line px-4 py-3">
+          <div>
+            <h2 className="text-sm font-semibold tracking-tight">The memory</h2>
+            <p className="font-mono text-[10px] text-faint">
+              {graph ? `${graph.nodes.length} nodes · ${graph.edges.length} edges` : "loading…"}
+            </p>
+          </div>
+          <span className="max-w-36 truncate text-right font-mono text-[10px] text-dim">
+            {pitchTrace
+              ? "▸ evidence for your pitch"
+              : trace
+                ? `▸ path behind concept ${String((selectedCard ?? 0) + 1).padStart(2, "0")}`
+                : "query chat or concepts"}
+          </span>
+        </div>
+        <div className="min-h-0 flex-1">{graphPanel}</div>
+      </aside>
+
+      {/* mobile graph drawer */}
       <aside
-        className={`fixed inset-y-0 right-0 z-30 flex w-[min(94vw,30rem)] transform flex-col border-l border-line bg-[#faf4e6]/95 shadow-[-14px_0_40px_-18px_rgba(74,62,34,0.3)] backdrop-blur-md transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`fixed inset-y-0 right-0 z-30 flex w-[min(94vw,30rem)] transform flex-col border-l border-line bg-[#faf4e6]/95 shadow-[-14px_0_40px_-18px_rgba(74,62,34,0.3)] backdrop-blur-md transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:hidden ${
           graphOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -634,25 +841,14 @@ function Studio() {
               {graph ? `${graph.nodes.length} nodes · ${graph.edges.length} edges` : "loading…"}
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="max-w-40 truncate text-right font-mono text-[10px] text-dim">
-              {pitchTrace
-                ? "▸ evidence for your pitch"
-                : trace
-                  ? `▸ path behind concept ${String((selectedCard ?? 0) + 1).padStart(2, "0")}`
-                  : "run a query to trace it"}
-            </span>
-            <button
-              onClick={() => toggleGraph(false)}
-              className="text-sm text-faint transition-colors hover:text-fg"
-            >
-              ✕
-            </button>
-          </div>
+          <button
+            onClick={() => toggleGraph(false)}
+            className="text-sm text-faint transition-colors hover:text-fg"
+          >
+            ✕
+          </button>
         </div>
-        <div className="min-h-0 flex-1">
-          <GraphPanel graph={graph} trace={trace} querying={graphQuerying} />
-        </div>
+        <div className="min-h-0 flex-1">{graphPanel}</div>
       </aside>
 
       {/* queried while the drawer is closed → quiet invitation, not a takeover */}
@@ -672,34 +868,34 @@ function Studio() {
         </div>
       )}
 
-      {/* floating strategist */}
-      {chatOpen ? (
-        <div className="panel fixed bottom-4 right-4 z-40 flex h-[28rem] w-96 flex-col p-4 shadow-2xl">
+      {/* mobile chat sheet */}
+      {chatOpen && (
+        <div className="panel fixed inset-x-3 bottom-3 z-40 flex h-[28rem] flex-col p-4 shadow-2xl lg:hidden">
           <button
             onClick={() => setChatOpen(false)}
             className="absolute right-3 top-2.5 z-10 text-xs text-faint hover:text-fg"
           >
             ▾ minimize
           </button>
-          <ChatDock
-            onGraphQueryStart={() => setGraphQuerying(true)}
-            onGraphQueryEnd={(tools) => {
-              setGraphQuerying(false);
-              if (touchesGraph(tools) && !graphOpen) {
-                setChatGraphPending(true);
-              }
-              if (touchesGraph(tools)) {
-                api.graph().then(setGraph).catch(() => {});
-              }
-            }}
-          />
+          {chatPanel}
         </div>
-      ) : (
+      )}
+
+      {!chatOpen && (
         <button
           onClick={() => setChatOpen(true)}
-          className="btn-primary fixed bottom-4 right-4 z-40 px-5 py-3 text-sm"
+          className="btn-primary fixed bottom-4 left-4 z-40 px-5 py-3 text-sm lg:hidden"
         >
           🌿 Ask Sprout
+        </button>
+      )}
+
+      {!graphOpen && (
+        <button
+          onClick={() => toggleGraph(true)}
+          className="btn-ghost fixed bottom-4 right-4 z-40 px-5 py-3 text-sm lg:hidden"
+        >
+          ⛁ Memory
         </button>
       )}
 

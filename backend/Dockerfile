@@ -12,8 +12,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY memory_shield ./memory_shield
-# .cache is gitignored (local dev only). Prod bootstraps demo corpus via API on startup.
-RUN mkdir -p .cache
+# Demo corpus + analytics for Cloud Run (gitignored .cache/ is local-only).
+COPY demo_seed/ ./.cache/
 
 ENV PYTHONUNBUFFERED=1
 EXPOSE 8080
