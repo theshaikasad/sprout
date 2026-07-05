@@ -28,6 +28,13 @@ def _bind_args(func, *args, **kwargs):
     return bound.arguments
 
 
+def _preserve_cache_attrs(wrapped, original):
+    """Keep closing_lru_cache helpers (cache_contains, etc.) on patched callables."""
+    for name in ("cache_contains", "cache_evict", "cache_clear", "__wrapped__"):
+        if hasattr(original, name):
+            setattr(wrapped, name, getattr(original, name))
+
+
 def _postgres_cloudsql_adapter(p: dict):
     from cognee.infrastructure.databases.graph.postgres.adapter import PostgresAdapter
 
@@ -71,48 +78,30 @@ def apply_cloudsql_patches(socket_dir: str) -> None:
     ge_mod = importlib.import_module("cognee.infrastructure.databases.graph.get_graph_engine")
     ve_mod = importlib.import_module("cognee.infrastructure.databases.vector.create_vector_engine")
 
-    _orig_graph_inner = ge_mod._create_graph_engine
-    _orig_graph_create = ge_mod.create_graph_engine
+    _orig_graph = ge_mod._create_graph_engine
 
-    def _patched_create_graph_engine(*args, **kwargs):
-        p = _bind_args(_orig_graph_create, *args, **kwargs)
-        provider = str(p.get("graph_database_provider", "")).lower()
-        if provider == "postgres":
-            adapter = _postgres_cloudsql_adapter(p)
-            if adapter is not None:
-                return adapter
-        return _orig_graph_create(*args, **kwargs)
-
-    def _patched_graph_inner(*args, **kwargs):
-        p = _bind_args(_orig_graph_inner, *args, **kwargs)
+    def _patched_graph_engine(*args, **kwargs):
+        p = _bind_args(_orig_graph, *args, **kwargs)
         if str(p.get("graph_database_provider", "")).lower() == "postgres":
             adapter = _postgres_cloudsql_adapter(p)
             if adapter is not None:
                 return adapter
-        return _orig_graph_inner(*args, **kwargs)
+        return _orig_graph(*args, **kwargs)
 
-    ge_mod.create_graph_engine = _patched_create_graph_engine
-    ge_mod._create_graph_engine = _patched_graph_inner
+    _preserve_cache_attrs(_patched_graph_engine, _orig_graph)
+    ge_mod._create_graph_engine = _patched_graph_engine
 
-    _orig_vector_inner = ve_mod._create_vector_engine
-    _orig_vector_create = ve_mod.create_vector_engine
+    _orig_vector = ve_mod._create_vector_engine
 
-    def _patched_create_vector_engine(*args, **kwargs):
-        p = _bind_args(_orig_vector_create, *args, **kwargs)
+    def _patched_vector_engine(*args, **kwargs):
+        p = _bind_args(_orig_vector, *args, **kwargs)
         adapter = _pgvector_cloudsql_adapter(p)
         if adapter is not None:
             return adapter
-        return _orig_vector_create(*args, **kwargs)
+        return _orig_vector(*args, **kwargs)
 
-    def _patched_vector_inner(*args, **kwargs):
-        p = _bind_args(_orig_vector_inner, *args, **kwargs)
-        adapter = _pgvector_cloudsql_adapter(p)
-        if adapter is not None:
-            return adapter
-        return _orig_vector_inner(*args, **kwargs)
-
-    ve_mod.create_vector_engine = _patched_create_vector_engine
-    ve_mod._create_vector_engine = _patched_vector_inner
+    _preserve_cache_attrs(_patched_vector_engine, _orig_vector)
+    ve_mod._create_vector_engine = _patched_vector_engine
 
     async def _patched_create_pg_database_if_not_exists(
         db_name: str,
