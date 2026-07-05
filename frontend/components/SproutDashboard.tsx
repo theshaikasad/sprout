@@ -4,6 +4,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
 import { BASE, type Garden } from "@/lib/api";
+import Thumb from "./Thumb";
 
 const container = {
   hidden: {},
@@ -39,8 +40,10 @@ export default function SproutDashboard({ garden, creatorName = "your", onPlant 
 
   const planted = garden?.planted ?? [];
   const seeds = garden?.seeds ?? [];
+  const plants = garden?.plants ?? [];
   const momentum = garden?.consistency?.momentum_weeks ?? 0;
   const encouragement = garden?.consistency?.encouragement ?? "Your garden is waiting — got a seed?";
+  const recentPlants = plants.slice(0, 8);
 
   return (
     <div ref={ref} className="panel relative overflow-hidden p-3 sm:p-5">
@@ -73,8 +76,8 @@ export default function SproutDashboard({ garden, creatorName = "your", onPlant 
 
           <motion.div variants={item}>
             <div className="mb-2 flex items-center justify-between">
-              <p className="label">planted · your vision board</p>
-              <span className="label !text-[10px] text-faint">{planted.length} growing</span>
+              <p className="label">planted · waiting to film</p>
+              <span className="label !text-[10px] text-faint">{planted.length} on the board</span>
             </div>
             {planted.length === 0 ? (
               <p className="text-sm text-dim">Nothing planted yet — got a seed?</p>
@@ -108,6 +111,45 @@ export default function SproutDashboard({ garden, creatorName = "your", onPlant 
                   </div>
                 ))}
               </div>
+            )}
+          </motion.div>
+
+          <motion.div variants={item}>
+            <div className="mb-2 flex items-center justify-between">
+              <p className="label">plants · your full library</p>
+              <span className="label !text-[10px] text-faint">{plants.length} posted</span>
+            </div>
+            {recentPlants.length === 0 ? (
+              <p className="text-sm text-dim">Your channel history will grow here.</p>
+            ) : (
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {recentPlants.map((p) => (
+                  <a
+                    key={p.video_id}
+                    href={`https://youtube.com/watch?v=${p.video_id}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group overflow-hidden rounded-lg border border-line bg-raised transition-colors hover:border-accent/40"
+                  >
+                    <div className="relative">
+                      <Thumb videoId={p.video_id} title={p.title} w={160} href={false} />
+                      {p.from_idea && (
+                        <span className="absolute left-1 top-1 rounded-full bg-accent/90 px-1.5 py-0.5 text-[8px] font-medium text-[#f6eedd]">
+                          ✨ sprouted
+                        </span>
+                      )}
+                    </div>
+                    <p className="truncate p-1.5 text-[10px] leading-tight text-fg/90 group-hover:text-accent">
+                      {p.title}
+                    </p>
+                  </a>
+                ))}
+              </div>
+            )}
+            {plants.length > 8 && (
+              <p className="mt-2 text-[10px] text-faint">
+                +{plants.length - 8} more in your library — open Library for the full shelf
+              </p>
             )}
           </motion.div>
         </div>

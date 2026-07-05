@@ -20,6 +20,7 @@ from openai import AsyncOpenAI
 from pydantic import BaseModel
 
 from .auth.deps import optional_user
+from .db.context import UserContext
 from .cognee_env import cognee
 from cognee import SearchType  # after cognee_env: roots/env must be pinned first
 from .config import (
@@ -86,6 +87,79 @@ async def _scheduled_refresh_loop():
             print(f"scheduled refresh skipped — {e}", flush=True)
 
 
+async def _bootstrap_demo_memory():
+    """Postgres: ensure demo uid has a Cognee dataset and kick ingest if graph is empty."""
+    from .config import SPROUT_DATABASE_URL
+    from .cognee_context import is_postgres_multi_user, with_user_cognee
+    from .db.context import UserContext, set_current_user
+    from .db.models import Preference, User
+    from .db.sync_session import init_sync_db, sync_session
+    from .onboarding import ensure_cognee_user, run_onboarding
+
+    if not is_postgres_multi_user():
+        return
+
+    try:
+        init_sync_db()
+        with sync_session() as session:
+            user = session.get(User, "demo")
+            if not user:
+                user = User(
+                    uid="demo",
+                    display_name="Demo Creator",
+                    is_demo=True,
+                    onboarding_status="pending",
+                )
+                session.add(user)
+                session.flush()
+                session.add(Preference(uid="demo"))
+                session.commit()
+                session.refresh(user)
+
+        set_current_user(
+            UserContext(
+                uid=user.uid,
+                is_demo=user.is_demo,
+                cognee_user_id=user.cognee_user_id,
+                cognee_dataset_id=user.cognee_dataset_id,
+                youtube_channel_id=user.youtube_channel_id or "",
+                telegram_chat_id=user.telegram_chat_id or "",
+            )
+        )
+        await ensure_cognee_user("demo", "demo@sprout.internal")
+
+        with sync_session() as session:
+            user = session.get(User, "demo")
+            if user:
+                set_current_user(
+                    UserContext(
+                        uid=user.uid,
+                        is_demo=user.is_demo,
+                        cognee_user_id=user.cognee_user_id,
+                        cognee_dataset_id=user.cognee_dataset_id,
+                        youtube_channel_id=user.youtube_channel_id or "",
+                        telegram_chat_id=user.telegram_chat_id or "",
+                    )
+                )
+
+        async with with_user_cognee():
+            g = await Graph.load()
+            n_trends = len(g.by_type("Trend"))
+            if n_trends >= 1:
+                print(
+                    f"demo graph ready: {len(g.props)} nodes, {n_trends} trends",
+                    flush=True,
+                )
+                return
+
+        print("demo graph empty — starting fixture onboarding ingest", flush=True)
+        asyncio.create_task(
+            run_onboarding("demo", "demo@sprout.internal", use_real_analytics=False)
+        )
+    except Exception as e:
+        print(f"demo bootstrap failed ({e}) — will retry via /connect", flush=True)
+
+
 @asynccontextmanager
 async def _lifespan(app: FastAPI):
     from .db.sync_session import init_sync_db
@@ -93,6 +167,8 @@ async def _lifespan(app: FastAPI):
 
     try:
         init_sync_db()
+        from .db.schema import ensure_schema
+        ensure_schema()
         from .db.session import init_db
         await init_db()
         from .config import SPROUT_DATABASE_URL
@@ -102,8 +178,27 @@ async def _lifespan(app: FastAPI):
     except Exception as e:
         print(f"db init skipped: {e}")
 
+    asyncio.create_task(_bootstrap_demo_memory())
+
     async def _warm():
         try:
+            from .db.context import UserContext, set_current_user
+            from .db.models import User
+            from .db.sync_session import sync_session
+
+            with sync_session() as session:
+                user = session.get(User, "demo")
+            if user:
+                set_current_user(
+                    UserContext(
+                        uid=user.uid,
+                        is_demo=user.is_demo,
+                        cognee_user_id=user.cognee_user_id,
+                        cognee_dataset_id=user.cognee_dataset_id,
+                        youtube_channel_id=user.youtube_channel_id or "",
+                        telegram_chat_id=user.telegram_chat_id or "",
+                    )
+                )
             await suggest(DEMO_DEFAULT_TREND)
             await backtest_route()
             print("demo cache warmed (suggest + backtest)")
@@ -190,24 +285,65 @@ async def fingerprint_route():
 
 @app.get("/patterns")
 async def patterns_route():
+    from .cold_start import filter_patterns
+    from .fingerprint import load_cold_start
+
     corpus = load_corpus()
-    return {"patterns": run_pattern_scan(corpus["live"])}
+    cs = load_cold_start()
+    patterns = run_pattern_scan(corpus["live"])
+    return {"patterns": filter_patterns(patterns, cs.get("tier", "established"))}
 
 
 @app.get("/garden")
 async def garden_route():
-    """Home surface: consistency + waiting ideas + seed tray."""
+    """Home surface: consistency + waiting ideas + seed tray + full plant library."""
     cad = await cadence_route()
     track = await get_track()
     planted = list_planted()
     seeds = list_seeds()
-    sprouted = list_sprouted()[-8:]
+    sprouted = list_sprouted()
     fp = {}
     try:
         fp = load_fingerprint()
     except Exception:
         pass
     streak_weeks = max(0, 12 - (cad.get("days_since_last") or 0) // 7) if cad.get("days_since_last") is not None else 0
+
+    corpus = load_corpus()
+    g = await Graph.load()
+    median = g.my_median_views() or 1.0
+    plants_by_id: dict[str, dict] = {}
+    for v in corpus["live"] + corpus["holdout"]:
+        plants_by_id[v["video_id"]] = {
+            "video_id": v["video_id"],
+            "title": v["title"],
+            "published": v["published"],
+            "views": v["views"],
+            "ratio": round(v["views"] / median, 2),
+            "from_idea": False,
+            "draft_id": "",
+        }
+    for d in sprouted:
+        vid = d.get("posted_video_id") or ""
+        if vid and vid in plants_by_id:
+            plants_by_id[vid] = {
+                **plants_by_id[vid],
+                "from_idea": True,
+                "draft_id": d["id"],
+                "title": d.get("title") or plants_by_id[vid]["title"],
+            }
+        elif vid:
+            plants_by_id[vid] = {
+                "video_id": vid,
+                "title": d.get("title") or vid,
+                "published": d.get("sprouted_at", "")[:10],
+                "views": 0,
+                "ratio": 0,
+                "from_idea": True,
+                "draft_id": d["id"],
+            }
+    plants = sorted(plants_by_id.values(), key=lambda p: p["published"], reverse=True)
+
     return {
         "consistency": {
             "days_since_last": cad.get("days_since_last"),
@@ -217,7 +353,7 @@ async def garden_route():
         },
         "planted": planted,
         "seeds": seeds,
-        "sprouted": sprouted,
+        "plants": plants,
         "genre": fp.get("genre", {}),
     }
 
@@ -459,6 +595,33 @@ async def plant_route(idea_id: str):
     return plant_idea(idea_id)
 
 
+@app.get("/ideas/{idea_id}/production-kit")
+async def production_kit_route(idea_id: str):
+    import uuid as _uuid
+
+    from .db.context import require_uid
+    from .db.models import Draft
+    from .db.sync_session import sync_session
+    from .production_kit import ensure_production_kit
+
+    uid = require_uid()
+    with sync_session() as session:
+        d = session.get(Draft, _uuid.UUID(idea_id))
+        if not d or d.uid != uid:
+            raise HTTPException(404, "no such idea")
+        if d.state != "planted":
+            raise HTTPException(400, "production kit is generated when an idea is planted")
+        draft = {
+            "id": str(d.id),
+            "title": d.title,
+            "angle": d.angle,
+            "format_name": d.format_name,
+            "topic_labels": d.topic_labels or [],
+            "state": d.state,
+        }
+    return ensure_production_kit(draft)
+
+
 @app.post("/ideas/{idea_id}/sprout")
 async def sprout_route(idea_id: str):
     return await mark_sprouted(idea_id)
@@ -503,18 +666,35 @@ async def telegram_nudge_route():
 
 
 @app.post("/telegram/send")
-async def telegram_send_route(body: dict | None = None):
-    """Actually push a message to the creator's phone now — the live proactive
-    moment for the recording. Uses today's real `track` headline (a computed
-    field, not LLM-invented) unless a message is given explicitly."""
-    from .telegram_bot import send_message
+async def telegram_send_route(
+    body: dict | None = None,
+    ctx: UserContext = Depends(optional_user),
+):
+    """Push a proactive nudge to the signed-in user's linked Telegram chat."""
+    from .nudges import _competitor_anxiety_copy
+    from .telegram_bot import chat_id_for_uid, send_nudge_to_user
     from .track import get_track
-    text = (body or {}).get("message")
+
+    payload = body or {}
+    text = payload.get("message")
+    target_uid = payload.get("uid") or ctx.uid
+    chat_id = chat_id_for_uid(target_uid)
     if not text:
         track = await get_track(force=True)
         text = f"🌱 {track.get('headline', '')}"
-    sent = send_message(text)
-    return {"sent": sent, "text": text, "configured": bool(TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)}
+    if _competitor_anxiety_copy(text):
+        raise HTTPException(
+            400,
+            "competitor-comparison pushes are disabled — use check_competitors in chat (pull-only)",
+        )
+    sent = send_nudge_to_user(target_uid, text)
+    return {
+        "sent": sent,
+        "text": text,
+        "uid": target_uid,
+        "chat_id": chat_id or None,
+        "configured": bool(TELEGRAM_BOT_TOKEN),
+    }
 
 
 @app.get("/telegram/poll")
@@ -569,7 +749,7 @@ async def connect_route(body: ConnectBody):
     if status.get("status") == "building":
         raise HTTPException(409, "already building")
     asyncio.create_task(run_onboarding("demo", "demo@sprout.internal", use_real_analytics=False))
-    return {"ok": True, "channel": status.get("channel")}
+    return {"ok": True, "channel": status.get("channel"), "rebuilding": True}
 
 
 @app.get("/connect/status")
@@ -921,9 +1101,12 @@ async def _run_tool_inner(name: str, args: dict) -> str:
         return json.dumps({"query": args["query"], "matches": matches}, ensure_ascii=False)
 
     if name == "quote_transcripts":
-        chunks = await cognee.search(
-            query_text=args["query"], query_type=SearchType.CHUNKS, top_k=6
-        )
+        from .cognee_context import with_user_cognee
+
+        async with with_user_cognee():
+            chunks = await cognee.search(
+                query_text=args["query"], query_type=SearchType.CHUNKS, top_k=6
+            )
         passages = []
         for c in chunks:
             text = str(c.get("text", ""))

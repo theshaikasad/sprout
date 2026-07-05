@@ -40,6 +40,8 @@ def _get_sync_engine():
 
 def init_sync_db() -> None:
     SQLModel.metadata.create_all(_get_sync_engine())
+    from .schema import ensure_schema
+    ensure_schema()
 
 
 @contextmanager

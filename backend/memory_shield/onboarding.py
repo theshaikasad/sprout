@@ -14,6 +14,7 @@ from .analyzer import run_pattern_scan, write_patterns_to_graph
 from .auth.tokens import decrypt
 from .auth.youtube_oauth import access_token_from_row
 from .cognee_context import user_cognee_context
+from .cold_start import classify_tier, filter_patterns, needs_declared_niche, TIER_ESTABLISHED
 from .config import HOLDOUT_CUTOFF
 from .corpus import build_corpus
 from .db.context import UserContext, set_current_user
@@ -21,6 +22,7 @@ from .db.models import OAuthCredentials, User
 from .db.sync_session import sync_session
 from .fingerprint import build_fingerprint
 from .ingest import main as run_ingest
+from .preferences import get_preferences
 
 
 def _set_status(uid: str, stage: str, detail: str = "", error: str = "") -> None:
@@ -86,6 +88,9 @@ async def run_onboarding(uid: str, email: str = "", use_real_analytics: bool = T
         ctx_dataset = dataset_id
         ctx_user = cognee_uid
 
+        prefs = get_preferences(uid)
+        declared_niche = prefs.get("declared_niche", "")
+
         async with user_cognee_context(
             dataset_id=ctx_dataset, user_id=ctx_user
         ):
@@ -98,6 +103,25 @@ async def run_onboarding(uid: str, email: str = "", use_real_analytics: bool = T
                 if not handle.startswith("@"):
                     handle = f"@{handle}"
             corpus = await asyncio.to_thread(build_corpus, handle, _progress_cb(uid))
+
+            live_count = len(corpus["live"])
+            tier = classify_tier(live_count)
+
+            with sync_session() as session:
+                u = session.get(User, uid)
+                if u:
+                    u.channel_video_count = live_count
+                    session.add(u)
+                    session.commit()
+
+            if needs_declared_niche(tier, declared_niche):
+                _set_status(
+                    uid,
+                    "error",
+                    "Tell Sprout what your channel is about before building memory.",
+                    "declared_niche_required",
+                )
+                return
 
             _set_status(uid, "analytics", "pulling analytics")
             if use_real_analytics and uid != "demo":
@@ -125,11 +149,21 @@ async def run_onboarding(uid: str, email: str = "", use_real_analytics: bool = T
             _set_status(uid, "ingesting", "building knowledge graph")
             await run_ingest(fresh=True, skip_lane_b=False)
 
-            _set_status(uid, "patterns", "running pattern analyzer")
             patterns = await asyncio.to_thread(run_pattern_scan, corpus["live"])
-            await write_patterns_to_graph(patterns, corpus["live"])
+            patterns = filter_patterns(patterns, tier)
+            if patterns:
+                _set_status(uid, "patterns", "running pattern analyzer")
+                await write_patterns_to_graph(patterns, corpus["live"])
+            elif tier != TIER_ESTABLISHED:
+                _set_status(uid, "patterns", "skipping patterns — catalog still warming up")
 
-            await asyncio.to_thread(build_fingerprint, corpus)
+            await asyncio.to_thread(
+                build_fingerprint,
+                corpus,
+                declared_niche=declared_niche,
+                tier=tier,
+                uid=uid,
+            )
             _set_status(uid, "done", "memory built")
     except Exception as e:
         _set_status(uid, "error", str(e)[:200], str(e))
@@ -142,19 +176,47 @@ def _progress_cb(uid: str):
 
 
 def get_onboarding_status(uid: str) -> dict:
+    from .cold_start import TIER_ESTABLISHED
+    from .fingerprint import load_fingerprint
+
     with sync_session() as session:
         u = session.get(User, uid)
         if not u:
             return {"stage": "idle", "detail": "", "status": "pending", "error": ""}
+        prefs = get_preferences(uid)
+        channel_video_count = u.channel_video_count
+        declared_niche = prefs.get("declared_niche", "")
+        preview_tier = classify_tier(channel_video_count)
+
+        cold_start = None
+        genre = None
+        if u.onboarding_status == "ready":
+            try:
+                fp = load_fingerprint(uid)
+                cold_start = fp.get("cold_start")
+                genre = fp.get("genre")
+            except Exception:
+                pass
+
         return {
             "stage": u.onboarding_stage,
             "detail": u.onboarding_detail,
             "status": u.onboarding_status,
             "error": u.onboarding_error,
+            "channel_video_count": channel_video_count,
+            "preview_tier": preview_tier,
+            "needs_niche": needs_declared_niche(preview_tier, declared_niche),
+            "declared_niche": declared_niche,
+            "cold_start": cold_start,
+            "genre": genre,
+            "use_backtest_reveal": (
+                cold_start is None or cold_start.get("tier") == TIER_ESTABLISHED
+            ),
             "channel": {
                 "title": u.channel_title,
                 "avatar": u.channel_avatar,
                 "subscribers": u.subscriber_count,
                 "handle": u.youtube_handle,
+                "video_count": channel_video_count,
             } if u.channel_title else None,
         }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Card, Idea, Trace, Review } from "@/lib/api";
 import { api } from "@/lib/api";
 import ConceptCard from "./ConceptCard";
+import ProductionKitPanel from "./ProductionKit";
 
 /* The plan, not just a list: every idea carries a target publish date
    (defaulted from the channel's cadence when saved). Performance feedback is
@@ -57,13 +58,11 @@ export default function IdeasBoard({
   creatorName,
   onChanged,
   onShowGraph,
-  onThumbLab,
 }: {
   ideas: Idea[];
   creatorName: string | null;
   onChanged: () => void;
   onShowGraph?: (trace: Trace) => void;
-  onThumbLab?: (title: string) => void;
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const open = ideas.find((i) => i.id === openId);
@@ -74,9 +73,8 @@ export default function IdeasBoard({
       <div className="panel p-5">
         <h2 className="display text-[1.35rem]">Vision board</h2>
         <p className="mt-2 text-sm text-faint">
-          Nothing planted yet — got a seed? Pick a concept from Today
-          (&quot;🌱 plant it&quot;) and it takes root here with a target date from
-          your posting rhythm.
+          Nothing planted yet — got a seed? Tap <span className="text-accent">✨ Create</span> on a
+          concept from Today and it takes root here with a target date from your posting rhythm.
         </p>
       </div>
     );
@@ -154,10 +152,10 @@ export default function IdeasBoard({
         </ul>
       </div>
 
-      {open && openCard && (
+      {open && (
         <div className="panel p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold tracking-tight">Shoot brief</h3>
+            <h3 className="text-sm font-semibold tracking-tight">{open.title}</h3>
             <div className="flex gap-2">
               {open.payload?.trace != null && onShowGraph && (
                 <button
@@ -167,22 +165,20 @@ export default function IdeasBoard({
                   ⛁ show in graph
                 </button>
               )}
-              {onThumbLab && (
-                <button
-                  onClick={() => onThumbLab(open.title)}
-                  className="btn-ghost px-3 py-1.5 text-[11px]"
-                >
-                  thumb lab →
-                </button>
-              )}
             </div>
           </div>
-          <ConceptCard
-            card={openCard}
-            index={0}
-            creatorName={creatorName}
-            readOnly
-          />
+          {(open.state === "planted" || open.status === "saved" || open.status === "scripting" || open.status === "filming") ? (
+            <ProductionKitPanel
+              ideaId={open.id}
+              title={open.title}
+              conceptArtPath={open.concept_art_path}
+            />
+          ) : openCard ? (
+            <>
+              <p className="mb-3 label">Shoot brief</p>
+              <ConceptCard card={openCard} index={0} creatorName={creatorName} readOnly />
+            </>
+          ) : null}
         </div>
       )}
     </div>

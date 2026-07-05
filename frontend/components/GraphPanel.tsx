@@ -54,9 +54,11 @@ const HOP_MS = 650;
 export default function GraphPanel({
   graph,
   trace,
+  querying = false,
 }: {
   graph: GraphData | null;
   trace: Trace | null;
+  querying?: boolean;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -133,8 +135,27 @@ export default function GraphPanel({
 
   const id = (v: string | FGNode) => (typeof v === "string" ? v : v.id);
 
+  const [pulse, setPulse] = useState(false);
+
+  useEffect(() => {
+    if (!querying) return;
+    setPulse(true);
+    const t = setInterval(() => setPulse((p) => !p), 700);
+    return () => {
+      clearInterval(t);
+      setPulse(false);
+    };
+  }, [querying]);
+
   return (
     <div ref={wrapRef} className="relative h-full w-full">
+      {querying && (
+        <div className="pointer-events-none absolute inset-x-0 top-2 z-20 flex justify-center">
+          <span className="rounded-full border border-accent/40 bg-raised/95 px-3 py-1 font-mono text-[10px] text-accent shadow-sm backdrop-blur">
+            <span className="thinking-dot">●</span> querying your memory graph…
+          </span>
+        </div>
+      )}
       <ForceGraph2D
         ref={fgRef}
         width={size.w}
@@ -165,23 +186,24 @@ export default function GraphPanel({
           const hop = trace ? hopOf(node.id, trace) : null;
           const elapsed = performance.now() - traceStart.current;
           const lit = hop !== null && elapsed > hop * HOP_MS;
-          const dimmed = trace !== null && !lit;
+          const dimmed = trace !== null && !lit && !querying;
+          const queryPulse = querying && pulse;
 
-          ctx.globalAlpha = dimmed ? 0.09 : 1;
+          ctx.globalAlpha = dimmed ? 0.09 : queryPulse ? 0.55 + (pulse ? 0.35 : 0.15) : 1;
           ctx.beginPath();
           ctx.arc(node.x!, node.y!, lit ? r * 1.7 : r, 0, 2 * Math.PI);
           ctx.fillStyle = nodeColor(node);
           ctx.fill();
 
-          if (lit) {
+          if (lit || queryPulse) {
             ctx.strokeStyle = ACCENT;
-            ctx.lineWidth = 0.8;
+            ctx.lineWidth = queryPulse ? 1.2 : 0.8;
             ctx.beginPath();
-            ctx.arc(node.x!, node.y!, r * 1.7 + 2.5, 0, 2 * Math.PI);
+            ctx.arc(node.x!, node.y!, (lit ? r * 1.7 : r) + 2.5, 0, 2 * Math.PI);
             ctx.stroke();
           }
 
-          if ((lit || (!trace && node.type === "Trend")) && scale > 0.6) {
+          if ((lit || queryPulse || (!trace && node.type === "Trend")) && scale > 0.6) {
             const label = node.label.length > 34 ? node.label.slice(0, 32) + "…" : node.label;
             ctx.font = `500 ${Math.max(3.4, 10 / scale)}px var(--font-jetbrains), monospace`;
             ctx.fillStyle = INK;

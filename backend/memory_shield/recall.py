@@ -35,7 +35,8 @@ from .config import (
 from .corpus import load_corpus
 from .analytics_fixture import load_analytics
 from .analyzer import run_pattern_scan
-from .fingerprint import load_fingerprint
+from .fingerprint import load_fingerprint, load_cold_start
+from .cold_start import patterns_enabled, TIER_ESTABLISHED
 from .kg import Graph
 from .cache import get as cache_get, put as cache_put
 
@@ -90,14 +91,36 @@ already_published_titles is the creator's existing catalog: NEVER propose a conc
 of those videos (same core subject + same treatment = a repeat, even reworded). Published videos are
 PROOF of what converts — every card must be a video the channel does not have yet."""
 
+_SYNTH_SYSTEM_COLD = """You are Sprout, a calm encouraging companion for a YouTube creator who is just getting started.
+They do NOT have enough upload history for validated performance patterns yet — do NOT cite n= counts,
+CTR multiples, or "your pattern" claims. Ground every card in TRENDING evidence and competitor videos
+from the retrieved facts only.
+
+Produce {n} distinct video concepts as JSON: {{"cards": [...]}}. Each card uses the same schema as usual
+(title, title_variants, angle, hook, format, outline, why, topic_labels_used, cited_video_ids,
+broll_keywords, thumbnail).
+
+COLD-START RULES:
+- "why" must cite trending/competitor videos only — honest about not knowing their personal patterns yet.
+  Example tone: "Three channels in your niche posted this angle this week and it's moving fast; here's
+  a version only you would make because you said you cover {niche}."
+- cited_video_ids MUST include at least one trending or competitor video from the facts. Creator videos
+  are optional (they may have very few).
+- Do NOT invent performance ratios or pattern labels. No "2.1× CTR" unless it appears in facts.
+- Stay inside the declared niche. Cards should feel like a warm nudge to post, not a stats lecture.
+- The three cards must take genuinely different angles."""
+
 
 async def topic_distances(trend_label: str) -> dict[str, float]:
     """The semantic hop: topic_id -> distance to the trend text. ONE vector search
     feeds both the bridge (which topics of mine/competitors' relate) and the
     evidence filter (is a trending video actually about this trend)."""
-    engine = get_vector_engine()
-    hits = await engine.search("Topic_label", query_text=trend_label, limit=BRIDGE_TOP_K)
-    return {str(h.id): h.score for h in hits}
+    from .cognee_context import with_user_cognee
+
+    async with with_user_cognee():
+        engine = get_vector_engine()
+        hits = await engine.search("Topic_label", query_text=trend_label, limit=BRIDGE_TOP_K)
+        return {str(h.id): h.score for h in hits}
 
 
 def build_bridge(g: Graph, dists: dict[str, float]) -> list[dict]:
@@ -207,6 +230,8 @@ def gather_facts(
     topics: list[dict],
     dists: dict[str, float],
     dists_niche: dict[str, float],
+    *,
+    cold_start: bool = False,
 ) -> dict:
     """Graph hops from bridged topics: my videos + conversion, competitor evidence."""
     median = g.my_median_views() or _recency_baseline(False)
@@ -261,20 +286,26 @@ def gather_facts(
         })
 
     validated = [p for p in patterns if p.get("confidence") in ("validated", "strong")]
+    if cold_start:
+        validated = []
 
-    return {
+    facts = {
+        "cold_start": cold_start,
         "trend": {"label": trend_p.get("label"), "peaked_at": trend_p.get("peaked_at")},
         "creator_baseline_views": median,
         "baselines": analytics.get("baselines", {}),
         "genre_fingerprint": fingerprint.get("genre", {}),
         "validated_patterns": validated[:10],
-        "my_hook_style_conversion": _hook_style_stats(g, median),
+        "my_hook_style_conversion": {} if cold_start else _hook_style_stats(g, median),
         "trending_now_evidence": trend_evidence,
         "my_related_topics": my_topics,
         "competitor_videos_on_related_topics": sorted(
             comp_evidence.values(), key=lambda v: -(v.get("outlier_score") or 0)
         )[:6],
     }
+    if cold_start:
+        facts["declared_niche"] = fingerprint.get("cold_start", {}).get("niche_query", "")
+    return facts
 
 
 def _allowed_ids(facts: dict) -> dict[str, dict]:
@@ -393,8 +424,10 @@ def _card_is_slop(card: dict, facts: dict) -> str | None:
         if token.lower() not in vocab and not any(token.lower() in v for v in vocab):
             return f"invented name {token!r}"
     cited = [v for v in card.get("cited_video_ids", []) if v in _allowed_ids(facts)]
-    if len(cited) < 2:
-        return "needs creator + external citation"
+    cold = facts.get("cold_start")
+    min_citations = 1 if cold else 2
+    if len(cited) < min_citations:
+        return "needs creator + external citation" if not cold else "needs at least one trend/competitor citation"
     allowed = _allowed_ids(facts)
     if not _why_numbers_valid(card.get("why", ""), card, allowed):
         return "why cites numbers not in retrieved videos"
@@ -457,7 +490,12 @@ def build_trace(g: Graph, trend_id: str, card: dict, facts: dict) -> dict:
 
 
 async def suggest(trend_label: str | None = None, n_cards: int = 3) -> dict:
-    cache_key = f"v3|{(trend_label or '__this_week__').strip().lower()}"
+    cs = load_cold_start()
+    tier = cs.get("tier", TIER_ESTABLISHED)
+    cold = not patterns_enabled(tier)
+    niche_query = cs.get("niche_query") or NICHE
+
+    cache_key = f"v3|{tier}|{(trend_label or '__this_week__').strip().lower()}"
     cached = cache_get("suggest", cache_key)
     if cached:
         return cached
@@ -483,12 +521,30 @@ async def suggest(trend_label: str | None = None, n_cards: int = 3) -> dict:
 
     label, trend_id = picked[0]
     dists = await topic_distances(label)
-    dists_niche = await topic_distances(NICHE)
+    dists_niche = await topic_distances(niche_query)
     bridge = build_bridge(g, dists)
+    if not bridge and cold:
+        # Cold start: widen bridge to competitor-only topics near the niche
+        bridge = []
+        for tid, dist in sorted(dists.items(), key=lambda kv: kv[1]):
+            if dist > BRIDGE_MAX_DISTANCE or tid not in g.props:
+                continue
+            comp_vids = g.videos_covering(tid, NODE_SET_COMPETITORS)
+            if comp_vids:
+                bridge.append({
+                    "topic_id": tid,
+                    "label": g.props[tid].get("label"),
+                    "distance": round(dist, 3),
+                    "feedback_weight": 0.0,
+                    "rank_score": dist,
+                    "my_video_ids": [],
+                    "comp_video_ids": comp_vids,
+                })
+        bridge.sort(key=lambda t: t["rank_score"])
     if not bridge:
         return {"error": f"no semantic bridge from trend {label!r} into your topics"}
 
-    facts = gather_facts(g, trend_id, bridge, dists, dists_niche)
+    facts = gather_facts(g, trend_id, bridge, dists, dists_niche, cold_start=cold)
     facts["_bridge"] = bridge  # keep topic ids for the trace
 
     # LIVE catalog only: the memory is blind to the holdout, so it cannot (and
@@ -501,6 +557,10 @@ async def suggest(trend_label: str | None = None, n_cards: int = 3) -> dict:
 
     public_facts = {k: v for k, v in facts.items() if not k.startswith("_")}
 
+    synth = _SYNTH_SYSTEM_COLD if cold else _SYNTH_SYSTEM
+    if cold:
+        synth = synth.replace("{niche}", niche_query)
+
     kept: list[dict] = []
     # The anti-slop gate can drop every candidate in one unlucky sample (LLM
     # forgets a second citation) — retry with more spares rather than ever
@@ -510,7 +570,7 @@ async def suggest(trend_label: str | None = None, n_cards: int = 3) -> dict:
             model=EXTRACT_MODEL,
             response_format={"type": "json_object"},
             messages=[
-                {"role": "system", "content": _SYNTH_SYSTEM.replace("{n}", str(n_cards + spares))},
+                {"role": "system", "content": synth.replace("{n}", str(n_cards + spares))},
                 {"role": "user", "content": json.dumps(public_facts, ensure_ascii=False)},
             ],
         )
@@ -536,7 +596,7 @@ async def suggest(trend_label: str | None = None, n_cards: int = 3) -> dict:
         ]
         card["trace"] = build_trace(g, trend_id, card, facts)
 
-    result = {"trend": label, "cards": cards, "facts": public_facts}
+    result = {"trend": label, "cards": cards, "facts": public_facts, "cold_start": cold}
     if cards:  # never cache a transient LLM miss — it would serve empty forever
         cache_put("suggest", cache_key, result)
     return result

@@ -6,6 +6,7 @@ import type { Variants } from "motion/react";
 import GrowthStory from "@/components/GrowthStory";
 import HowItWorks from "@/components/HowItWorks";
 import CoreLoop from "@/components/CoreLoop";
+import { Logo, LogoMark } from "@/components/Logo";
 
 /* ── shared "grow up" scroll reveal ─────────────────────────────────────── */
 const grow: Variants = {
@@ -134,17 +135,6 @@ function YouTubeGlyph({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
-function Logo() {
-  return (
-    <span className="flex items-center gap-2 text-[19px] font-semibold tracking-tight">
-      <span className="grid h-8 w-8 place-items-center rounded-full bg-[color:var(--moss-a15)]">
-        {Icon.sprout}
-      </span>
-      <span className="ital text-[color:var(--ink)]">Sprout</span>
-    </span>
-  );
-}
-
 /* ── content ─────────────────────────────────────────────────────────────── */
 const FEATURES = [
   {
@@ -195,7 +185,7 @@ export default function Landing() {
       <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-6">
         {/* nav */}
         <header className="flex items-center justify-between py-6">
-          <Logo />
+          <Logo variant="landing" />
           <nav className="flex items-center gap-5 text-[14px] text-[color:var(--ink-soft)]">
             <a href="#loop" className="hidden transition-colors hover:text-[color:var(--ink)] sm:inline">
               The loop
@@ -415,9 +405,7 @@ export default function Landing() {
 
         <footer className="mt-28 flex flex-col items-center justify-between gap-3 border-t border-[color:var(--line)] pt-6 text-[12px] text-[color:var(--ink-faint)] sm:flex-row">
           <span className="flex items-center gap-2">
-            <span className="grid h-5 w-5 place-items-center rounded-full bg-[color:var(--moss-a15)]">
-              {Icon.sprout}
-            </span>
+            <LogoMark size="sm" />
             Sprout — WeMakeDevs × Cognee hackathon, 2026
           </span>
           <span className="mono">your data stays yours</span>

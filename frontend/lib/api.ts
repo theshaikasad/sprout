@@ -182,9 +182,74 @@ export type Draft = {
   state: "seed" | "planted" | "sprouted";
   topic_labels?: string[];
   concept_art_path?: string;
+  production_kit_ready?: boolean;
   created_at?: string;
   planted_at?: string;
   sprouted_at?: string;
+};
+
+export type ProductionKitReceipt = {
+  pattern_label?: string;
+  confidence?: string;
+  support_n?: number;
+  effect_size?: number;
+  metric?: string;
+  type?: string;
+  note?: string;
+  video_id?: string;
+  title?: string;
+  ctr?: number;
+};
+
+export type ProductionKit = {
+  idea_id: string;
+  generated_at: string;
+  thumbnail_brief: {
+    overlay_text: string;
+    overlay_word_count: number;
+    composition: {
+      layout: string;
+      subject_placement: string;
+      expression: string;
+      contrast_direction: string;
+      face_in_frame: boolean;
+      text_zone: string;
+    };
+    designer_notes: string;
+    precedents: {
+      video_id: string;
+      title: string;
+      ctr: number;
+      packaging: Record<string, unknown>;
+    }[];
+    receipts: ProductionKitReceipt[];
+  };
+  script_skeleton: {
+    format: string;
+    is_short: boolean;
+    total_target_sec: number;
+    total_target: string;
+    beats: {
+      type: string;
+      start_sec: number;
+      end_sec: number;
+      time_range: string;
+      target_duration_sec: number;
+      line: string;
+      guidance: string;
+      receipts: ProductionKitReceipt[];
+    }[];
+  };
+};
+
+export type Plant = {
+  video_id: string;
+  title: string;
+  published: string;
+  views: number;
+  ratio?: number;
+  from_idea?: boolean;
+  draft_id?: string;
 };
 
 export type Garden = {
@@ -196,7 +261,7 @@ export type Garden = {
   };
   planted: Draft[];
   seeds: Draft[];
-  sprouted: Draft[];
+  plants: Plant[];
   genre: { label?: string; summary?: string; dominant_format?: string };
 };
 
@@ -281,6 +346,7 @@ export const api = {
   fingerprint: () => j<{ genre: Garden["genre"]; competitors: unknown[] }>("/fingerprint"),
   ideas: () => j<Idea[]>("/ideas"),
   plantIdea: (id: string) => j<Draft>(`/ideas/${id}/plant`, { method: "POST" }),
+  productionKit: (id: string) => j<ProductionKit>(`/ideas/${id}/production-kit`),
   patterns: () => j<{ patterns: unknown[] }>("/patterns"),
   addIdea: (title: string, source: string, payload: object, target?: string) =>
     j<Idea>("/ideas", {
@@ -300,6 +366,11 @@ export const api = {
     ),
   onboardingStart: () =>
     j<{ ok: boolean; status: string }>("/onboarding/start", { method: "POST" }),
+  onboardingNiche: (niche: string) =>
+    j<{ ok: boolean; declared_niche: string }>("/onboarding/niche", {
+      method: "POST",
+      body: JSON.stringify({ niche }),
+    }),
   onboardingStatus: () =>
     j<{
       stage: string;
@@ -307,10 +378,35 @@ export const api = {
       status: string;
       error: string;
       elapsed?: number;
-      channel: { title: string; avatar: string; subscribers: number; handle?: string } | null;
+      channel_video_count?: number;
+      preview_tier?: "empty" | "warming" | "established";
+      needs_niche?: boolean;
+      declared_niche?: string;
+      use_backtest_reveal?: boolean;
+      cold_start?: {
+        tier: string;
+        live_video_count: number;
+        patterns_enabled: boolean;
+        niche_query?: string;
+      };
+      genre?: { label?: string; summary?: string; dominant_format?: string };
+      channel: {
+        title: string;
+        avatar: string;
+        subscribers: number;
+        handle?: string;
+        video_count?: number;
+      } | null;
     }>("/onboarding/status"),
   youtubeAuthUrl: () => j<{ url: string }>("/auth/youtube/url"),
-  telegramLink: () => j<{ url: string }>("/telegram/link"),
+  telegramLink: () =>
+    j<{
+      url: string;
+      start_command: string;
+      token: string;
+      bot_username: string;
+    }>("/telegram/link"),
+  telegramStatus: () => j<{ linked: boolean; chat_id_masked: string }>("/telegram/status"),
   connectStatus: () =>
     j<{
       stage: "idle" | "fetching" | "enriching" | "ingesting" | "done" | "error";
@@ -350,11 +446,14 @@ export const api = {
     j<{ cypher_query: string; raw_match_count: number; gaps: GapFinderResult[] }>(
       `/gaps${niche ? `?niche=${encodeURIComponent(niche)}` : ""}`,
     ),
-  telegramSend: (message?: string) =>
-    j<{ sent: boolean; text: string; configured: boolean }>("/telegram/send", {
-      method: "POST",
-      body: JSON.stringify(message ? { message } : {}),
-    }),
+  telegramSend: (message?: string, uid?: string) =>
+    j<{ sent: boolean; text: string; uid: string; chat_id: string | null; configured: boolean }>(
+      "/telegram/send",
+      {
+        method: "POST",
+        body: JSON.stringify({ ...(message ? { message } : {}), ...(uid ? { uid } : {}) }),
+      },
+    ),
   telegramPoll: () =>
     j<{ processed: unknown[]; configured: boolean }>("/telegram/poll"),
 };

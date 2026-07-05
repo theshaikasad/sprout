@@ -6,6 +6,7 @@ import asyncio
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .auth.deps import current_user, require_firebase_user
@@ -21,10 +22,15 @@ from .db.context import UserContext
 from .db.models import User
 from .db.repos import save_oauth_tokens, upsert_user
 from .db.session import get_session
+from .niche import save_declared_niche
 from .onboarding import get_onboarding_status, run_onboarding
-from .telegram_bot import make_link_token
+from .telegram_bot import get_bot_username, make_link_token
 
 router = APIRouter()
+
+
+class NicheBody(BaseModel):
+    niche: str
 
 
 @router.get("/auth/youtube/url")
@@ -62,12 +68,26 @@ async def youtube_callback(
             channel_title=channel["title"],
             channel_avatar=channel.get("avatar", ""),
             subscriber_count=channel.get("subscribers", 0),
+            channel_video_count=channel.get("video_count", 0),
         )
         return RedirectResponse(
             f"{FRONTEND_URL}/signup?oauth_channel={channel['title']}"
+            f"&video_count={channel.get('video_count', 0)}"
         )
     except Exception as e:
         return RedirectResponse(f"{FRONTEND_URL}/signup?oauth_error={str(e)[:200]}")
+
+
+@router.post("/onboarding/niche")
+async def onboarding_niche(
+    body: NicheBody,
+    ctx: UserContext = Depends(require_firebase_user),
+):
+    niche = body.niche.strip()
+    if not niche:
+        raise HTTPException(400, "niche is required")
+    prefs = save_declared_niche(niche, ctx.uid)
+    return {"ok": True, "declared_niche": prefs.get("declared_niche", "")}
 
 
 @router.post("/onboarding/start")
@@ -80,6 +100,8 @@ async def onboarding_start(
         raise HTTPException(409, "onboarding already in progress")
     if status.get("status") == "ready":
         return {"ok": True, "status": "ready"}
+    if status.get("needs_niche"):
+        raise HTTPException(400, "declare your channel niche before building memory")
     user = await session.get(User, ctx.uid)
     email = user.email if user else ""
     asyncio.create_task(run_onboarding(ctx.uid, email, use_real_analytics=not ctx.is_demo))
@@ -93,8 +115,27 @@ async def onboarding_status(ctx: UserContext = Depends(current_user)):
 
 @router.get("/telegram/link")
 async def telegram_link(ctx: UserContext = Depends(require_firebase_user)):
-    bot = TELEGRAM_BOT_TOKEN.split(":")[0] if TELEGRAM_BOT_TOKEN else ""
-    if not bot:
+    if not TELEGRAM_BOT_TOKEN:
         raise HTTPException(503, "Telegram bot not configured")
     token = make_link_token(ctx.uid)
-    return {"url": f"https://t.me/{bot}?start=link_{token}"}
+    bot = get_bot_username()
+    if not bot:
+        raise HTTPException(503, "Could not resolve Telegram bot username — set TELEGRAM_BOT_USERNAME")
+    start = f"link_{token}"
+    return {
+        "url": f"https://t.me/{bot}?start={start}",
+        "start_command": f"/start {start}",
+        "token": token,
+        "bot_username": bot,
+    }
+
+
+@router.get("/telegram/status")
+async def telegram_status(ctx: UserContext = Depends(require_firebase_user)):
+    from .telegram_bot import chat_id_for_uid
+
+    chat_id = chat_id_for_uid(ctx.uid)
+    masked = ""
+    if chat_id:
+        masked = f"…{chat_id[-4:]}" if len(chat_id) > 4 else chat_id
+    return {"linked": bool(chat_id), "chat_id_masked": masked}

@@ -30,11 +30,14 @@ import RagContrast from "@/components/RagContrast";
 import ChannelShelf from "@/components/ChannelShelf";
 import PitchBox from "@/components/PitchBox";
 import IdeasBoard from "@/components/IdeasBoard";
-import ThumbLab from "@/components/ThumbLab";
-import PulseStrip from "@/components/PulseStrip";
 import OutlierStrip from "@/components/OutlierStrip";
 import CoachMarks from "@/components/CoachMarks";
+import ConnectTelegram from "@/components/ConnectTelegram";
 import Thumb, { fmtViews } from "@/components/Thumb";
+import { touchesGraph } from "@/lib/graphTools";
+import { Logo } from "@/components/Logo";
+
+const GRAPH_OPEN_KEY = "sprout-graph-open";
 
 const THINKING = [
   "bridging trend → your topics (vector hop)…",
@@ -43,12 +46,11 @@ const THINKING = [
   "drafting concepts against the evidence…",
 ];
 
-type Tab = "today" | "board" | "thumbs" | "library";
+type Tab = "today" | "board" | "library";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "today", label: "Today" },
   { id: "board", label: "Board" },
-  { id: "thumbs", label: "Thumb lab" },
   { id: "library", label: "Library" },
 ];
 
@@ -84,8 +86,10 @@ function Studio() {
   const [savedTitles, setSavedTitles] = useState<Set<string>>(new Set());
   const [chatOpen, setChatOpen] = useState(false);
   const [graphOpen, setGraphOpen] = useState(false);
+  const [graphQuerying, setGraphQuerying] = useState(false);
+  const [chatGraphPending, setChatGraphPending] = useState(false);
+  const [showAllConcepts, setShowAllConcepts] = useState(false);
   const [me, setMe] = useState<User | null>(null);
-  const [thumbSeed, setThumbSeed] = useState<string | null>(null);
   const [memorySharpened, setMemorySharpened] = useState(false);
   const improveToasted = useRef(false);
   const prevSuggest = useRef<SuggestResponse | null>(null);
@@ -109,6 +113,7 @@ function Studio() {
 
   const runSuggest = useCallback(async (trend?: string) => {
     setLoading(true);
+    setGraphQuerying(true);
     setSelectedCard(null);
     setPitchTrace(null);
     try {
@@ -124,6 +129,7 @@ function Studio() {
       setOffline(true);
     } finally {
       setLoading(false);
+      setGraphQuerying(false);
     }
   }, [track?.improved_labels]);
 
@@ -173,6 +179,30 @@ function Studio() {
     return () => clearInterval(t);
   }, [loading]);
 
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(GRAPH_OPEN_KEY);
+      if (stored === "true") setGraphOpen(true);
+    } catch {
+      /* private browsing */
+    }
+  }, []);
+
+  function toggleGraph(open?: boolean) {
+    setGraphOpen((prev) => {
+      const next = open ?? !prev;
+      try {
+        localStorage.setItem(GRAPH_OPEN_KEY, String(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+    if (open === true || open === undefined) {
+      setChatGraphPending(false);
+    }
+  }
+
   async function handlePlantSeed(id: string) {
     try {
       await api.plantIdea(id);
@@ -195,18 +225,6 @@ function Studio() {
     api.trends().then(setTrends).catch(() => {});
     api.graph().then(setGraph).catch(() => {});
     if (activeTrend === trend) runSuggest();
-  }
-
-  function fitCheck(title: string) {
-    setTab("today");
-    setPitchSeed(`A video about: ${title}`);
-    setTimeout(
-      () =>
-        document
-          .getElementById("pitch")
-          ?.scrollIntoView({ behavior: "smooth", block: "center" }),
-      80,
-    );
   }
 
   // planned publish date from the channel's real rhythm
@@ -242,6 +260,13 @@ function Studio() {
       i.target.slice(0, 10) < today &&
       i.status !== "posted",
   );
+  const todayHeadline =
+    garden?.consistency?.encouragement ||
+    watchHeadline ||
+    "Your garden is waiting — here's what matters today.";
+
+  const conceptCards = suggestion?.cards ?? [];
+  const visibleCards = showAllConcepts ? conceptCards : conceptCards.slice(0, 2);
 
   return (
     <>
@@ -249,15 +274,8 @@ function Studio() {
       <main className="relative z-10 mx-auto max-w-6xl px-6 pb-24">
       {/* top bar — brand · rooms · you */}
       <header className="flex flex-wrap items-center justify-between gap-3 py-4">
-        <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
-          <span className="grid h-7 w-7 place-items-center rounded-full bg-accent-soft">
-            <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
-              <path d="M12 21v-8" stroke="#3f6a32" strokeWidth="1.8" strokeLinecap="round" />
-              <path d="M12 13C8 13 6 10 6 7c3 0 6 2 6 5Z" fill="#7fb06a" />
-              <path d="M12 12c0-3 2-5 5-5 0 3-2 5-5 5Z" fill="#47702f" />
-            </svg>
-          </span>
-          <span className="serif-accent text-[18px]">Sprout</span>
+        <Link href="/">
+          <Logo />
         </Link>
 
         <nav className="flex rounded-xl border border-line bg-raised p-1">
@@ -279,7 +297,7 @@ function Studio() {
 
         <div className="flex items-center gap-2.5">
           <button
-            onClick={() => setGraphOpen((v) => !v)}
+            onClick={() => toggleGraph()}
             title="Show the memory graph"
             className={`btn-ghost px-3.5 py-2 text-xs font-medium ${
               graphOpen ? "border-accent/60 text-accent" : ""
@@ -310,24 +328,22 @@ function Studio() {
         </p>
       )}
 
-      {/* ————— TODAY: the briefing, one calm column ————— */}
       {tab === "today" && (
-        <div className="mx-auto mt-6 max-w-3xl space-y-7">
-          <SproutDashboard
-            garden={garden}
-            creatorName={firstName}
-            onPlant={handlePlantSeed}
-          />
-          {/* greeting + channel watch */}
+        <div className="mx-auto mt-6 max-w-3xl space-y-6">
           <section>
             <h1 className="display text-[2.1rem]">
               {greeting}, <span className="serif-accent text-accent">{firstName}</span>.
             </h1>
-            <p className="mt-1.5 text-sm text-dim">
-              While you were away, Sprout watched {lib ? lib.competitors.length : "your"} neighbor
-              channels, {trends.length || "the"} live waves and the wider niche.{" "}
-              <span className="text-fg/80">Here&apos;s the one look worth taking.</span>
-            </p>
+            <div className="panel mt-4 border-accent/25 bg-accent-soft/20 p-4">
+              <p className="label text-accent">today&apos;s signal</p>
+              <p className="mt-1.5 text-[15px] font-medium leading-snug">{todayHeadline}</p>
+            </div>
+
+            {me && (
+              <div className="mt-4">
+                <ConnectTelegram compact />
+              </div>
+            )}
 
             {overdueIdeas.length > 0 && (
               <div className="panel mt-4 border-amber/30 bg-amber/5 p-4">
@@ -356,76 +372,8 @@ function Studio() {
                 ))}
               </div>
             )}
-
-            {track && watchHeadline && (
-              <div className="panel mt-4 p-4">
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${
-                      underCount === trackedCount ? "bg-amber" : "bg-accent"
-                    }`}
-                    style={{ boxShadow: "0 0 12px currentColor" }}
-                  />
-                  <p className="text-sm font-medium leading-snug">{watchHeadline}</p>
-                </div>
-                <ul className="mt-3 space-y-2">
-                  {track.uploads.map((u) => (
-                    <li key={u.video_id} className="flex items-center gap-3">
-                      <Thumb videoId={u.video_id} title={u.title} w={72} />
-                      <div className="min-w-0 flex-1">
-                        <a
-                          href={`https://youtube.com/watch?v=${u.video_id}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="block truncate text-xs text-fg/90 transition-colors hover:text-accent"
-                        >
-                          {u.title}
-                        </a>
-                        <p className="font-mono text-[10px] text-faint">
-                          {fmtViews(u.views)} views · {u.age_days}d · {u.ratio}× your median
-                          {u.views_delta > 0 && (
-                            <span className="text-accent"> · +{fmtViews(u.views_delta)} since last check</span>
-                          )}
-                        </p>
-                      </div>
-                      <span
-                        className={`shrink-0 font-mono text-[10px] ${UPLOAD_STATUS[u.status].cls}`}
-                      >
-                        {UPLOAD_STATUS[u.status].label}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-                {track.improved_nodes > 0 && (
-                  <p className="mt-3 border-t border-line pt-2.5 font-mono text-[10px] text-accent">
-                    improve(): these numbers already reweighted {track.improved_nodes} memory
-                    nodes — you never have to report anything
-                  </p>
-                )}
-              </div>
-            )}
-            {track && trackedCount === 0 && (
-              <p className="mt-3 text-sm text-faint">
-                Channel watch activates after your first uploads are in the corpus.
-              </p>
-            )}
-            <p className="mt-2 px-1 font-mono text-[10px] text-faint">
-              you don&apos;t need to open Studio — anything that needs you shows up here
-            </p>
           </section>
 
-          {/* what's overperforming in the niche */}
-          <OutlierStrip
-            trends={trends}
-            activeTrend={activeTrend}
-            onPick={(label) => runSuggest(label)}
-            onForget={decay}
-          />
-
-          {/* beyond youtube */}
-          <PulseStrip pulse={pulse} onFitCheck={fitCheck} />
-
-          {/* concepts */}
           <section id="concepts">
             <div className="flex items-baseline justify-between">
               <h2 className="display text-[1.35rem]">
@@ -454,7 +402,7 @@ function Studio() {
                   <p className="font-mono text-xs text-accent">
                     <span className="thinking-dot">●</span> {THINKING[thinkStep]}
                   </p>
-                  {[0, 1, 2].map((i) => (
+                  {[0, 1].map((i) => (
                     <div key={i} className="panel p-5">
                       <div className="skeleton h-4 w-24" />
                       <div className="skeleton mt-3 h-7 w-4/5" />
@@ -464,9 +412,9 @@ function Studio() {
                   ))}
                 </>
               ) : (
-                suggestion?.cards.map((card, i) => (
+                visibleCards.map((card, i) => (
                   <ConceptCard
-                    key={`${suggestion.trend}-${i}-${card.title}`}
+                    key={`${suggestion?.trend}-${i}-${card.title}`}
                     card={card}
                     index={i}
                     selected={selectedCard === i && !pitchTrace}
@@ -474,9 +422,9 @@ function Studio() {
                     onSelect={() => {
                       setPitchTrace(null);
                       setSelectedCard(i);
-                      setGraphOpen(true); // "click to trace" — show the path
+                      toggleGraph(true);
                     }}
-                    onSave={async () => {
+                    onCreate={async () => {
                       await api.addIdea(
                         card.title,
                         "generated",
@@ -485,9 +433,9 @@ function Studio() {
                       );
                       refreshIdeas();
                       api.garden().then(setGarden).catch(() => {});
-                      flash("🌱 planted — it's on your board with a target date");
+                      flash("✨ Created — it's on your board with a target date");
                     }}
-                    saved={savedTitles.has(card.title)}
+                    created={savedTitles.has(card.title)}
                     trace={card.trace}
                     onFeedback={async (confirmed) => {
                       await api.feedback(card.trace, confirmed ? 25 : -25);
@@ -498,35 +446,151 @@ function Studio() {
                 ))
               )}
             </div>
+            {!loading && conceptCards.length > 2 && (
+              <button
+                onClick={() => setShowAllConcepts((v) => !v)}
+                className="mt-3 text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent"
+              >
+                {showAllConcepts
+                  ? "Show fewer concepts"
+                  : `See all ${conceptCards.length} concepts →`}
+              </button>
+            )}
           </section>
 
-          {/* your own idea */}
-          <PitchBox onTrace={setPitchTrace} onSaved={refreshIdeas} seed={pitchSeed} />
+          <details className="panel group p-4">
+            <summary className="cursor-pointer text-sm font-medium text-fg hover:text-accent">
+              Your garden
+              <span className="ml-2 font-mono text-[10px] text-faint">seeds · planted · plants</span>
+            </summary>
+            <div className="mt-4">
+              <SproutDashboard
+                garden={garden}
+                creatorName={firstName}
+                onPlant={handlePlantSeed}
+              />
+            </div>
+          </details>
 
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-t border-line pt-5">
-            <span className="label w-full text-center text-faint">skeptic stack</span>
-            <button
-              onClick={() => setContrastOpen(true)}
-              className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent"
-            >
-              RAG contrast
-            </button>
-            <span className="text-faint">·</span>
-            <button
-              onClick={runBacktest}
-              disabled={backtestBusy}
-              className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent disabled:opacity-50"
-            >
-              sealed backtest
-            </button>
-            <span className="text-faint">·</span>
-            <button
-              onClick={() => setGraphOpen(true)}
-              className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent"
-            >
-              show memory graph
-            </button>
-          </div>
+          <details className="panel group p-4">
+            <summary className="cursor-pointer text-sm font-medium text-fg hover:text-accent">
+              Channel watch
+              {track && (
+                <span className="ml-2 font-mono text-[10px] text-faint">
+                  {trackedCount} recent uploads
+                </span>
+              )}
+            </summary>
+            <div className="mt-4">
+              {track && watchHeadline && (
+                <>
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                        underCount === trackedCount ? "bg-amber" : "bg-accent"
+                      }`}
+                      style={{ boxShadow: "0 0 12px currentColor" }}
+                    />
+                    <p className="text-sm font-medium leading-snug">{watchHeadline}</p>
+                  </div>
+                  <ul className="mt-3 space-y-2">
+                    {track.uploads.map((u) => (
+                      <li key={u.video_id} className="flex items-center gap-3">
+                        <Thumb videoId={u.video_id} title={u.title} w={72} />
+                        <div className="min-w-0 flex-1">
+                          <a
+                            href={`https://youtube.com/watch?v=${u.video_id}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="block truncate text-xs text-fg/90 transition-colors hover:text-accent"
+                          >
+                            {u.title}
+                          </a>
+                          <p className="font-mono text-[10px] text-faint">
+                            {fmtViews(u.views)} views · {u.age_days}d · {u.ratio}× your median
+                            {u.views_delta > 0 && (
+                              <span className="text-accent"> · +{fmtViews(u.views_delta)} since last check</span>
+                            )}
+                          </p>
+                        </div>
+                        <span
+                          className={`shrink-0 font-mono text-[10px] ${UPLOAD_STATUS[u.status].cls}`}
+                        >
+                          {UPLOAD_STATUS[u.status].label}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  {track.improved_nodes > 0 && (
+                    <p className="mt-3 border-t border-line pt-2.5 font-mono text-[10px] text-accent">
+                      improve(): these numbers already reweighted {track.improved_nodes} memory
+                      nodes — you never have to report anything
+                    </p>
+                  )}
+                </>
+              )}
+              {track && trackedCount === 0 && (
+                <p className="text-sm text-faint">
+                  Channel watch activates after your first uploads are in the corpus.
+                </p>
+              )}
+            </div>
+          </details>
+
+          <details className="panel group p-4">
+            <summary className="cursor-pointer text-sm font-medium text-fg hover:text-accent">
+              What&apos;s moving in your niche
+              <span className="ml-2 font-mono text-[10px] text-faint">{trends.length} waves</span>
+            </summary>
+            <div className="mt-4">
+              <OutlierStrip
+                trends={trends}
+                activeTrend={activeTrend}
+                onPick={(label) => runSuggest(label)}
+                onForget={decay}
+              />
+            </div>
+          </details>
+
+          <details className="panel group p-4" id="pitch">
+            <summary className="cursor-pointer text-sm font-medium text-fg hover:text-accent">
+              Pitch your own idea
+              <span className="ml-2 font-mono text-[10px] text-faint">memory pushes back</span>
+            </summary>
+            <div className="mt-4">
+              <PitchBox onTrace={setPitchTrace} onSaved={refreshIdeas} seed={pitchSeed} />
+            </div>
+          </details>
+
+          <details className="panel group p-4">
+            <summary className="cursor-pointer text-sm font-medium text-fg hover:text-accent">
+              Skeptic stack
+              <span className="ml-2 font-mono text-[10px] text-faint">proof tools</span>
+            </summary>
+            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+              <button
+                onClick={() => setContrastOpen(true)}
+                className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent"
+              >
+                RAG contrast
+              </button>
+              <span className="text-faint">·</span>
+              <button
+                onClick={runBacktest}
+                disabled={backtestBusy}
+                className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent disabled:opacity-50"
+              >
+                sealed backtest
+              </button>
+              <span className="text-faint">·</span>
+              <button
+                onClick={() => toggleGraph(true)}
+                className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent"
+              >
+                show memory graph
+              </button>
+            </div>
+          </details>
         </div>
       )}
 
@@ -539,19 +603,9 @@ function Studio() {
             onChanged={refreshIdeas}
             onShowGraph={(t) => {
               setPitchTrace(t);
-              setGraphOpen(true);
-            }}
-            onThumbLab={(title) => {
-              setThumbSeed(title);
-              setTab("thumbs");
+              toggleGraph(true);
             }}
           />
-        </div>
-      )}
-
-      {tab === "thumbs" && (
-        <div className="mx-auto mt-6 max-w-3xl">
-          <ThumbLab ideaTitle={thumbSeed} />
         </div>
       )}
 
@@ -589,7 +643,7 @@ function Studio() {
                   : "run a query to trace it"}
             </span>
             <button
-              onClick={() => setGraphOpen(false)}
+              onClick={() => toggleGraph(false)}
               className="text-sm text-faint transition-colors hover:text-fg"
             >
               ✕
@@ -597,17 +651,17 @@ function Studio() {
           </div>
         </div>
         <div className="min-h-0 flex-1">
-          <GraphPanel graph={graph} trace={trace} />
+          <GraphPanel graph={graph} trace={trace} querying={graphQuerying} />
         </div>
       </aside>
 
       {/* queried while the drawer is closed → quiet invitation, not a takeover */}
-      {!graphOpen && pitchTrace && (
+      {!graphOpen && (pitchTrace || chatGraphPending) && (
         <button
-          onClick={() => setGraphOpen(true)}
+          onClick={() => toggleGraph(true)}
           className="rise panel fixed bottom-4 left-4 z-30 px-4 py-2.5 font-mono text-xs text-accent"
         >
-          ⛁ path traced through memory — show it
+          ⛁ {chatGraphPending ? "memory queried in chat" : "path traced through memory"} — show it
         </button>
       )}
 
@@ -627,7 +681,18 @@ function Studio() {
           >
             ▾ minimize
           </button>
-          <ChatDock />
+          <ChatDock
+            onGraphQueryStart={() => setGraphQuerying(true)}
+            onGraphQueryEnd={(tools) => {
+              setGraphQuerying(false);
+              if (touchesGraph(tools) && !graphOpen) {
+                setChatGraphPending(true);
+              }
+              if (touchesGraph(tools)) {
+                api.graph().then(setGraph).catch(() => {});
+              }
+            }}
+          />
         </div>
       ) : (
         <button

@@ -10,12 +10,20 @@ Run: python -m memory_shield.fingerprint
 from __future__ import annotations
 
 import json
-import math
+import re
 from datetime import date, datetime
 
 from .analytics_fixture import load_analytics, _recency_weight
+from .cold_start import (
+    TIER_ESTABLISHED,
+    build_cold_start_meta,
+    classify_tier,
+    genre_summary_for_tier,
+    niche_text,
+)
 from .config import FINGERPRINT_PATH
 from .corpus import load_corpus
+from .preferences import get_preferences
 
 
 def _size_band_ok(creator_subs: int, comp_subs: int) -> bool:
@@ -25,14 +33,33 @@ def _size_band_ok(creator_subs: int, comp_subs: int) -> bool:
     return 0.3 <= ratio <= 10.0
 
 
-def build_fingerprint(corpus: dict | None = None) -> dict:
+def _niche_tokens(text: str) -> set[str]:
+    stop = {"the", "a", "an", "and", "or", "for", "to", "in", "of", "your", "about"}
+    return {
+        w for w in re.sub(r"[^a-z0-9 ]", " ", text.lower()).split()
+        if len(w) > 2 and w not in stop
+    }
+
+
+def build_fingerprint(
+    corpus: dict | None = None,
+    *,
+    declared_niche: str = "",
+    tier: str | None = None,
+    uid: str | None = None,
+) -> dict:
     corpus = corpus or load_corpus()
     analytics = load_analytics()
     per_video = analytics.get("per_video", {})
     ref = date.fromisoformat(corpus["holdout_cutoff"])
 
-    # Only live creator videos for fingerprint (holdout excluded)
     live = corpus["live"]
+    live_count = len(live)
+    tier = tier or classify_tier(live_count)
+
+    prefs = get_preferences(uid)
+    declared = (declared_niche or prefs.get("declared_niche") or "").strip()
+
     topic_weights: dict[str, float] = {}
     format_weights: dict[str, float] = {}
     total_w = 0.0
@@ -53,19 +80,27 @@ def build_fingerprint(corpus: dict | None = None) -> dict:
     topic_dist = normalize(topic_weights)
     format_dist = normalize(format_weights)
 
-    # Genre label = top 3 topics + dominant format
     top_topics = list(topic_dist.keys())[:3]
     top_format = next(iter(format_dist), "personal-essay")
-    genre_label = " / ".join(top_topics) if top_topics else "slow-living vlog"
-    genre_summary = (
-        f"Your last {len(live)} videos lean toward {genre_label}, "
-        f"mostly as {top_format.replace('-', ' ')} — and your vulnerable personal essays "
-        f"convert best when they're honest and specific. Sound right?"
+    genre_label = " / ".join(top_topics) if top_topics else (declared or "your niche")
+
+    if tier != TIER_ESTABLISHED and declared and not top_topics:
+        genre_label = declared
+
+    genre_summary = genre_summary_for_tier(
+        tier=tier,
+        live_video_count=live_count,
+        declared_niche=declared,
+        genre_label=genre_label,
+        dominant_format=top_format,
     )
 
     creator_subs = corpus["creator"].get("subscribers") or 1_650_000
+    niche_tokens = _niche_tokens(
+        niche_text(tier=tier, declared_niche=declared, genre_label=genre_label)
+    )
+    my_topics = set(topic_dist.keys()) or niche_tokens
 
-    # Competitor triangulation
     competitors_out = []
     for handle, vids in corpus.get("competitors", {}).items():
         try:
@@ -77,22 +112,23 @@ def build_fingerprint(corpus: dict | None = None) -> dict:
         if not _size_band_ok(creator_subs, comp_subs):
             continue
 
-        # Suggested-traffic signal from analytics
         suggested_hits = sum(
             1 for v in live
             if per_video.get(v["video_id"], {}).get("traffic_sources", {}).get("suggested_adjacent_channel") == handle
         )
 
-        # Topic overlap
-        my_topics = set(topic_dist.keys())
         comp_topics: dict[str, int] = {}
         for v in vids:
             for t in v.get("topics", []):
                 comp_topics[t] = comp_topics.get(t, 0) + 1
         overlap = my_topics & set(comp_topics.keys())
+        if not overlap and niche_tokens:
+            overlap = {
+                t for t in comp_topics
+                if _niche_tokens(t) & niche_tokens
+            }
         overlap_score = len(overlap) / max(len(my_topics), 1)
 
-        # Median views for outlier scoring
         comp_views = [v.get("views", 0) for v in vids]
         comp_median = sorted(comp_views)[len(comp_views) // 2] if comp_views else 1
 
@@ -118,7 +154,7 @@ def build_fingerprint(corpus: dict | None = None) -> dict:
         competitors_out.append({
             "handle": handle,
             "subscribers": comp_subs,
-            "topic_overlap": sorted(overlap),
+            "topic_overlap": sorted(overlap)[:6],
             "overlap_score": round(overlap_score, 3),
             "suggested_traffic_hits": suggested_hits,
             "triangulation_score": round(tri_score, 3),
@@ -127,9 +163,17 @@ def build_fingerprint(corpus: dict | None = None) -> dict:
 
     competitors_out.sort(key=lambda c: -c["triangulation_score"])
 
+    cold_start = build_cold_start_meta(
+        tier=tier,
+        live_video_count=live_count,
+        declared_niche=declared,
+        genre_label=genre_label,
+    )
+
     payload = {
         "generated_at": datetime.utcnow().isoformat() + "Z",
         "creator_handle": corpus["creator"].get("handle"),
+        "cold_start": cold_start,
         "genre": {
             "label": genre_label,
             "summary": genre_summary,
@@ -140,7 +184,7 @@ def build_fingerprint(corpus: dict | None = None) -> dict:
         "competitors": competitors_out,
         "creator_subscribers": creator_subs,
     }
-    _persist_fingerprint(payload, uid=None)
+    _persist_fingerprint(payload, uid=uid)
     return payload
 
 
@@ -179,10 +223,27 @@ def load_fingerprint(uid: str | None = None) -> dict:
     return build_fingerprint()
 
 
+def load_cold_start(uid: str | None = None) -> dict:
+    fp = load_fingerprint(uid)
+    cs = fp.get("cold_start")
+    if cs:
+        return cs
+    live_count = len(load_corpus().get("live", []))
+    tier = classify_tier(live_count)
+    prefs = get_preferences(uid)
+    return build_cold_start_meta(
+        tier=tier,
+        live_video_count=live_count,
+        declared_niche=prefs.get("declared_niche", ""),
+        genre_label=fp.get("genre", {}).get("label", ""),
+    )
+
+
 if __name__ == "__main__":
     fp = build_fingerprint()
     print(f"genre: {fp['genre']['label']}")
     print(f"summary: {fp['genre']['summary']}")
+    print(f"tier: {fp['cold_start']['tier']}")
     print(f"competitors: {len(fp['competitors'])}")
     for c in fp["competitors"][:3]:
         print(f"  {c['handle']} score={c['triangulation_score']} overlap={c['topic_overlap'][:2]}")

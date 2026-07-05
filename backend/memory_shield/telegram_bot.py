@@ -10,7 +10,6 @@ import time
 import urllib.request
 
 from .config import TELEGRAM_BOT_TOKEN, TELEGRAM_LINK_SECRET
-from .db.repos import get_user_by_telegram_chat
 from .db.sync_session import sync_session
 from .db.models import TelegramPollState, User
 from .lifecycle import save_idea
@@ -46,10 +45,10 @@ def make_link_token(uid: str) -> str:
 
 
 def verify_link_token(token: str) -> str | None:
-    parts = token.split("_")
-    if len(parts) < 3:
+    parts = token.rsplit("_", 2)
+    if len(parts) != 3:
         return None
-    uid, ts_str, sig = parts[0], parts[1], parts[2]
+    uid, ts_str, sig = parts
     if int(time.time()) - int(ts_str) > 900:
         return None
     expected = hmac.new(
@@ -60,13 +59,39 @@ def verify_link_token(token: str) -> str | None:
     return uid if hmac.compare_digest(sig, expected) else None
 
 
-def link_telegram(uid: str, chat_id: str) -> None:
+_bot_username: str | None = None
+
+
+def get_bot_username() -> str:
+    """Resolve @username for t.me deep links (token prefix is numeric id, not username)."""
+    global _bot_username
+    if _bot_username:
+        return _bot_username
+    configured = __import__("os").getenv("TELEGRAM_BOT_USERNAME", "").strip().lstrip("@")
+    if configured:
+        _bot_username = configured
+        return _bot_username
+    result = _api("getMe")
+    if result and result.get("ok"):
+        _bot_username = result["result"].get("username") or ""
+    return _bot_username or ""
+
+
+def link_telegram(uid: str, chat_id: str) -> bool:
     with sync_session() as session:
         u = session.get(User, uid)
-        if u:
-            u.telegram_chat_id = chat_id
-            session.add(u)
-            session.commit()
+        if not u:
+            return False
+        u.telegram_chat_id = chat_id
+        session.add(u)
+        session.commit()
+        return True
+
+
+def chat_id_for_uid(uid: str) -> str:
+    with sync_session() as session:
+        u = session.get(User, uid)
+        return (u.telegram_chat_id if u else "") or ""
 
 
 def send_message(text: str, chat_id: str = "") -> bool:
@@ -74,6 +99,49 @@ def send_message(text: str, chat_id: str = "") -> bool:
         return False
     result = _api("sendMessage", {"chat_id": chat_id, "text": text})
     return bool(result and result.get("ok"))
+
+
+def send_nudge_to_user(uid: str, text: str) -> bool:
+    chat_id = chat_id_for_uid(uid)
+    if not chat_id:
+        return False
+    return send_message(text, chat_id=chat_id)
+
+
+def _run_agent_chat(message: str) -> tuple[str, list[dict]]:
+    from .agent import chat as agent_chat
+
+    try:
+        result = asyncio.run(agent_chat(message, history=[]))
+    except RuntimeError as exc:
+        if "Lock is held" in str(exc) or "cannot be called from a running event loop" in str(exc):
+            loop = asyncio.new_event_loop()
+            try:
+                result = loop.run_until_complete(agent_chat(message, history=[]))
+            except RuntimeError as lock_exc:
+                if "Lock is held" in str(lock_exc):
+                    return (
+                        "Graph is busy — try again in a moment. "
+                        "(Stop uvicorn before ingest if this persists.)",
+                        [],
+                    )
+                raise
+            finally:
+                loop.close()
+        else:
+            loop = asyncio.new_event_loop()
+            try:
+                result = loop.run_until_complete(agent_chat(message, history=[]))
+            finally:
+                loop.close()
+    return result.get("reply", ""), result.get("tool_calls", [])
+
+
+def _looks_like_question(text: str) -> bool:
+    t = text.strip().lower()
+    if t.endswith("?"):
+        return True
+    return t.startswith(("how ", "what ", "why ", "when ", "where ", "who ", "is ", "are ", "can ", "should ", "do ", "did "))
 
 
 def handle_update(update: dict) -> tuple[str, str]:
@@ -84,8 +152,7 @@ def handle_update(update: dict) -> tuple[str, str]:
     if text.lower().startswith("/start link_"):
         token = text.split("link_", 1)[-1].strip()
         uid = verify_link_token(token)
-        if uid and chat_id:
-            link_telegram(uid, chat_id)
+        if uid and chat_id and link_telegram(uid, chat_id):
             return chat_id, "Connected to Sprout 🌱 — drop me a one-line idea anytime."
         return chat_id, "That link expired — grab a fresh one from the dashboard."
 
@@ -107,8 +174,14 @@ def handle_update(update: dict) -> tuple[str, str]:
             cognee_dataset_id=user.cognee_dataset_id,
             telegram_chat_id=chat_id,
         ))
-        save_idea(text[:120], state="seed", provenance="telegram", uid=user.uid)
-        return chat_id, f'Saved as a seed: "{text[:80]}" — plant it on the board when ready.'
+        if len(text) <= 160 and not _looks_like_question(text):
+            save_idea(text[:120], state="seed", provenance="telegram", uid=user.uid)
+            return chat_id, f'Saved as a seed: "{text[:80]}" — plant it on the board when ready.'
+        reply, tool_calls = _run_agent_chat(text)
+        if tool_calls:
+            tools = ", ".join(t["tool"] for t in tool_calls[:3])
+            reply = f"{reply}\n\n⚙ {tools}"
+        return chat_id, reply or 'Saved — check your seed tray on the board.'
 
     return chat_id, "Link your Telegram from the Sprout dashboard first."
 

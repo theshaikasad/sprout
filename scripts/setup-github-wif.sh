@@ -9,7 +9,7 @@
 set -euo pipefail
 
 PROJECT="${GCP_PROJECT_ID:-sprout-cognee-hackathon}"
-GITHUB_REPO="${GITHUB_REPO:?Set GITHUB_REPO=owner/repo}"
+GITHUB_REPO="${GITHUB_REPO:?Set GITHUB_REPO=owner/repo (e.g. theshaikasad/sprout)}"
 
 SA_NAME="github-deployer"
 SA="${SA_NAME}@${PROJECT}.iam.gserviceaccount.com"
@@ -34,7 +34,8 @@ gcloud iam workload-identity-pools providers create-oidc github-provider \
   --project="$PROJECT" --location=global \
   --workload-identity-pool=github-pool \
   --display-name="GitHub provider" \
-  --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository" \
+  --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository,attribute.repository_owner=assertion.repository_owner" \
+  --attribute-condition="assertion.repository_owner == '${GITHUB_REPO%%/*}'" \
   --issuer-uri="https://token.actions.githubusercontent.com" 2>/dev/null || true
 
 gcloud iam service-accounts add-iam-policy-binding "$SA" \

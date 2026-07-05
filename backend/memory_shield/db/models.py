@@ -24,6 +24,7 @@ class User(SQLModel, table=True):
     channel_title: str = Field(default="", max_length=256)
     channel_avatar: str = Field(default="", max_length=512)
     subscriber_count: int = Field(default=0)
+    channel_video_count: int = Field(default=0)
     onboarding_status: str = Field(default="pending", max_length=32)
     onboarding_stage: str = Field(default="idle", max_length=32)
     onboarding_detail: str = Field(default="", max_length=512)
@@ -50,8 +51,10 @@ class Preference(SQLModel, table=True):
 
     uid: str = Field(primary_key=True, foreign_key="users.uid", max_length=128)
     goals: str = Field(default="")
+    declared_niche: str = Field(default="")
     tone: str = Field(default="encouraging", max_length=64)
     interruption_budget: str = Field(default="normal", max_length=32)
+    competitor_alerts: bool = Field(default=False)
     competitor_exclusions: list[str] = Field(
         default_factory=list, sa_column=Column(JSON)
     )

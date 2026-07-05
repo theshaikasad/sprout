@@ -46,7 +46,7 @@ const BEATS = [
     tag: "05 · compound",
     dot: "🌸",
     title: "A memory that compounds",
-    body: "One tap — nailed it / you’re wrong — and it sharpens by your next message. A warm nudge when a seed’s worth planting or a video’s overperforming. It grows sharper, not just bigger.",
+    body: "One tap — nailed it / you’re wrong — and it sharpens by your next message. Warm nudges when a planted idea is ready to film or your own upload beats baseline — never competitor anxiety.",
     note: "the Sprout effect",
   },
 ];

@@ -46,8 +46,8 @@ export default function ConceptCard({
   selected,
   creatorName,
   onSelect,
-  onSave,
-  saved,
+  onCreate,
+  created,
   readOnly = false,
   trace,
   onFeedback,
@@ -57,8 +57,8 @@ export default function ConceptCard({
   selected?: boolean;
   creatorName: string | null;
   onSelect?: () => void;
-  onSave?: () => void;
-  saved?: boolean;
+  onCreate?: () => void;
+  created?: boolean;
   readOnly?: boolean;
   trace?: Trace;
   onFeedback?: (confirmed: boolean) => void;
@@ -201,16 +201,17 @@ export default function ConceptCard({
           >
             {copied ? "✓ copied" : "copy film-kit"}
           </button>
-          {!readOnly && onSave && (
+          {!readOnly && onCreate && (
             <button
-              disabled={saved}
+              disabled={created}
               onClick={(e) => {
                 e.stopPropagation();
-                onSave();
+                onCreate();
               }}
-              className="rounded-lg bg-accent-soft px-3.5 py-1.5 text-[11px] font-medium text-accent transition-colors hover:bg-accent hover:text-[#f7fbef] disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-accent-soft px-3.5 py-1.5 text-[11px] font-medium text-accent transition-colors hover:bg-accent hover:text-[#f7fbef] disabled:opacity-50"
             >
-              {saved ? "✓ planted" : "🌱 plant it"}
+              <span aria-hidden>✨</span>
+              {created ? "✓ on your board" : "Create"}
             </button>
           )}
         </div>

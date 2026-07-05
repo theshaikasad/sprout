@@ -14,14 +14,17 @@ from .analyzer import run_pattern_scan, write_patterns_to_graph
 from .auth.tokens import decrypt
 from .auth.youtube_oauth import access_token_from_row
 from .cognee_context import user_cognee_context
+from .cold_start import classify_tier, filter_patterns
 from .config import CREATOR_HANDLE, DIGEST_PATH
 from .corpus import build_corpus, load_corpus
 from .db.context import UserContext, set_current_user
 from .db.models import OAuthCredentials, User
 from .db.sync_session import sync_session
 from .fingerprint import build_fingerprint
+from .preferences import get_preferences
 from .lifecycle import compost_stale_seeds
 from .live_stats import poll_live_stats
+from .nudges import maybe_send_proactive_nudges
 from .track import get_track
 
 
@@ -44,6 +47,8 @@ async def run_refresh_for_user(
     handle = user.youtube_handle or CREATOR_HANDLE
     if handle and not handle.startswith("@"):
         handle = f"@{handle}"
+
+    nudges_sent: list[str] = []
 
     async with user_cognee_context(ctx=ctx):
         if rebuild_corpus and handle:
@@ -72,11 +77,36 @@ async def run_refresh_for_user(
                 await asyncio.to_thread(build_analytics, corpus)
 
         patterns = await asyncio.to_thread(run_pattern_scan, corpus["live"])
-        await write_patterns_to_graph(patterns, corpus["live"])
-        fp = await asyncio.to_thread(build_fingerprint, corpus)
+        live_count = len(corpus["live"])
+        tier = classify_tier(live_count)
+        patterns = filter_patterns(patterns, tier)
+        if patterns:
+            await write_patterns_to_graph(patterns, corpus["live"])
+
+        prefs = get_preferences(user.uid)
+        fp = await asyncio.to_thread(
+            build_fingerprint,
+            corpus,
+            declared_niche=prefs.get("declared_niche", ""),
+            tier=tier,
+            uid=user.uid,
+        )
+
+        with sync_session() as session:
+            u = session.get(User, user.uid)
+            if u:
+                u.channel_video_count = live_count
+                session.add(u)
+                session.commit()
         composted = compost_stale_seeds()
         track = await get_track(force=True)
         await asyncio.to_thread(poll_live_stats, user.uid)
+
+        if user.telegram_chat_id:
+            try:
+                nudges_sent = await maybe_send_proactive_nudges(user)
+            except Exception as e:
+                print(f"proactive nudges skipped for {user.uid}: {e}")
 
     digest = {
         "uid": user.uid,
@@ -85,6 +115,7 @@ async def run_refresh_for_user(
         "seeds_composted": len(composted),
         "track_headline": track.get("headline"),
         "genre": fp.get("genre", {}).get("label"),
+        "nudges_sent": len(nudges_sent),
     }
     return digest
 

@@ -1,19 +1,33 @@
-"""Thumbnail review — your draft vs. what actually converts.
+"""Thumbnail review + per-video packaging analysis (cached vision, one call/video).
 
-One gpt-4o-mini vision call: the candidate image against the creator's
-top-converting thumbnails and the niche's trending outliers (all public
-i.ytimg.com URLs — no storage, no CV pipeline). Spec §2's no-CV rule is
-amended by the user: this is a single bounded call, not frame analysis.
+review_thumbnail: draft vs winners (interactive upload).
+analyze_packaging: static mqdefault per creator video — reused by production_kit.
 """
 
 import json
 
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI, OpenAI
 
+from . import cache
 from .config import EXTRACT_MODEL, LLM_API_KEY
 from .corpus import load_corpus
 
 _llm = AsyncOpenAI(api_key=LLM_API_KEY)
+_sync_client: OpenAI | None = None
+
+_PACKAGING_SYSTEM = """You analyze a YouTube thumbnail for packaging attributes.
+Return JSON only:
+{
+  "face_present": true/false,
+  "face_placement": "left|center|right|close-up|none",
+  "expression": "neutral|surprised|thoughtful|smiling|vulnerable|intense",
+  "overlay_text_words": 0-5,
+  "overlay_sample": "exact visible overlay text or empty string",
+  "contrast_direction": "subject bright on dark bg|subject dark on light bg|high saturation|muted",
+  "composition": "face + text split|face dominant|text dominant|object focus|minimal",
+  "curiosity_gap": "high|medium|low"
+}
+Describe only what you see — no generic advice."""
 
 _SYSTEM = """You are a YouTube thumbnail strategist. You get: a creator's DRAFT thumbnail,
 then reference thumbnails — first the creator's own top-converting videos, then trending
@@ -35,6 +49,62 @@ Be specific to what you SEE. No generic advice."""
 
 def _thumb_url(video_id: str) -> str:
     return f"https://i.ytimg.com/vi/{video_id}/mqdefault.jpg"
+
+
+def analyze_packaging(video: dict) -> dict:
+    """Vision-analyzed packaging attrs for one published thumbnail — cached."""
+    vid = video["video_id"]
+    hit = cache.get("packaging", vid)
+    if hit is not None:
+        return hit
+
+    global _sync_client
+    if _sync_client is None:
+        _sync_client = OpenAI(api_key=LLM_API_KEY)
+
+    content = [
+        {"type": "text", "text": f"TITLE: {video.get('title', '')[:120]}"},
+        {"type": "image_url", "image_url": {"url": _thumb_url(vid), "detail": "low"}},
+    ]
+    try:
+        resp = _sync_client.chat.completions.create(
+            model=EXTRACT_MODEL,
+            response_format={"type": "json_object"},
+            messages=[
+                {"role": "system", "content": _PACKAGING_SYSTEM},
+                {"role": "user", "content": content},
+            ],
+        )
+        data = json.loads(resp.choices[0].message.content)
+    except Exception as e:
+        data = {
+            "face_present": True,
+            "face_placement": "center",
+            "expression": "thoughtful",
+            "overlay_text_words": 0,
+            "overlay_sample": "",
+            "contrast_direction": "subject bright on dark bg",
+            "composition": "face dominant",
+            "curiosity_gap": "medium",
+            "_fallback": str(e)[:80],
+        }
+
+    data["video_id"] = vid
+    data["title"] = video.get("title", "")
+    return cache.put("packaging", vid, data)
+
+
+def top_ctr_videos(
+    analytics_rows: list[dict],
+    *,
+    is_short: bool | None = None,
+    n: int = 3,
+) -> list[dict]:
+    rows = analytics_rows
+    if is_short is not None:
+        rows = [r for r in rows if r.get("is_short") == is_short]
+    rows = [r for r in rows if (r.get("ctr") or 0) > 0]
+    return sorted(rows, key=lambda r: -(r.get("ctr") or 0))[:n]
 
 
 async def review_thumbnail(image_data_url: str) -> dict:

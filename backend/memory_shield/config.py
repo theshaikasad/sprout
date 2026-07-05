@@ -156,6 +156,7 @@ DEMO_DEFAULT_TREND = BACKTEST_TREND
 SHORT_MAX_SECONDS = 60          # YouTube Shorts threshold
 PATTERN_MIN_SUPPORT = 3         # minimum n for a surfaced pattern
 PATTERN_EARLY_SIGNAL = 2        # n=2 tier
+CATALOG_ESTABLISHED_MIN = 10    # full fingerprint + pattern pipeline at this count
 SEED_COMPOST_DAYS = 21          # unplanted seeds expire after ~3 weeks
 RECENCY_HALF_LIFE_DAYS = 180    # trailing baseline decay
 

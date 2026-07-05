@@ -22,9 +22,12 @@ class Graph:
 
     @classmethod
     async def load(cls) -> "Graph":
-        engine = await get_graph_engine()
-        nodes, edges = await engine.get_graph_data()
-        return cls(nodes, edges)
+        from .cognee_context import with_user_cognee
+
+        async with with_user_cognee():
+            engine = await get_graph_engine()
+            nodes, edges = await engine.get_graph_data()
+            return cls(nodes, edges)
 
     # --- traversal ------------------------------------------------------
     def by_type(self, t: str) -> list[tuple[str, dict]]:

@@ -25,12 +25,15 @@ YouTube creator's channel, suggest ONE video they should make next and briefly j
 
 async def rag_only(query: str) -> dict:
     """Plain CHUNKS retrieval → generic synthesis. No graph join."""
+    from .cognee_context import with_user_cognee
+
     try:
-        chunks = await cognee.search(
-            query_text=query,
-            query_type=SearchType.CHUNKS,
-            top_k=8,
-        )
+        async with with_user_cognee():
+            chunks = await cognee.search(
+                query_text=query,
+                query_type=SearchType.CHUNKS,
+                top_k=8,
+            )
     except Exception:  # store has no DocumentChunks yet (Lane B backfill pending)
         chunks = []
     texts = [str(c)[:600] for c in chunks][:6]

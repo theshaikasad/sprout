@@ -25,8 +25,10 @@ def _id(key: str, value: str) -> uuid.UUID:
 def _default_prefs() -> dict:
     return {
         "competitor_exclusions": [],
+        "competitor_alerts": False,
         "interruption_budget": "normal",
         "goals": "",
+        "declared_niche": "",
         "tone": "encouraging",
     }
 
@@ -39,8 +41,10 @@ def get_preferences(uid: str | None = None) -> dict:
             return _default_prefs()
         return {
             "competitor_exclusions": p.competitor_exclusions or [],
+            "competitor_alerts": bool(getattr(p, "competitor_alerts", False)),
             "interruption_budget": p.interruption_budget,
             "goals": p.goals,
+            "declared_niche": p.declared_niche or "",
             "tone": p.tone,
         }
 
@@ -56,16 +60,21 @@ async def set_preference(key: str, value: str, uid: str | None = None) -> dict:
             excl = set(p.competitor_exclusions or [])
             excl.add(value)
             p.competitor_exclusions = sorted(excl)
+        elif key == "competitor_alerts":
+            p.competitor_alerts = str(value).lower() in ("1", "true", "yes", "on")
         else:
             setattr(p, key, value)
         session.add(p)
         session.commit()
 
     await setup()
-    await add_data_points(
-        [PreferenceNode(id=_id(key, value), key=key, value=value, belongs_to_set=["my_channel"])],
-        embed_triplets=False,
-    )
+    from .cognee_context import with_user_cognee
+
+    async with with_user_cognee():
+        await add_data_points(
+            [PreferenceNode(id=_id(key, value), key=key, value=value, belongs_to_set=["my_channel"])],
+            embed_triplets=False,
+        )
     return get_preferences(uid)
 
 

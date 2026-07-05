@@ -12,8 +12,9 @@ from typing import Any
 from openai import AsyncOpenAI
 
 from .analytics_fixture import load_analytics
-from .config import CHAT_MODEL, DIGEST_PATH, EXTRACT_MODEL, LLM_API_KEY, NODE_SET_MY_CHANNEL
-from .fingerprint import load_fingerprint
+from .config import CHAT_MODEL, DIGEST_PATH, EXTRACT_MODEL, LLM_API_KEY, NICHE, NODE_SET_MY_CHANNEL
+from .fingerprint import load_fingerprint, load_cold_start
+from .cold_start import patterns_enabled, TIER_ESTABLISHED, TIER_WARMING, TIER_EMPTY
 from .lifecycle import capture_seed_from_turn, list_drafts, list_seeds, save_idea
 from .recall import suggest
 
@@ -30,14 +31,20 @@ RULES:
 5. Every claim about performance must cite a pattern or video from tool output.
 6. React, don't compose — offer yes/no/tweak, not blank slates.
 7. Use garden language: seeds, planted, sprouted, composted, tending the garden.
+8. Never push competitor-comparison anxiety — check_competitors is pull-only unless the user opts into competitor_alerts.
 
-You have a context pack each turn with preferences, board state, and digest. Use it naturally."""
+COLD-START (when context.cold_start.tier is empty or warming):
+- The creator does NOT have enough upload history for validated patterns yet.
+- Do NOT claim "your last N videos" or cite n= / CTR multiples from get_my_performance.
+- Lean on scan_trends, recall_suggestions, and check_competitors — trend + gap based ideas.
+- Be honest: memory gets sharper as they post. Encourage them warmly to publish."""
 
 
 def _build_context_pack() -> dict:
     from .preferences import get_preferences
 
     fp = load_fingerprint()
+    cs = fp.get("cold_start") or load_cold_start()
     analytics = load_analytics()
     seeds = list_seeds()
     planted = [d for d in list_drafts("planted")]
@@ -51,6 +58,7 @@ def _build_context_pack() -> dict:
             pass
 
     return {
+        "cold_start": cs,
         "genre": fp.get("genre", {}),
         "baselines": analytics.get("baselines", {}),
         "seeds_count": len(seeds),
@@ -183,11 +191,14 @@ TOOLS = [
         "type": "function",
         "function": {
             "name": "set_preference",
-            "description": "Set a durable preference: interruption_budget (low|normal|high), tone, or goals.",
+            "description": "Set a durable preference: interruption_budget (low|normal|high), tone, goals, or competitor_alerts (on|off — opt-in competitor nudges only when adjacent to your planted ideas).",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "key": {"type": "string", "enum": ["interruption_budget", "tone", "goals"]},
+                    "key": {
+                        "type": "string",
+                        "enum": ["interruption_budget", "tone", "goals", "competitor_alerts"],
+                    },
                     "value": {"type": "string"},
                 },
                 "required": ["key", "value"],
@@ -205,12 +216,25 @@ async def _dispatch_tool(name: str, args: dict) -> Any:
     from .ops import forget_trend, improve
 
     if name == "get_my_performance":
+        cs = load_cold_start()
+        tier = cs.get("tier", TIER_ESTABLISHED)
         patterns = run_pattern_scan(load_corpus()["live"])
+        if not patterns_enabled(tier):
+            patterns = []
         analytics = load_analytics()
+        note = ""
+        if tier == TIER_EMPTY:
+            note = "No upload history yet — patterns unavailable until you post."
+        elif tier == TIER_WARMING:
+            note = (
+                f"Only {cs.get('live_video_count', 0)} videos — too few for validated patterns. "
+                "Use scan_trends and recall_suggestions instead."
+            )
         return {
             "patterns": patterns[:12],
             "baselines": analytics.get("baselines", {}),
             "sample_videos": list(analytics.get("per_video", {}).values())[:5],
+            "cold_start_note": note,
         }
     if name == "recall_suggestions":
         return await suggest(args.get("trend"))
@@ -233,8 +257,9 @@ async def _dispatch_tool(name: str, args: dict) -> Any:
         from .cognee_env import cognee  # noqa: F401
         g = await Graph.load()
         from .recall import topic_distances, build_bridge, is_trend_evidence
-        from .config import NICHE
-        dists_niche = await topic_distances(NICHE)
+        cs = load_cold_start()
+        niche = cs.get("niche_query") or NICHE
+        dists_niche = await topic_distances(niche)
         waves = []
         for nid, p in sorted(
             (await Graph.load()).by_type("Trend"),

@@ -2,10 +2,22 @@
 
 import { useRef, useState } from "react";
 import { api } from "@/lib/api";
+import { touchesGraph } from "@/lib/graphTools";
 
-type Msg = { role: "user" | "assistant"; content: string; tools?: string[] };
+type Msg = {
+  role: "user" | "assistant";
+  content: string;
+  tools?: string[];
+  graphQuery?: boolean;
+};
 
-export default function ChatDock() {
+export default function ChatDock({
+  onGraphQueryStart,
+  onGraphQueryEnd,
+}: {
+  onGraphQueryStart?: () => void;
+  onGraphQueryEnd?: (tools: string[]) => void;
+}) {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -17,9 +29,12 @@ export default function ChatDock() {
     setInput("");
     setMsgs((m) => [...m, { role: "user", content: text }]);
     setBusy(true);
+    onGraphQueryStart?.();
     try {
       const history = msgs.map(({ role, content }) => ({ role, content }));
       const res = await api.chat(text, history);
+      const toolNames = res.tool_calls.map((t) => t.tool);
+      const usedGraph = touchesGraph(toolNames);
       setMsgs((m) => [
         ...m,
         {
@@ -28,13 +43,16 @@ export default function ChatDock() {
           tools: res.tool_calls.map(
             (t) => `${t.tool}(${Object.values(t.args).join(", ").slice(0, 60)})`,
           ),
+          graphQuery: usedGraph,
         },
       ]);
+      onGraphQueryEnd?.(toolNames);
     } catch {
       setMsgs((m) => [
         ...m,
         { role: "assistant", content: "Agent unreachable — is the API running?" },
       ]);
+      onGraphQueryEnd?.([]);
     } finally {
       setBusy(false);
       setTimeout(() => listRef.current?.scrollTo({ top: 99999, behavior: "smooth" }), 50);
@@ -46,7 +64,7 @@ export default function ChatDock() {
       <div className="flex items-baseline justify-between border-b border-line pb-2">
         <h2 className="serif-accent text-[15px]">Sprout</h2>
         <span className="label" style={{ fontSize: "9px" }}>
-          agent · 8 tools over the memory
+          agent · tools over the memory
         </span>
       </div>
 
@@ -72,6 +90,11 @@ export default function ChatDock() {
                     ⚙ {t}
                   </p>
                 ))}
+                {m.graphQuery && (
+                  <p className="mb-1 font-mono text-[10px] text-accent">
+                    ⛁ queried your memory graph
+                  </p>
+                )}
                 <p className="whitespace-pre-wrap text-sm leading-relaxed text-fg/90">
                   {m.content}
                 </p>
@@ -80,11 +103,9 @@ export default function ChatDock() {
           </div>
         ))}
         {busy && (
-          <p className="font-mono text-xs text-dim">
+          <p className="font-mono text-xs text-accent">
             <span className="thinking-dot">●</span>
-            <span className="thinking-dot" style={{ animationDelay: "0.2s" }}>●</span>
-            <span className="thinking-dot" style={{ animationDelay: "0.4s" }}>●</span>
-            <span className="ml-2">traversing memory…</span>
+            <span className="ml-2">querying your memory graph…</span>
           </p>
         )}
       </div>

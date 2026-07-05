@@ -22,6 +22,8 @@ MIN_WEIGHT = -1.0
 async def improve(trace: dict, performance_pct: float) -> dict:
     """`trace` is a card's retrieval trace (§3 output). performance_pct is the
     one hand-entered number: views vs channel average, e.g. +40 or -25."""
+    from .cognee_context import with_user_cognee
+
     delta = max(-1.0, min(1.0, performance_pct / 100.0))
     node_ids = list(dict.fromkeys(
         (trace.get("topics") or []) + (trace.get("formats") or []) + (trace.get("hooks") or [])
@@ -29,13 +31,14 @@ async def improve(trace: dict, performance_pct: float) -> dict:
     if not node_ids:
         return {}
 
-    engine = await get_graph_engine()
-    current = await engine.get_node_feedback_weights(node_ids) or {}
-    new_weights = {
-        nid: max(MIN_WEIGHT, min(MAX_WEIGHT, float(current.get(nid) or 0.0) + delta))
-        for nid in node_ids
-    }
-    await engine.set_node_feedback_weights(new_weights)
+    async with with_user_cognee():
+        engine = await get_graph_engine()
+        current = await engine.get_node_feedback_weights(node_ids) or {}
+        new_weights = {
+            nid: max(MIN_WEIGHT, min(MAX_WEIGHT, float(current.get(nid) or 0.0) + delta))
+            for nid in node_ids
+        }
+        await engine.set_node_feedback_weights(new_weights)
     return new_weights
 
 
@@ -43,34 +46,42 @@ async def forget_trend(trend_label: str) -> dict:
     """Decay one trend: Lane A subgraph out of the graph, Lane B docs out of
     their dated dataset. Shared Topic nodes are kept — only trend-scoped
     evidence dies."""
-    g = await Graph.load()
-    trend_id = next(
-        (nid for nid, p in g.by_type("Trend") if p.get("label") == trend_label), None
-    )
-    if trend_id is None:
-        raise ValueError(f"unknown trend {trend_label!r}")
+    from .cognee_context import with_user_cognee
 
-    video_ids = g.out_rel(trend_id, "evidenced_by")
-    hook_ids = [h for v in video_ids for h in g.out_rel(v, "uses")]
-    doomed = [trend_id, *video_ids, *hook_ids]
+    deleted_nodes = 0
+    deleted_videos = 0
+    forgotten_datasets: list[str] = []
 
-    engine = await get_graph_engine()
-    await engine.delete_nodes(doomed)
+    async with with_user_cognee():
+        g = await Graph.load()
+        trend_id = next(
+            (nid for nid, p in g.by_type("Trend") if p.get("label") == trend_label), None
+        )
+        if trend_id is None:
+            raise ValueError(f"unknown trend {trend_label!r}")
 
-    forgotten_datasets = []
-    try:
-        datasets = await cognee.datasets.list_datasets()
-        for ds in datasets:
-            name = getattr(ds, "name", str(ds))
-            if name.startswith("trends_"):
-                await cognee.forget(dataset=name)
-                forgotten_datasets.append(name)
-    except Exception:
-        pass  # no trend docs in Lane B yet (transcript backfill pending) — Lane A decay stands
+        video_ids = g.out_rel(trend_id, "evidenced_by")
+        hook_ids = [h for v in video_ids for h in g.out_rel(v, "uses")]
+        doomed = [trend_id, *video_ids, *hook_ids]
+
+        engine = await get_graph_engine()
+        await engine.delete_nodes(doomed)
+        deleted_nodes = len(doomed)
+        deleted_videos = len(video_ids)
+
+        try:
+            datasets = await cognee.datasets.list_datasets()
+            for ds in datasets:
+                name = getattr(ds, "name", str(ds))
+                if name.startswith("trends_"):
+                    await cognee.forget(dataset=name)
+                    forgotten_datasets.append(name)
+        except Exception:
+            pass  # no trend docs in Lane B yet (transcript backfill pending) — Lane A decay stands
 
     return {
         "trend": trend_label,
-        "deleted_nodes": len(doomed),
-        "deleted_videos": len(video_ids),
+        "deleted_nodes": deleted_nodes,
+        "deleted_videos": deleted_videos,
         "forgotten_datasets": forgotten_datasets,
     }

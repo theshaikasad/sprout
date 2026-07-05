@@ -19,7 +19,9 @@ def _now() -> datetime:
 
 
 def _draft_to_dict(d: Draft) -> dict:
-    return {
+    from .production_kit import load_production_kit
+
+    out = {
         "id": str(d.id),
         "title": d.title,
         "angle": d.angle,
@@ -34,7 +36,9 @@ def _draft_to_dict(d: Draft) -> dict:
         "planted_at": d.planted_at.isoformat() + "Z" if d.planted_at else "",
         "sprouted_at": d.sprouted_at.isoformat() + "Z" if d.sprouted_at else "",
         "posted_video_id": d.sprouted_video_id,
+        "production_kit_ready": load_production_kit(str(d.id)) is not None,
     }
+    return out
 
 
 def list_drafts(state: str | None = None, uid: str | None = None) -> list[dict]:
@@ -69,6 +73,27 @@ def _similar(existing: Draft, title: str, angle: str = "") -> bool:
     return False
 
 
+def _on_planted(d: Draft) -> None:
+    from .concept_art import concept_art_url
+    from .production_kit import ensure_production_kit
+
+    draft_id = str(d.id)
+    if not d.concept_art_path:
+        d.concept_art_path = concept_art_url(draft_id, d.title)
+    payload = {
+        "id": draft_id,
+        "title": d.title,
+        "angle": d.angle,
+        "format_name": d.format_name,
+        "topic_labels": d.topic_labels or [],
+        "state": "planted",
+    }
+    try:
+        ensure_production_kit(payload)
+    except Exception as e:
+        print(f"production_kit: generation failed for {draft_id!r} — {e}")
+
+
 def save_idea(
     title: str,
     angle: str = "",
@@ -98,6 +123,7 @@ def save_idea(
                 d.provenance = provenance or d.provenance
                 if state == "planted" and not d.planted_at:
                     d.planted_at = _now()
+                    _on_planted(d)
                 session.add(d)
                 session.commit()
                 session.refresh(d)
@@ -114,6 +140,8 @@ def save_idea(
             derived_from=derived_from,
             planted_at=_now() if state == "planted" else None,
         )
+        if state == "planted":
+            _on_planted(d)
         session.add(d)
         session.commit()
         session.refresh(d)
@@ -121,8 +149,6 @@ def save_idea(
 
 
 def plant_idea(draft_id: str, uid: str | None = None) -> dict:
-    from .concept_art import concept_art_url
-
     uid = uid or require_uid()
     with sync_session() as session:
         d = session.get(Draft, uuid.UUID(draft_id))
@@ -131,7 +157,7 @@ def plant_idea(draft_id: str, uid: str | None = None) -> dict:
         d.state = "planted"
         d.planted_at = _now()
         d.updated_at = _now()
-        d.concept_art_path = concept_art_url(draft_id, d.title)
+        _on_planted(d)
         session.add(d)
         session.commit()
         session.refresh(d)

@@ -7,13 +7,11 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { api } from "@/lib/api";
 import { firebaseEnabled, signInWithGoogle } from "@/lib/firebase";
+import ConnectTelegram from "@/components/ConnectTelegram";
+import { Logo } from "@/components/Logo";
 
-/* Sign-in is real Firebase Auth (Google provider) when NEXT_PUBLIC_FIREBASE_*
-   keys are set; otherwise it degrades to demo mode so nothing ever blocks.
-   YouTube-Studio analytics scopes need Google app verification — shown as the
-   roadmap permission, not requested. Channel data underneath: public Data API. */
-
-type Step = "start" | "consent" | "channel" | "building";
+type Step = "start" | "consent" | "channel" | "building" | "reveal";
+type PreviewTier = "empty" | "warming" | "established";
 
 type Profile = { name: string; email: string; photo: string | null };
 
@@ -53,12 +51,24 @@ const slide = {
   transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as const },
 };
 
+function tierFromCount(count: number | null | undefined): PreviewTier {
+  if (count == null || count <= 0) return "empty";
+  if (count < 10) return "warming";
+  return "established";
+}
+
 export default function SignupPage() {
   const router = useRouter();
   const [step, setStep] = useState<Step>("start");
   const [profile, setProfile] = useState<Profile | null>(null);
   const [authBusy, setAuthBusy] = useState(false);
   const [channel, setChannel] = useState<{ title: string; avatar: string; subscribers: number } | null>(null);
+  const [videoCount, setVideoCount] = useState<number | null>(null);
+  const [previewTier, setPreviewTier] = useState<PreviewTier>("established");
+  const [declaredNiche, setDeclaredNiche] = useState("");
+  const [nicheInput, setNicheInput] = useState("");
+  const [genreSummary, setGenreSummary] = useState("");
+  const [useBacktestReveal, setUseBacktestReveal] = useState(true);
   const [error, setError] = useState("");
   const [stage, setStage] = useState("idle");
   const [detail, setDetail] = useState("");
@@ -75,10 +85,29 @@ export default function SignupPage() {
       .catch(() => {});
   }, []);
 
+  async function refreshOnboardingPreview() {
+    try {
+      const s = await api.onboardingStatus();
+      if (s.channel) setChannel(s.channel);
+      const count = s.channel_video_count ?? s.channel?.video_count ?? null;
+      if (count != null) setVideoCount(count);
+      setPreviewTier(s.preview_tier ?? tierFromCount(count));
+      if (s.declared_niche) {
+        setDeclaredNiche(s.declared_niche);
+        setNicheInput(s.declared_niche);
+      }
+      if (s.genre?.summary) setGenreSummary(s.genre.summary);
+      if (s.use_backtest_reveal != null) setUseBacktestReveal(s.use_backtest_reveal);
+    } catch {
+      /* demo / not signed in */
+    }
+  }
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const oauthError = params.get("oauth_error");
     const oauthChannel = params.get("oauth_channel");
+    const oauthVideoCount = params.get("video_count");
     if (oauthError) {
       setError(oauthError);
       setStep("consent");
@@ -86,8 +115,16 @@ export default function SignupPage() {
     }
     if (oauthChannel) {
       setChannel({ title: oauthChannel, avatar: "", subscribers: 0 });
+      if (oauthVideoCount != null) {
+        const n = parseInt(oauthVideoCount, 10);
+        if (!Number.isNaN(n)) {
+          setVideoCount(n);
+          setPreviewTier(tierFromCount(n));
+        }
+      }
       setStep("channel");
       window.history.replaceState({}, "", "/signup");
+      refreshOnboardingPreview();
     }
   }, []);
 
@@ -95,7 +132,7 @@ export default function SignupPage() {
     setError("");
     setAuthBusy(true);
     try {
-      const user = await signInWithGoogle(); // null in demo mode
+      const user = await signInWithGoogle();
       setProfile(
         user
           ? {
@@ -122,8 +159,26 @@ export default function SignupPage() {
         return;
       }
       setStep("channel");
+      setPreviewTier("established");
     } catch (e) {
       setError(e instanceof Error ? e.message : "YouTube connect failed");
+    }
+  }
+
+  async function saveNicheAndBuild() {
+    setError("");
+    if (previewTier === "empty" && !nicheInput.trim()) {
+      setError("Tell Sprout what your channel is about — even one sentence helps.");
+      return;
+    }
+    try {
+      if (previewTier === "empty" && nicheInput.trim()) {
+        const res = await api.onboardingNiche(nicheInput.trim());
+        setDeclaredNiche(res.declared_niche);
+      }
+      await startBuild();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "couldn't save niche");
     }
   }
 
@@ -152,15 +207,21 @@ export default function SignupPage() {
         setDetail(s.detail);
         const status = s as { elapsed?: number };
         setElapsed(status.elapsed ?? elapsed);
+        if ("genre" in s && s.genre?.summary) setGenreSummary(s.genre.summary);
+        if ("use_backtest_reveal" in s && s.use_backtest_reveal != null) {
+          setUseBacktestReveal(s.use_backtest_reveal);
+        }
         if (s.stage === "done") {
           clearInterval(poll.current!);
-          // proof=1: the studio opens by running the sealed backtest on YOUR
-          // channel — earn trust before asking for it
-          setTimeout(() => router.push("/studio?proof=1"), 1200);
+          if ("use_backtest_reveal" in s && s.use_backtest_reveal === false) {
+            setStep("reveal");
+          } else {
+            setTimeout(() => router.push("/studio?proof=1"), 1200);
+          }
         }
         if (s.stage === "error") {
           clearInterval(poll.current!);
-          setError(s.error);
+          setError(s.error || s.detail);
           setStep("channel");
         }
       } catch {
@@ -168,23 +229,16 @@ export default function SignupPage() {
       }
     }, 1500);
     return () => clearInterval(poll.current!);
-  }, [step, router]);
+  }, [step, router, elapsed]);
 
   const at = ORDER[stage] ?? -1;
+  const isColdStart = previewTier === "empty" || previewTier === "warming";
 
   return (
     <main className="relative z-10 mx-auto grid min-h-screen max-w-5xl items-center gap-12 px-6 py-16 lg:grid-cols-[1.1fr_1fr]">
-      {/* left: the promise */}
       <div>
-        <a href="/" className="flex items-center gap-2 font-semibold tracking-tight">
-          <span className="grid h-7 w-7 place-items-center rounded-full bg-accent-soft">
-            <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
-              <path d="M12 21v-8" stroke="#3f6a32" strokeWidth="1.8" strokeLinecap="round" />
-              <path d="M12 13C8 13 6 10 6 7c3 0 6 2 6 5Z" fill="#7fb06a" />
-              <path d="M12 12c0-3 2-5 5-5 0 3-2 5-5 5Z" fill="#47702f" />
-            </svg>
-          </span>
-          <span className="serif-accent text-[18px]">Sprout</span>
+        <a href="/">
+          <Logo />
         </a>
         <h1 className="display mt-8 text-5xl leading-[1.05]">
           Stop checking analytics.
@@ -199,7 +253,9 @@ export default function SignupPage() {
         <ul className="mt-6 space-y-2.5 text-sm text-dim">
           {[
             "A morning briefing instead of a dashboard",
-            "Concepts cited to videos that actually converted",
+            isColdStart
+              ? "Trend-based starters until your catalog grows — then cited patterns"
+              : "Concepts cited to videos that actually converted",
             "It sharpens automatically when your uploads perform",
           ].map((t) => (
             <li key={t} className="flex items-start gap-2.5">
@@ -213,7 +269,6 @@ export default function SignupPage() {
         </p>
       </div>
 
-      {/* right: the flow */}
       <div className="panel relative overflow-hidden p-6">
         <AnimatePresence mode="wait">
           {step === "start" && (
@@ -318,16 +373,63 @@ export default function SignupPage() {
             <motion.div key="channel" {...slide}>
               <p className="label">last step</p>
               <h2 className="mt-2 text-xl font-semibold tracking-tight">Your channel</h2>
-              <p className="mt-1.5 text-sm leading-relaxed text-dim">
-                We use your signed-in Google account — no handle typing, no impersonation.
-              </p>
+
+              {previewTier === "empty" && (
+                <>
+                  <p className="mt-3 text-sm leading-relaxed text-dim">
+                    Your channel is brand new — no uploads yet. That&apos;s okay. Tell Sprout
+                    what you&apos;re making so it can pull what&apos;s converting in your niche
+                    instead of guessing.
+                  </p>
+                  <label className="mt-4 block text-xs font-medium text-dim">
+                    What&apos;s this channel about?
+                  </label>
+                  <textarea
+                    value={nicheInput}
+                    onChange={(e) => setNicheInput(e.target.value)}
+                    placeholder="e.g. slow-living vlogs and honest self-improvement essays for people in their 20s"
+                    rows={3}
+                    className="mt-1.5 w-full resize-none rounded-xl border border-line bg-white/60 px-3 py-2.5 text-sm leading-relaxed outline-none focus:border-accent"
+                  />
+                </>
+              )}
+
+              {previewTier === "warming" && (
+                <p className="mt-3 text-sm leading-relaxed text-dim">
+                  {videoCount != null ? (
+                    <>
+                      You have <strong className="font-medium text-fg">{videoCount}</strong> public
+                      video{videoCount === 1 ? "" : "s"} — not enough yet for Sprout to trust your
+                      personal patterns. It&apos;ll lean on niche trends and competitors for now,
+                      and get sharper every time you post.
+                    </>
+                  ) : (
+                    <>
+                      Your catalog is still small — Sprout will start with niche trends and
+                      competitors until you have enough uploads for personal patterns.
+                    </>
+                  )}
+                </p>
+              )}
+
+              {previewTier === "established" && (
+                <p className="mt-1.5 text-sm leading-relaxed text-dim">
+                  We use your signed-in Google account — no handle typing, no impersonation.
+                  {videoCount != null && videoCount >= 10 && (
+                    <span className="mt-1 block text-faint">
+                      {videoCount} videos detected — full pattern memory ready.
+                    </span>
+                  )}
+                </p>
+              )}
+
               {error && (
                 <p className="mt-3 rounded-lg border border-amber/40 p-3 font-mono text-xs text-amber">
                   {error}
                 </p>
               )}
               <button
-                onClick={startBuild}
+                onClick={previewTier === "empty" ? saveNicheAndBuild : startBuild}
                 className="btn-primary mt-6 w-full py-2.5 text-sm"
               >
                 Build my memory →
@@ -386,11 +488,43 @@ export default function SignupPage() {
                 ))}
               </ol>
               <p className="mt-4 min-h-4 truncate font-mono text-[11px] text-dim">{detail}</p>
-              {stage === "done" && (
+              {stage === "done" && useBacktestReveal && (
                 <p className="stamp-slam label mt-4 inline-block rounded-lg border border-accent/50 px-3 py-1.5 text-accent">
                   memory built — opening studio
                 </p>
               )}
+            </motion.div>
+          )}
+
+          {step === "reveal" && (
+            <motion.div key="reveal" {...slide}>
+              <p className="label">getting started</p>
+              <h2 className="mt-2 text-xl font-semibold tracking-tight">
+                Your garden is planted
+              </h2>
+              <p className="mt-4 text-sm leading-relaxed text-dim">
+                {genreSummary ||
+                  "Sprout is watching your niche. Post your first videos — every upload teaches it more about you."}
+              </p>
+              {declaredNiche && (
+                <p className="mt-3 rounded-lg border border-line bg-raised/40 px-3 py-2 font-mono text-[11px] text-dim">
+                  Niche: {declaredNiche}
+                </p>
+              )}
+              <p className="mt-4 text-sm leading-relaxed text-dim">
+                Open the studio for trend-based concept cards and competitor signals. Once you
+                have ~10 videos, Sprout automatically switches to pattern-based suggestions —
+                no re-onboarding needed.
+              </p>
+              <div className="mt-5">
+                <ConnectTelegram />
+              </div>
+              <button
+                onClick={() => router.push("/studio")}
+                className="btn-primary mt-6 w-full py-2.5 text-sm"
+              >
+                Open my studio →
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
