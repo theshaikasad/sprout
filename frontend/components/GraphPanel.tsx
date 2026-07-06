@@ -121,7 +121,9 @@ export default function GraphPanel({
   }, [graph]);
 
   const dataRef = useRef(data);
-  dataRef.current = data;
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
 
   const traceNodeIds = useMemo(() => {
     if (!trace) return null;
