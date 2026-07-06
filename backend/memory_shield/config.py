@@ -25,12 +25,13 @@ if _sprout_db_url:
     _pg_port = os.getenv("DB_PORT", "5432")
     _pg_user = os.getenv("DB_USERNAME", "postgres")
     _pg_pass = os.getenv("DB_PASSWORD", "postgres")
+    _db_name = os.getenv("DB_NAME", "cognee_meta")
     if _pg_host.startswith("/cloudsql/"):
         import urllib.parse
         _u = urllib.parse.quote_plus(_pg_user)
         _p = urllib.parse.quote_plus(_pg_pass)
         _h = urllib.parse.quote(_pg_host, safe="/:")
-        _url = f"postgresql+asyncpg://{_u}:{_p}@/{DB_NAME}?host={_h}"
+        _url = f"postgresql+asyncpg://{_u}:{_p}@/{_db_name}?host={_h}"
         os.environ.setdefault("GRAPH_DATABASE_URL", _url)
         os.environ.setdefault("VECTOR_DB_URL", _url)
         from .cognee_cloudsql import apply_cloudsql_patches
