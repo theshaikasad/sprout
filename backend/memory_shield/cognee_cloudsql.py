@@ -42,8 +42,12 @@ def _postgres_cloudsql_adapter(p: dict):
     user = p.get("graph_database_username") or p.get("vector_db_username") or ""
     password = p.get("graph_database_password") or p.get("vector_db_password") or ""
     db_name = p.get("graph_database_name") or p.get("vector_db_name") or ""
+    print(f"cloudsql: adapter check host={host!r} user={'***' if user else ''} db={db_name!r} provider={p.get('graph_database_provider','')}", flush=True)
     if host.startswith("/cloudsql/") and user and password and db_name:
-        return PostgresAdapter(connection_string=_cloudsql_url(user, password, db_name, host))
+        url = _cloudsql_url(user, password, db_name, host)
+        print(f"cloudsql: using Cloud SQL URL {url[:80]}...", flush=True)
+        return PostgresAdapter(connection_string=url)
+    print(f"cloudsql: adapter check FAILED (host starts /cloudsql/: {host.startswith('/cloudsql/')}, user: {bool(user)}, pw: {bool(password)}, db: {bool(db_name)})", flush=True)
     return None
 
 

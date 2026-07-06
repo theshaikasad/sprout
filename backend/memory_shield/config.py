@@ -34,6 +34,18 @@ if _sprout_db_url:
         _url = f"postgresql+asyncpg://{_u}:{_p}@/{_db_name}?host={_h}"
         os.environ.setdefault("GRAPH_DATABASE_URL", _url)
         os.environ.setdefault("VECTOR_DB_URL", _url)
+        # Cognee also checks individual GRAPH_DATABASE_HOST/PORT/etc for credential
+        # presence; set a dummy value so it passes the emptiness check.
+        os.environ.setdefault("GRAPH_DATABASE_HOST", _pg_host)
+        os.environ.setdefault("GRAPH_DATABASE_PORT", _pg_port)
+        os.environ.setdefault("GRAPH_DATABASE_USERNAME", _pg_user)
+        os.environ.setdefault("GRAPH_DATABASE_PASSWORD", _pg_pass)
+        os.environ.setdefault("GRAPH_DATABASE_NAME", _db_name)
+        os.environ.setdefault("VECTOR_DB_HOST", _pg_host)
+        os.environ.setdefault("VECTOR_DB_PORT", _pg_port)
+        os.environ.setdefault("VECTOR_DB_USERNAME", _pg_user)
+        os.environ.setdefault("VECTOR_DB_PASSWORD", _pg_pass)
+        os.environ.setdefault("VECTOR_DB_NAME", _db_name)
         from .cognee_cloudsql import apply_cloudsql_patches
         apply_cloudsql_patches(_pg_host)
     else:
