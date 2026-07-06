@@ -309,7 +309,10 @@ async def patterns_route():
 async def garden_route():
     """Home surface: consistency + waiting ideas + seed tray + full plant library."""
     cad = await cadence_route()
-    track = await get_track()
+    try:
+        track = await get_track()
+    except Exception:
+        track = {"checked_at": time.time(), "delta": [], "headline": "warming up"}
     planted = list_planted()
     seeds = list_seeds()
     sprouted = list_sprouted()
@@ -328,6 +331,7 @@ async def garden_route():
         fb = _load_fallback("fallback_graph.json")
         g_views = [n.get("views", 0) for n in (fb.get("nodes", []) if fb else []) if n.get("views")]
         median = float(sorted(g_views)[len(g_views)//2]) if g_views else 1.0
+
     plants_by_id: dict[str, dict] = {}
     for v in corpus["live"] + corpus["holdout"]:
         plants_by_id[v["video_id"]] = {
