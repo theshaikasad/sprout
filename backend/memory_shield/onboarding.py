@@ -147,7 +147,17 @@ async def run_onboarding(uid: str, email: str = "", use_real_analytics: bool = T
                 await asyncio.to_thread(build_analytics, corpus)
 
             _set_status(uid, "ingesting", "building knowledge graph")
-            await run_ingest(fresh=True, skip_lane_b=False)
+            try:
+                await run_ingest(fresh=True, skip_lane_b=False)
+            except RecursionError as e:
+                print(f"onboarding ingest: RecursionError — {e}, attempting skip-lane-b fallback", flush=True)
+                try:
+                    await run_ingest(fresh=True, skip_lane_b=True)
+                except Exception as e2:
+                    print(f"onboarding ingest: fallback also failed — {e2}", flush=True)
+            except Exception as e:
+                print(f"onboarding ingest: failed — {e}", flush=True)
+                raise
 
             patterns = await asyncio.to_thread(run_pattern_scan, corpus["live"])
             patterns = filter_patterns(patterns, tier)
