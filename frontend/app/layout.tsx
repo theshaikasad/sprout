@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   description:
     "Connect YouTube once. Sprout learns what actually converts for you, does the research so you don't, and hands back cited video ideas — a garden you tend, not a dashboard you check. Built on Cognee.",
   icons: {
-    icon: "/icon.png",
+    icon: [{ url: "/icon.png" }, { url: "/favicon.ico", sizes: "16x16" }],
   },
 };
 
