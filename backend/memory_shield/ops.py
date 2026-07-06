@@ -13,7 +13,6 @@ forget  : trend decay. Lane A nodes go via delete_nodes (Trend + its evidence
 from .cognee_env import cognee
 from cognee.infrastructure.databases.graph import get_graph_engine
 
-from .kg import Graph
 
 MAX_WEIGHT = 5.0
 MIN_WEIGHT = -1.0
@@ -29,7 +28,6 @@ async def improve(trace: dict, performance_pct: float) -> dict:
         (trace.get("topics") or []) + (trace.get("formats") or []) + (trace.get("hooks") or [])
     ))
     if not node_ids:
-        Graph.bust_cache()
         return {}
 
     async with with_user_cognee():
@@ -40,7 +38,6 @@ async def improve(trace: dict, performance_pct: float) -> dict:
             for nid in node_ids
         }
         await engine.set_node_feedback_weights(new_weights)
-    Graph.bust_cache()
     return new_weights
 
 
@@ -81,7 +78,6 @@ async def forget_trend(trend_label: str) -> dict:
         except Exception:
             pass  # no trend docs in Lane B yet (transcript backfill pending) — Lane A decay stands
 
-    Graph.bust_cache()
     return {
         "trend": trend_label,
         "deleted_nodes": deleted_nodes,
