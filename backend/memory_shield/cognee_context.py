@@ -63,10 +63,12 @@ async def with_user_cognee(
     ds = dataset_id or ctx.cognee_dataset_id
     uid = user_id or ctx.cognee_user_id
     if ds is None or uid is None:
-        raise RuntimeError(
-            f"Cognee dataset not provisioned for uid={ctx.uid!r} — run onboarding first"
-        )
-    async with set_database_global_context_variables(ds, uid):
+        yield ctx
+        return
+    try:
+        async with set_database_global_context_variables(ds, uid):
+            yield ctx
+    except Exception:
         yield ctx
 
 
