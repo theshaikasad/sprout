@@ -43,6 +43,8 @@ def _set_status(uid: str, stage: str, detail: str = "", error: str = "") -> None
 async def ensure_cognee_user(uid: str, email: str) -> tuple[uuid.UUID, uuid.UUID]:
     """Create Cognee user + dataset ids if missing."""
     from cognee.infrastructure.databases.relational import create_db_and_tables
+    from fastapi_users.exceptions import UserAlreadyExists
+    from cognee.modules.users.methods.get_user_by_email import get_user_by_email
 
     await create_db_and_tables()
     with sync_session() as session:
@@ -50,14 +52,28 @@ async def ensure_cognee_user(uid: str, email: str) -> tuple[uuid.UUID, uuid.UUID
         if u and u.cognee_user_id and u.cognee_dataset_id:
             return u.cognee_user_id, u.cognee_dataset_id
 
-    cognee_user = await create_user(
-        email=email or f"{uid}@example.com",
-        password=str(uuid.uuid4()),
-        is_verified=True,
-    )
-    from cognee.modules.data.methods import create_dataset
+    try:
+        cognee_user = await create_user(
+            email=email or f"{uid}@example.com",
+            password=str(uuid.uuid4()),
+            is_verified=True,
+        )
+    except UserAlreadyExists:
+        cognee_user = await get_user_by_email(email)
+        if not cognee_user:
+            raise
 
-    dataset = await create_dataset(f"sprout_{uid}", cognee_user)
+    from cognee.modules.data.methods.create_dataset import create_dataset
+
+    # Check if dataset already exists for this user
+    from cognee.modules.data.methods.get_datasets_by_name import get_datasets_by_name
+    try:
+        datasets = await get_datasets_by_name(f"sprout_{uid}", cognee_user)
+        dataset = datasets[0] if datasets else None
+    except Exception:
+        dataset = None
+    if not dataset:
+        dataset = await create_dataset(f"sprout_{uid}", cognee_user)
     dataset_id = dataset.id
     with sync_session() as session:
         u = session.get(User, uid)

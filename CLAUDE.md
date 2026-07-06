@@ -6,24 +6,45 @@ Guidance for Claude Code (claude.ai/code) working in this repo. This file is the
 
 **Pivoted Jul 3–4 2026** from "Memory Shield" (a content-strategist that *pushed* advice) to **a quiet creator companion with a memory of you** — product name **Sprout** (code/package stays `memory_shield`). WeMakeDevs × Cognee hackathon ("The Hangover").
 
-**Jul 5 2026 — multi-user Postgres on GCP (current build):** migrated from a single-tenant GCE VM (`sprout-vm`, kuzu embedded graph) to **Cloud Run + Cloud SQL Postgres** supporting up to **10 concurrent creators**. Firebase = identity only; **separate Google OAuth** stores refresh tokens for YouTube Analytics API. App state (users, prefs, board, analytics table, OAuth tokens, Telegram `chat_id`) lives in **`sprout_app`**; Cognee graph + vectors live in **per-user dataset DBs** on the same Cloud SQL instance via `postgres` + `pgvector`.
+**Jul 5 2026 — multi-user Postgres on GCP + hackathon submission:** migrated from single-tenant GCE VM (`sprout-vm`, kuzu) to **Cloud Run + Cloud SQL Postgres** (10-user cap). Custom domains live (`sprout.asad.codes` / `api.sprout.asad.codes`). GitHub Actions deploy via WIF. **Local kuzu demo is submission-ready; prod Cognee graph on Cloud SQL still blocked** (see § Current deployment).
 
 **Why the pivot:** the old thing felt like slop for two structural reasons — it *pushed* generic advice instead of *learning* the creator, and "public Data API only" meant it could never see *why* a video converted. Both reversed: an agent that quietly learns you **+ real YouTube Analytics via OAuth**.
 
-## Current deployment (Jul 5 2026)
+## Current deployment (Jul 5 2026 — submission night)
 
 | Piece | Status |
 |---|---|
-| **Backend** | Cloud Run `sprout-backend` — https://sprout-backend-1041216984106.us-central1.run.app (`/health` → `{"ok":true}`) |
-| **Frontend** | Cloud Run `sprout-frontend` — https://sprout-frontend-1041216984106.us-central1.run.app |
+| **Frontend (custom domain)** | https://sprout.asad.codes — Cloud Run, `/studio` demo path live |
+| **Backend (custom domain)** | https://api.sprout.asad.codes — Cloud Run rev `sprout-backend-00010-svn+` (`/health` → `{"ok":true}`) |
+| **Run URLs (fallback)** | `sprout-frontend-1041216984106…` · `sprout-backend-1041216984106…` |
 | **Database** | Cloud SQL `sprout-db` (Postgres 15, `db-f1-micro`) — `sprout_app` + `cognee_meta` + per-user dataset DBs; pgvector enabled |
-| **Custom domains** | Target: `sprout.asad.codes` (frontend) + `api.sprout.asad.codes` (backend). `api.sprout` CNAME mapped; DNS cutover pending |
-| **Legacy VM** | `sprout-vm` at `35.193.172.43` — **still running** as fallback until custom-domain smoke test passes; **do not delete yet** |
+| **Secrets** | GCP Secret Manager → Cloud Run `--set-secrets` (not plain env vars) |
+| **CI/CD** | GitHub Actions: `.github/workflows/ci.yml` + `deploy.yml` on push to `main` (WIF → `github-deployer` SA) |
+| **Legacy VM** | `sprout-vm` at `35.193.172.43` — **still running**; **do not delete** until prod Cognee graph path verified |
 | **GCP project** | `sprout-cognee-hackathon` · region `us-central1` |
 
-**Still manual before full cutover:** DNS CNAMEs (`sprout` + `api.sprout` → `ghs.googlehosted.com`, Cloudflare DNS-only), Firebase authorized domain, Google OAuth redirect URI, rebuild frontend with `NEXT_PUBLIC_API_BASE=https://api.sprout.asad.codes`, move secrets from Cloud Run env vars → Secret Manager.
+### Demo readiness (honest — Jul 5 evening)
 
-**Deploy scripts:** `scripts/gcp-provision-sql.sh`, `scripts/gcp-deploy.sh`. Phase 0 gate: `python -m memory_shield.scripts.phase0_smoke` (requires `SPROUT_DATABASE_URL` + `DB_*` pointing at Postgres).
+| Path | Verdict | Notes |
+|---|---|---|
+| **Local** (`localhost:3000/studio`) | **✅ Record here** | kuzu graph ~588 nodes; graph/gaps/contrast/backtest/suggest/chat all work after `corpus` + `ingest --fresh` |
+| **Prod custom domain** | **⚠️ Partial** | App state + cached tabular routes OK; **Cognee graph routes 500** (`ConnectionRefused` on per-user Postgres dataset DB via Cloud SQL unix socket — patch in `cognee_cloudsql.py` not fully effective in Cloud Run yet) |
+| **Hackathon video** | **✅ Submit** | Use local recording; script in `DEMO_SCRIPT.md` + README § Demo script |
+
+**Prod works today:** `/health`, some cached reads (`/patterns`, `/pulse`, `/track`, cached `/suggest`). **Prod broken for Cognee centerpiece:** `/graph`, `/gaps`, `/contrast`, `/backtest`, `/garden`, `/connect/status` (onboarding ingest), real-user graph isolation.
+
+**Telegram:** HTTP 409 if **both** local uvicorn and Cloud Run poll the same bot token — stop local backend before prod Telegram demo.
+
+### Deploy pipeline (learned Jul 5)
+
+1. **One-time:** `./scripts/bootstrap-gcp-secrets.sh`, `./scripts/setup-github-wif.sh`, `./scripts/grant-github-deployer-iam.sh` (adds Cloud Build bucket + `serviceusage` perms WIF script missed).
+2. **Routine:** push to `main` → CI → Deploy (async `gcloud builds submit` + poll status; deploy image tag **`:latest`** — commit-SHA tags were unreliable).
+3. **Manual fallback:** `./scripts/gcp-deploy.sh` (owner creds, same Secret Manager mounts).
+4. **Docker:** `backend/Dockerfile` does **not** COPY `.cache/` (gitignored); prod demo corpus bootstraps at runtime via `_bootstrap_demo_memory()` in `api.py`.
+
+**Still manual / post-hackathon:** Firebase authorized domain for custom domain, Google OAuth consent test users for real sign-in, fix prod Cognee Cloud SQL socket for per-dataset graph DBs, retire `sprout-vm`.
+
+**Phase 0 gate:** `python -m memory_shield.scripts.phase0_smoke` (requires `SPROUT_DATABASE_URL` + `DB_*` pointing at Postgres).
 
 ## Thesis (pitch spine — drives "Best Use of Cognee" + "Creativity")
 
@@ -57,7 +78,7 @@ Lead with **"memory that gets *sharper*, not just bigger"** — Cognee's own the
 
 Sign in with Google (Firebase) → connect YouTube (server-side OAuth, refresh token stored encrypted) → the agent reads your **real analytics** (retention, traffic sources, CTR/impressions, subs-gained, audience, best-time-to-post) and **tells you your own genre** ("your last 40 videos are really X/Y/Z, and Y is what converts — right?") instead of asking you to pick a niche. It builds **one Cognee memory of you** (isolated per-user dataset), then joins *what converts for you* × *live niche trends* × *your true competitors* → **cited concept cards** you steer (theme / duration / optional topic), all the way down to **generated title + description + thumbnail-image concept**, each element citing the validated pattern it applies. It captures every idea you mention into a **vision-board of drafts** (each with AI concept-art), quietly transitions a draft to done when you post it, and **nudges consistency via Telegram** — warm, grounded, never bombarding.
 
-**Demo path unchanged:** `uid=demo`, `is_demo=true` — uses `analytics_fixture.py` + `@LanaBlakely` corpus; no OAuth required. Judges can hit `/studio` without signing in when Firebase keys are absent (local dev degrades gracefully).
+**Demo path unchanged:** `uid=demo`, `is_demo=true` — uses `analytics_fixture.py` + `@LanaBlakely` corpus; no OAuth required. **`/studio` without sign-in.** For the hackathon video, run **locally** (kuzu) — prod graph routes not yet reliable on Cloud Run.
 
 ## The feel — an encouraging space, "old-anime comforting" (load-bearing, not decoration)
 
@@ -161,7 +182,9 @@ The behavioral pitch (ties to "create more, consume less"): **the research tools
 2. **`cognee_meta`** — Cognee relational tables when `ENABLE_BACKEND_ACCESS_CONTROL=true`
 3. **Per-user dataset DBs** (max 10) — graph + pgvector, created by `PostgresGraphDatasetDatabaseHandler` + `PGVectorDatasetDatabaseHandler`
 
-**Isolation:** every Cognee op wrapped in `user_cognee_context(dataset_id, user_id)` (`cognee_context.py`). Onboarding (`onboarding.py`) creates Cognee user + dataset via `create_user()` + `create_dataset()`, then scoped ingest — **never** global graph wipe. **10-user cap** on new signups (`count_real_users`); demo exempt.
+**Isolation:** every Cognee op wrapped in `with_user_cognee()` / `user_cognee_context()` (`cognee_context.py`) — including **`Graph.load()`**, `improve()`, `forget_trend()`, `rag_only()`, `topic_distances()`. Auto-provisions Cognee user+dataset on Postgres when IDs missing. Onboarding (`onboarding.py`) creates Cognee user + dataset via `create_user()` + `create_dataset()`, then scoped ingest — **never** global graph wipe. **10-user cap** on new signups (`count_real_users`); demo exempt.
+
+**Cloud SQL unix socket:** Cognee builds `postgresql+asyncpg://user:pass@host:port/db` by default; Cloud Run needs `postgresql+asyncpg://user:pass@/dbname?host=/cloudsql/INSTANCE`. `SPROUT_DATABASE_URL` already uses this; graph/vector dataset engines did not — **`cognee_cloudsql.py`** monkey-patches `_create_graph_engine`, `_create_vector_engine`, and `create_pg_database_if_not_exists` when `DB_HOST` starts with `/cloudsql/` (triggered from `config.py` before `cognee` import). **Prod still failing as of rev 00010 — top post-hackathon fix.**
 
 **Key routes:** `POST /onboarding/start`, `GET /onboarding/status`, `GET /telegram/link`, `POST /connect` (demo-only fast path).
 
@@ -187,7 +210,8 @@ The behavioral pitch (ties to "create more, consume less"): **the research tools
 
 ## Constraints
 
-- **NOW IN:** Firebase identity + **Google OAuth refresh tokens** + **YouTube Analytics API**; **multi-user (10 cap)** on Cloud SQL Postgres; Cloud Run production deploy.
+- **NOW IN:** Firebase identity + **Google OAuth refresh tokens** + **YouTube Analytics API**; **multi-user (10 cap)** on Cloud SQL Postgres; Cloud Run + custom domains; GitHub Actions deploy.
+- **PROD GAP:** Cognee per-user graph/vector on Cloud SQL unix socket — code patched (`cognee_cloudsql.py`) but Cloud Run still `ConnectionRefused` on graph ops as of rev 00010.
 - **Still OUT:** raw *video/frame* analysis, ASR, motion CV → **transcripts + analytics + one static-thumbnail vision call/video** (a deliberate bounded addition, like the OAuth reversal — a single published packaging image, cached; NOT video-frame analysis). No music-recommendation engine (Audio = tracked attribute). **Instagram / Facebook / TikTok = ROADMAP** — researched walls: IG needs Business acct + FB Page + Meta **App Review (2–6 wks)**; TikTok trending-sounds API is **approved-researchers-only**. X/Twitter API is paid/gated (use HN + Reddit). One demo niche (**slow-living/self-improvement vlogger** — switched Jul 4 from Dev/AI; architecture stays niche-agnostic). No billing/teams — single creator per Firebase uid.
 
 ## Cognee API facts (verified against installed cognee 1.2.2 — build to these)
@@ -215,10 +239,12 @@ The behavioral pitch (ties to "create more, consume less"): **the research tools
   - `db/` — SQLModel schema, async/sync sessions, repos
   - `auth/` — Firebase Admin, Google OAuth, FastAPI deps
   - `routes_auth.py` — `/auth/youtube/*`, `/onboarding/*`, `/telegram/link`
-  - `onboarding.py`, `refresh.py`, `live_stats.py`, `analytics_youtube.py`, `cognee_context.py`
+  - `onboarding.py`, `refresh.py`, `live_stats.py`, `analytics_youtube.py`, `cognee_context.py`, `cognee_cloudsql.py`
+  - `db/schema.py` — `ensure_schema()` adds missing columns on existing Cloud SQL DBs at startup
   - `scripts/phase0_smoke.py` — Postgres+Cognee gate test
 - `frontend/` — Next.js 16 + Tailwind v4; `lib/api.ts` (Bearer token), `lib/firebase.ts`
-- `scripts/` — GCP provision + deploy
+- `scripts/` — `gcp-provision-sql.sh`, `bootstrap-gcp-secrets.sh`, `setup-github-wif.sh`, `grant-github-deployer-iam.sh`, `gcp-deploy.sh`
+- `DEMO_SCRIPT.md` — 90s judge walkthrough (presenter script)
 - `.env` at repo root; `frontend/.env.local` for `NEXT_PUBLIC_*` Firebase keys
 
 **Local dev (SQLite + kuzu fallback):**
@@ -247,7 +273,7 @@ export DB_HOST=HOST DB_PASSWORD=PASS DB_NAME=cognee_meta
 ./scripts/gcp-deploy.sh                 # manual fallback (uses Secret Manager)
 ```
 
-**GitHub Actions:** `.github/workflows/ci.yml` (PR checks), `.github/workflows/deploy.yml` (Cloud Run). Runtime keys mount from **GCP Secret Manager** via `--set-secrets` — not echoed in workflow logs. GitHub Secrets hold only WIF auth + Firebase build args.
+**GitHub Actions:** `.github/workflows/ci.yml` (PR checks), `.github/workflows/deploy.yml` (Cloud Run). Runtime keys mount from **GCP Secret Manager** via `--set-secrets`. GitHub Secrets: `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT`, `NEXT_PUBLIC_FIREBASE_*` (frontend build only). See `.github/DEPLOY.md` for IAM troubleshooting.
 
 **Operational rules (learned the hard way):**
 - **Local kuzu only:** stop uvicorn before `python -m memory_shield.ingest`. **Production Postgres:** no file lock; Cognee per-dataset queue handles same-user write serialization.
@@ -257,7 +283,10 @@ export DB_HOST=HOST DB_PASSWORD=PASS DB_NAME=cognee_meta
 - **Tailwind v4 + next/font gotcha:** reference `var(--font-fraunces), Georgia, serif` directly in custom classes (see `globals.css`).
 - **One daylight theme everywhere:** cream paper / olive ink / moss accent; badges over thumbnails use `#f6eedd`, never `text-fg`/`text-dim`.
 - **Cloud Run:** `min-instances=1` keeps Telegram poll + refresh loop alive; onboarding can take minutes (`timeout=3600`).
-- **Do not delete `sprout-vm`** until `sprout.asad.codes` + demo path verified on Cloud Run.
+- **Do not delete `sprout-vm`** until prod Cognee graph path passes smoke test (not just `/health`).
+- **GitHub deploy SA** needs `secretAccessor` + `storage.admin` + `serviceusage.serviceUsageConsumer`; verify secrets with `gcloud secrets versions access`, not `secrets describe`.
+- **Cloud Build in CI:** use `--async` + status poll — deploy SA cannot stream default build logs.
+- **Every graph read path** must use `with_user_cognee()` — missing scope was the original prod 500 after Postgres migration.
 
 **Env keys (repo root `.env`):**
 | Key | Purpose |
@@ -277,10 +306,14 @@ export DB_HOST=HOST DB_PASSWORD=PASS DB_NAME=cognee_meta
 
 Python 3.11+. Cognee 1.2.2 self-hosted OSS.
 
-## Build order & cut-lines (updated Jul 5)
+## Build order & cut-lines (updated Jul 5 submission)
 
-**Shipped:** multi-user Postgres app state, Firebase+OAuth auth, per-user Cognee isolation, Cloud Run deploy, demo path preserved, gap_finder Python rewrite, Telegram per-user linking, per-user refresh cron.
+**Shipped:** multi-user Postgres app state, Firebase+OAuth auth, per-user Cognee isolation (code-complete), Cloud Run + custom domains, GitHub Actions deploy (WIF), demo path preserved, gap_finder Python rewrite, Telegram per-user linking, per-user refresh cron, temporal holdout backtest, RAG contrast panel, sealed backtest reveal, studio Today/Board/Library tabs, chat dock, `cognee_cloudsql.py` + `ensure_schema()`, Dockerfile prod fix.
 
-**Before judging / cutover:** DNS → custom domains, Firebase + OAuth console URIs, frontend rebuild with prod API base, smoke-test real-user onboarding, then retire `sprout-vm`.
+**Demo for judges (now):** local `/studio` — full Cognee story (graph join, contrast, backtest, improve). See `DEMO_SCRIPT.md`.
 
-**Never cut:** the join, feedback, forget, demo path. Cut if behind: concept-art images → `CommentTheme` → graph-panel viz → Telegram (dashboard chat-dock fallback).
+**Post-hackathon / prod hardening:** fix Cloud SQL → Cognee per-dataset graph connection on Cloud Run; real-user OAuth smoke test; Firebase custom-domain auth; retire `sprout-vm`; trajectory sentence (M6); optional concept-art.
+
+**Known thin spots (don't demo these):** vision board `payload` not persisted on `Draft`; genre reveal confirm is UI-only; `api.py` `_AGENT_TOOLS` extended set not wired to `/chat` (uses `agent.py`); PulseStrip hidden in studio UI.
+
+**Never cut:** the join, feedback, forget, demo path, backtest reveal. Cut if behind: concept-art → `CommentTheme` → graph-panel viz → Telegram (chat-dock fallback).

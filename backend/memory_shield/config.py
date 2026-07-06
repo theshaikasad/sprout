@@ -54,10 +54,12 @@ if _sprout_db_url:
             "GRAPH_DATABASE_PORT": _pg_port,
             "GRAPH_DATABASE_USERNAME": _pg_user,
             "GRAPH_DATABASE_PASSWORD": _pg_pass,
+            "GRAPH_DATABASE_NAME": _db_name,
             "VECTOR_DB_HOST": _pg_host,
             "VECTOR_DB_PORT": _pg_port,
             "VECTOR_DB_USERNAME": _pg_user,
             "VECTOR_DB_PASSWORD": _pg_pass,
+            "VECTOR_DB_NAME": _db_name,
         }.items():
             os.environ.setdefault(_key, _val)
 else:

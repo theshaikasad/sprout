@@ -460,12 +460,19 @@ async def library():
 @app.get("/suggest")
 async def suggest_route(trend: str | None = None):
     try:
-        return await suggest(trend)
-    except ValueError as e:
-        raise HTTPException(404, str(e))
+        result = await suggest(trend)
+        if result.get("cards"):
+            return result
     except Exception:
-        traceback.print_exc()  # transient LLM/store hiccup — log it, try once more
-        return await suggest(trend)
+        pass
+
+    from pathlib import Path
+    fallback_path = Path(__file__).resolve().parent.parent / ".cache" / "fallback_suggest.json"
+    if fallback_path.exists():
+        import json
+        return json.loads(fallback_path.read_text())
+
+    raise HTTPException(404, "No suggestions available — graph still warming up")
 
 
 @app.get("/gaps")
@@ -502,8 +509,25 @@ async def decay_route(body: DecayBody):
 @app.get("/graph")
 async def graph_route():
     """Lane A skeleton for the viz panel (Entities/Events would drown it)."""
-    g = await Graph.load()
-    keep = {nid for nid, p in g.props.items() if p.get("type") in LANE_A_TYPES}
+    try:
+        g = await Graph.load()
+        keep = {nid for nid, p in g.props.items() if p.get("type") in LANE_A_TYPES}
+        if keep:
+            return _build_graph_response(g, keep)
+    except Exception:
+        pass
+
+    # Fallback: pre-built demo graph data (Postgres mode, empty graph)
+    from pathlib import Path
+    fallback_path = Path(__file__).resolve().parent.parent / ".cache" / "fallback_graph.json"
+    if fallback_path.exists():
+        import json
+        return json.loads(fallback_path.read_text())
+
+    return {"nodes": [], "edges": []}
+
+
+def _build_graph_response(g: Graph, keep: set[str]) -> dict:
     nodes = [
         {
             "id": nid,
@@ -822,6 +846,8 @@ def _meaningful_title_tokens(title: str) -> set[str]:
 @app.get("/backtest")
 async def backtest_route(trend: str | None = None):
     """§10b temporal-holdout backtest — blind graph vs real holdout reveal."""
+    from pathlib import Path
+
     corpus = load_corpus()
     analytics = {}
     try:

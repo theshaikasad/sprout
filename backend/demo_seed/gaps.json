@@ -1,0 +1,1 @@
+{"cypher_query":"Python graph anti-join: Topic in trends/competitors node_set with NO my_channel Video --covers--> Topic","query_mode":"python_anti_join","raw_match_count":174,"gaps":[{"topic_id":"f51a41cb-2318-566b-875e-2054e6c09c10","label":"simple living","belongs_to_set":["competitors"],"distance_to_niche":0.498}]}
