@@ -242,13 +242,25 @@ def compost_stale_seeds(uid: str | None = None) -> list[str]:
 
 
 def capture_seed_from_turn(user_message: str, assistant_message: str, uid: str | None = None) -> dict | None:
+    """Silent end-of-turn capture — only concrete idea-shaped user messages."""
     import re
 
-    combined = f"{user_message}\n{assistant_message}"
+    user = user_message.strip()
+    if len(user) < 20:
+        return None
+    if re.match(
+        r"^(hi|hey|hello|yo|sup|thanks|thank you|ok|okay|bye|good morning|good night)[!.?\s]*$",
+        user,
+        re.I,
+    ):
+        return None
+    # Only scan the user's words — never infer a seed from the assistant reply alone.
     for m in re.finditer(
-        r'(?:idea|video about|make a video on)[:\s]+["\']?([^"\']{10,80})', combined, re.I
+        r'(?:idea|video about|make a video on|want to make)[:\s]+["\']?([^"\']{12,80})',
+        user,
+        re.I,
     ):
         title = m.group(1).strip()
-        if len(title) > 8:
+        if len(title) >= 12 and title.lower() not in {"hi", "hello", "hey there"}:
             return save_idea(title, provenance="chat_capture", state="seed", uid=uid)
     return None

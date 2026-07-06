@@ -32,6 +32,9 @@ RULES:
 6. React, don't compose — offer yes/no/tweak, not blank slates.
 7. Use garden language: seeds, planted, sprouted, composted, tending the garden.
 8. Never push competitor-comparison anxiety — check_competitors is pull-only unless the user opts into competitor_alerts.
+9. Greetings (hi, hello, hey) get a warm one-line reply only — never call save_idea and never invent seeds.
+10. Hook / CTR / retention / "what works for me" questions → call get_my_performance first, then answer from its patterns.
+11. save_idea only when the user describes a concrete video idea in their own message (not from your suggestion unless they say "save/plant that").
 
 COLD-START (when context.cold_start.tier is empty or warming):
 - The creator does NOT have enough upload history for validated patterns yet.
@@ -171,7 +174,7 @@ TOOLS = [
         "type": "function",
         "function": {
             "name": "search_discourse",
-            "description": "What the creator's corner of the internet (Reddit + HN) is talking about, ranked by fit to their fingerprint.",
+            "description": "What the creator's corner of the internet (Reddit + niche news) is talking about, ranked by fit to their fingerprint.",
             "parameters": {"type": "object", "properties": {}, "required": []},
         },
     },
@@ -243,8 +246,11 @@ async def _dispatch_tool(name: str, args: dict) -> Any:
     if name == "get_seeds":
         return list_seeds()
     if name == "save_idea":
+        title = (args.get("title") or "").strip()
+        if len(title) < 12:
+            return {"error": "title too short to save — need a concrete idea, not a greeting"}
         return save_idea(
-            args["title"],
+            title,
             angle=args.get("angle", ""),
             format_name=args.get("format_name", ""),
             state=args.get("state", "seed"),

@@ -114,7 +114,7 @@ async def onboarding_status(ctx: UserContext = Depends(current_user)):
 
 
 @router.get("/telegram/link")
-async def telegram_link(ctx: UserContext = Depends(require_firebase_user)):
+async def telegram_link(ctx: UserContext = Depends(current_user)):
     if not TELEGRAM_BOT_TOKEN:
         raise HTTPException(503, "Telegram bot not configured")
     token = make_link_token(ctx.uid)
@@ -131,7 +131,7 @@ async def telegram_link(ctx: UserContext = Depends(require_firebase_user)):
 
 
 @router.get("/telegram/status")
-async def telegram_status(ctx: UserContext = Depends(require_firebase_user)):
+async def telegram_status(ctx: UserContext = Depends(current_user)):
     from .telegram_bot import chat_id_for_uid
 
     chat_id = chat_id_for_uid(ctx.uid)

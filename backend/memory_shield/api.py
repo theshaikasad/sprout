@@ -654,7 +654,7 @@ async def cadence_route():
 
 @app.get("/pulse")
 async def pulse_route():
-    """Discourse radar — Reddit + HN × fingerprint."""
+    """Discourse radar — Reddit + niche news × fingerprint."""
     from .discourse import get_discourse
     return await get_discourse()
 

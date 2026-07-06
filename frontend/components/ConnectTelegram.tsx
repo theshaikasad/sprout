@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { firebaseEnabled } from "@/lib/firebase";
 
 type LinkInfo = {
   url: string;
@@ -20,10 +19,6 @@ export default function ConnectTelegram({ compact = false }: { compact?: boolean
   const [copied, setCopied] = useState<"url" | "cmd" | null>(null);
 
   const refreshStatus = useCallback(async () => {
-    if (!firebaseEnabled) {
-      setLinked(false);
-      return;
-    }
     try {
       const s = await api.telegramStatus();
       setLinked(s.linked);
@@ -58,14 +53,6 @@ export default function ConnectTelegram({ compact = false }: { compact?: boolean
     } catch {
       setError("copy failed — select the text manually");
     }
-  }
-
-  if (!firebaseEnabled) {
-    return (
-      <p className="text-xs leading-relaxed text-faint">
-        Sign in with Firebase to link Telegram — demo mode skips identity.
-      </p>
-    );
   }
 
   if (linked) {

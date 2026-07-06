@@ -5,29 +5,45 @@ traversal trace the UI needs (§9.3 visible path) falls out of the same walk.
 """
 
 from collections import defaultdict
+import time
 
 from .cognee_env import cognee  # noqa: F401 — wires stores before engine import
 
 from cognee.infrastructure.databases.graph import get_graph_engine
 
+_graph_cache: tuple["Graph", float] | None = None
+_GRAPH_CACHE_TTL = 10  # seconds — short enough to pick up new feedback, long enough to reduce thrash
+
 
 class Graph:
     def __init__(self, nodes, edges):
         self.props: dict[str, dict] = {str(nid): p for nid, p in nodes}
-        self.out: dict[str, list[tuple[str, str]]] = defaultdict(list)  # id -> [(rel, dst)]
-        self.inc: dict[str, list[tuple[str, str]]] = defaultdict(list)  # id -> [(rel, src)]
+        self.out: dict[str, list[tuple[str, str]]] = defaultdict(list)
+        self.inc: dict[str, list[tuple[str, str]]] = defaultdict(list)
         for src, dst, rel, *_ in edges:
             self.out[str(src)].append((rel, str(dst)))
             self.inc[str(dst)].append((rel, str(src)))
 
     @classmethod
     async def load(cls) -> "Graph":
+        global _graph_cache
+        now = time.monotonic()
+        if _graph_cache is not None and (now - _graph_cache[1]) < _GRAPH_CACHE_TTL:
+            return _graph_cache[0]
+
         from .cognee_context import with_user_cognee
 
         async with with_user_cognee():
             engine = await get_graph_engine()
             nodes, edges = await engine.get_graph_data()
-            return cls(nodes, edges)
+            g = cls(nodes, edges)
+            _graph_cache = (g, now)
+            return g
+
+    @classmethod
+    def bust_cache(cls) -> None:
+        global _graph_cache
+        _graph_cache = None
 
     # --- traversal ------------------------------------------------------
     def by_type(self, t: str) -> list[tuple[str, dict]]:

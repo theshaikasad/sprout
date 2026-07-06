@@ -1,52 +1,28 @@
-"""Discourse radar — Reddit + Hacker News × creator fingerprint.
+"""Discourse radar — Reddit + niche news × creator fingerprint.
 
-Replaces generic pulse with niche-scoped discourse signals.
+Reddit's JSON API is blocked from most server IPs (403); RSS still works.
+HN top stories are irrelevant for the slow-living demo niche — dropped.
 """
 
 from __future__ import annotations
 
-import json
 import urllib.request
-from datetime import datetime, timedelta
+import xml.etree.ElementTree as ET
+from datetime import datetime
+from urllib.parse import quote
 
 from . import cache
-from .config import NICHE
+from .config import DISCOURSE_NEWS_QUERY, DISCOURSE_SUBREDDITS, NICHE
 from .fingerprint import load_fingerprint
 
-# Subreddits derived from slow-living fingerprint
-DEFAULT_SUBREDDITS = [
-    "simpleliving", "selfimprovement", "getdisciplined",
-    "DecidingToBeBetter", "minimalism",
-]
+_ATOM = "http://www.w3.org/2005/Atom"
+_UA = "Mozilla/5.0 (compatible; Sprout/1.0; +https://sprout.asad.codes)"
 
 
-def _fetch_json(url: str, timeout: int = 8) -> dict | list:
-    req = urllib.request.Request(url, headers={"User-Agent": "Sprout/1.0"})
+def _fetch_bytes(url: str, timeout: int = 8) -> bytes:
+    req = urllib.request.Request(url, headers={"User-Agent": _UA})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return json.loads(resp.read().decode())
-
-
-def _hn_stories(limit: int = 8) -> list[dict]:
-    hit = cache.get("discourse", "hn")
-    if hit is not None:
-        return hit
-    try:
-        ids = _fetch_json("https://hacker-news.firebaseio.com/v0/topstories.json")[:limit * 2]
-        stories = []
-        for sid in ids:
-            item = _fetch_json(f"https://hacker-news.firebaseio.com/v0/item/{sid}.json")
-            if item and item.get("title"):
-                stories.append({
-                    "source": "hackernews",
-                    "title": item["title"],
-                    "url": item.get("url") or f"https://news.ycombinator.com/item?id={sid}",
-                    "score": item.get("score", 0),
-                })
-            if len(stories) >= limit:
-                break
-        return cache.put("discourse", "hn", stories)
-    except Exception:
-        return []
+        return resp.read()
 
 
 def _reddit_posts(subreddit: str, limit: int = 5) -> list[dict]:
@@ -55,17 +31,52 @@ def _reddit_posts(subreddit: str, limit: int = 5) -> list[dict]:
     if hit is not None:
         return hit
     try:
-        data = _fetch_json(f"https://www.reddit.com/r/{subreddit}/hot.json?limit={limit}")
+        url = f"https://www.reddit.com/r/{subreddit}/hot.rss?limit={limit}"
+        root = ET.fromstring(_fetch_bytes(url))
         posts = []
-        for child in data.get("data", {}).get("children", []):
-            p = child.get("data", {})
-            posts.append({
-                "source": f"reddit/r/{subreddit}",
-                "title": p.get("title", ""),
-                "url": f"https://reddit.com{p.get('permalink', '')}",
-                "score": p.get("score", 0),
-            })
+        for entry in root.findall(f"{{{_ATOM}}}entry")[:limit]:
+            title_el = entry.find(f"{{{_ATOM}}}title")
+            link_el = entry.find(f"{{{_ATOM}}}link")
+            title = (title_el.text or "").strip() if title_el is not None else ""
+            href = link_el.get("href", "") if link_el is not None else ""
+            if title:
+                posts.append({
+                    "source": f"reddit/r/{subreddit}",
+                    "title": title,
+                    "url": href,
+                    "score": 0,
+                })
         return cache.put("discourse", key, posts)
+    except Exception:
+        return []
+
+
+def _niche_news(limit: int = 6) -> list[dict]:
+    hit = cache.get("discourse", "niche_news")
+    if hit is not None:
+        return hit
+    try:
+        url = (
+            "https://news.google.com/rss/search?q="
+            + quote(DISCOURSE_NEWS_QUERY)
+            + "&hl=en-US&gl=US&ceid=US:en"
+        )
+        root = ET.fromstring(_fetch_bytes(url))
+        items = []
+        for it in root.iter("item"):
+            title = (it.findtext("title") or "").rsplit(" - ", 1)[0].strip()
+            link = (it.findtext("link") or "").strip()
+            source = (it.findtext("source") or "news").strip()
+            if title:
+                items.append({
+                    "source": f"news/{source[:24]}",
+                    "title": title,
+                    "url": link,
+                    "score": 0,
+                })
+            if len(items) >= limit:
+                break
+        return cache.put("discourse", "niche_news", items)
     except Exception:
         return []
 
@@ -84,13 +95,13 @@ def build_discourse() -> dict:
         topics = set()
 
     items = []
-    for sub in DEFAULT_SUBREDDITS:
+    for sub in DISCOURSE_SUBREDDITS:
         for p in _reddit_posts(sub, 3):
             p["fit"] = _fit_score(p["title"], topics)
             items.append(p)
-    for s in _hn_stories(6):
-        s["fit"] = _fit_score(s["title"], topics)
-        items.append(s)
+    for n in _niche_news(6):
+        n["fit"] = _fit_score(n["title"], topics)
+        items.append(n)
 
     items.sort(key=lambda x: (-x.get("fit", 0), -x.get("score", 0)))
     return {
@@ -102,4 +113,5 @@ def build_discourse() -> dict:
 
 async def get_discourse() -> dict:
     import asyncio
+
     return await asyncio.to_thread(build_discourse)

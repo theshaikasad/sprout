@@ -25,21 +25,28 @@ if _sprout_db_url:
     _pg_port = os.getenv("DB_PORT", "5432")
     _pg_user = os.getenv("DB_USERNAME", "postgres")
     _pg_pass = os.getenv("DB_PASSWORD", "postgres")
-    for _key, _val in {
-        "GRAPH_DATABASE_HOST": _pg_host,
-        "GRAPH_DATABASE_PORT": _pg_port,
-        "GRAPH_DATABASE_USERNAME": _pg_user,
-        "GRAPH_DATABASE_PASSWORD": _pg_pass,
-        "VECTOR_DB_HOST": _pg_host,
-        "VECTOR_DB_PORT": _pg_port,
-        "VECTOR_DB_USERNAME": _pg_user,
-        "VECTOR_DB_PASSWORD": _pg_pass,
-    }.items():
-        os.environ.setdefault(_key, _val)
     if _pg_host.startswith("/cloudsql/"):
+        import urllib.parse
+        _u = urllib.parse.quote_plus(_pg_user)
+        _p = urllib.parse.quote_plus(_pg_pass)
+        _h = urllib.parse.quote(_pg_host, safe="/:")
+        _url = f"postgresql+asyncpg://{_u}:{_p}@/{DB_NAME}?host={_h}"
+        os.environ.setdefault("GRAPH_DATABASE_URL", _url)
+        os.environ.setdefault("VECTOR_DB_URL", _url)
         from .cognee_cloudsql import apply_cloudsql_patches
-
         apply_cloudsql_patches(_pg_host)
+    else:
+        for _key, _val in {
+            "GRAPH_DATABASE_HOST": _pg_host,
+            "GRAPH_DATABASE_PORT": _pg_port,
+            "GRAPH_DATABASE_USERNAME": _pg_user,
+            "GRAPH_DATABASE_PASSWORD": _pg_pass,
+            "VECTOR_DB_HOST": _pg_host,
+            "VECTOR_DB_PORT": _pg_port,
+            "VECTOR_DB_USERNAME": _pg_user,
+            "VECTOR_DB_PASSWORD": _pg_pass,
+        }.items():
+            os.environ.setdefault(_key, _val)
 else:
     os.environ.setdefault("ENABLE_BACKEND_ACCESS_CONTROL", "false")
 
@@ -139,6 +146,14 @@ FORMATS = [
 HOOK_STYLES = ["question", "pattern-interrupt", "stat", "story", "vulnerable-confession"]
 BEAT_TYPES = ["intro", "context", "story", "demo", "sponsor", "cta", "outro"]
 NICHE = "slow-living and self-improvement vlogging"
+DISCOURSE_SUBREDDITS = [
+    "simpleliving",
+    "selfimprovement",
+    "getdisciplined",
+    "DecidingToBeBetter",
+    "minimalism",
+]
+DISCOURSE_NEWS_QUERY = '"slow living" OR "self improvement" OR minimalism when:7d'
 
 # --- node_sets (spec §5) ----------------------------------------------------
 NODE_SET_MY_CHANNEL = "my_channel"

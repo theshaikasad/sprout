@@ -16,6 +16,7 @@ import asyncio
 import json
 import re
 import sys
+import time
 from statistics import mean
 
 from openai import AsyncOpenAI
@@ -115,12 +116,23 @@ async def topic_distances(trend_label: str) -> dict[str, float]:
     """The semantic hop: topic_id -> distance to the trend text. ONE vector search
     feeds both the bridge (which topics of mine/competitors' relate) and the
     evidence filter (is a trending video actually about this trend)."""
+    now = time.monotonic()
+    cached = _topic_dist_cache.get(trend_label)
+    if cached is not None and (now - cached[1]) < _TOPIC_DIST_TTL:
+        return cached[0]
+
     from .cognee_context import with_user_cognee
 
     async with with_user_cognee():
         engine = get_vector_engine()
         hits = await engine.search("Topic_label", query_text=trend_label, limit=BRIDGE_TOP_K)
-        return {str(h.id): h.score for h in hits}
+        result = {str(h.id): h.score for h in hits}
+        _topic_dist_cache[trend_label] = (result, now)
+        return result
+
+
+_topic_dist_cache: dict[str, tuple[dict[str, float], float]] = {}
+_TOPIC_DIST_TTL = 30  # seconds
 
 
 def build_bridge(g: Graph, dists: dict[str, float]) -> list[dict]:
