@@ -55,6 +55,16 @@ def build_corpus(creator_handle: str | None = None, progress=_noop) -> dict:
     if missing := missing_keys():
         raise SystemExit(f"Missing env keys: {missing}")
     handle = creator_handle or CREATOR_HANDLE
+
+    if CORPUS_PATH.exists():
+        try:
+            cached = json.loads(CORPUS_PATH.read_text())
+            if cached.get("creator", {}).get("handle") == handle and cached.get("live"):
+                progress("cached", f"reusing {len(cached['live'])}-video corpus for {handle}")
+                return cached
+        except Exception:
+            pass
+
     reset_circuit()
 
     progress("fetching", f"resolving {handle}")
