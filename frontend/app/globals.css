@@ -33,6 +33,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+html.studio-shell,
+body.studio-shell {
+  overflow: hidden;
+  height: 100%;
+}
+
 /* daylight atmosphere: meadow sky bleeding into cream paper + a low sun,
    with a faint gouache grain on top — depth without a single sharp edge */
 .atmosphere::before {
@@ -414,6 +420,15 @@ input, select, textarea { color-scheme: light; }
   border-radius: inherit;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, transparent 55%);
   pointer-events: none;
+}
+.sprout .hiw-viz-pipeline::before {
+  background:
+    radial-gradient(90% 70% at 12% 18%, rgba(232, 245, 233, 0.55), transparent 58%),
+    radial-gradient(80% 60% at 88% 82%, rgba(255, 243, 224, 0.45), transparent 55%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 60%);
+}
+.sprout .hiw-pipeline-card {
+  transform-origin: center center;
 }
 .sprout .hiw-step + .hiw-step {
   border-top: 1px solid var(--line-2);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
 import { touchesGraph } from "@/lib/graphTools";
 
@@ -14,17 +14,30 @@ type Msg = {
 export default function ChatDock({
   onGraphQueryStart,
   onGraphQueryEnd,
+  seedMessage,
+  onSeedConsumed,
 }: {
   onGraphQueryStart?: () => void;
   onGraphQueryEnd?: (tools: string[]) => void;
+  /** Prefill the input — e.g. when user taps "Pitch an idea" */
+  seedMessage?: string | null;
+  onSeedConsumed?: () => void;
 }) {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  async function send() {
-    const text = input.trim();
+  useEffect(() => {
+    if (!seedMessage) return;
+    setInput(seedMessage);
+    onSeedConsumed?.();
+    inputRef.current?.focus();
+  }, [seedMessage, onSeedConsumed]);
+
+  async function send(textOverride?: string) {
+    const text = (textOverride ?? input).trim();
     if (!text || busy) return;
     setInput("");
     setMsgs((m) => [...m, { role: "user", content: text }]);
@@ -60,7 +73,7 @@ export default function ChatDock({
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full min-h-0 flex-col">
       <div className="flex items-baseline justify-between border-b border-line pb-2">
         <h2 className="serif-accent text-[15px]">Sprout</h2>
         <span className="label" style={{ fontSize: "9px" }}>
@@ -68,7 +81,7 @@ export default function ChatDock({
         </span>
       </div>
 
-      <div ref={listRef} className="mt-2 flex-1 space-y-3 overflow-y-auto pr-1">
+      <div ref={listRef} className="mt-2 min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
         {msgs.length === 0 && (
           <p className="text-sm italic leading-relaxed text-faint">
             “How are my last uploads doing?” · “What&apos;s overperforming in my
@@ -110,8 +123,9 @@ export default function ChatDock({
         )}
       </div>
 
-      <div className="mt-2 flex gap-2 rounded-lg border border-line bg-raised-2 p-1">
+      <div className="mt-2 shrink-0 flex gap-2 rounded-lg border border-line bg-raised-2 p-1">
         <input
+          ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send()}
@@ -119,7 +133,7 @@ export default function ChatDock({
           className="flex-1 bg-transparent px-2.5 py-1.5 text-sm outline-none placeholder:text-faint"
         />
         <button
-          onClick={send}
+          onClick={() => send()}
           disabled={busy}
           className="btn-primary px-4 text-xs disabled:opacity-40"
         >

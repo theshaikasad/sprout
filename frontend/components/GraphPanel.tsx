@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import type { GraphData, GraphNode, Trace } from "@/lib/api";
 
@@ -15,7 +15,7 @@ const AMBER = "#96611e";
 const TOPIC = "#75704d";
 const HOOK = "#8f6fae";
 
-type FGNode = GraphNode & { x?: number; y?: number };
+type FGNode = GraphNode & { x?: number; y?: number; fx?: number; fy?: number };
 type FGLink = { source: string | FGNode; target: string | FGNode; rel: string };
 
 function nodeColor(n: GraphNode): string {
@@ -49,7 +49,33 @@ function hopOf(id: string, trace: Trace): number | null {
   return null;
 }
 
+function traceKey(trace: Trace): string {
+  return JSON.stringify([
+    trace.trend,
+    trace.topics,
+    trace.videos,
+    trace.formats,
+    trace.hooks,
+  ]);
+}
+
 const HOP_MS = 650;
+
+function pinNodes(nodes: FGNode[]) {
+  for (const n of nodes) {
+    if (n.x !== undefined && n.y !== undefined) {
+      n.fx = n.x;
+      n.fy = n.y;
+    }
+  }
+}
+
+function unpinNodes(nodes: FGNode[]) {
+  for (const n of nodes) {
+    n.fx = undefined;
+    n.fy = undefined;
+  }
+}
 
 export default function GraphPanel({
   graph,
@@ -66,11 +92,22 @@ export default function GraphPanel({
   const [size, setSize] = useState({ w: 480, h: 420 });
   const traceStart = useRef<number>(0);
   const zoomTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const refreshRaf = useRef<number | null>(null);
+  const initialFitDone = useRef(false);
+  const lastAnimatedTrace = useRef<string | null>(null);
+  const lastGraphSig = useRef("");
+
+  function graphSig(g: GraphData | null): string {
+    if (!g) return "";
+    return `${g.nodes.length}:${g.edges.length}:${g.nodes[0]?.id ?? ""}`;
+  }
 
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
-    const ro = new ResizeObserver(() => setSize({ w: el.clientWidth, h: el.clientHeight }));
+    const measure = () => setSize({ w: el.clientWidth, h: el.clientHeight });
+    measure();
+    const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
@@ -78,10 +115,13 @@ export default function GraphPanel({
   const data = useMemo(() => {
     if (!graph) return { nodes: [], links: [] };
     return {
-      nodes: graph.nodes as FGNode[],
+      nodes: graph.nodes.map((n) => ({ ...n })) as FGNode[],
       links: graph.edges.map((e) => ({ ...e })) as FGLink[],
     };
   }, [graph]);
+
+  const dataRef = useRef(data);
+  dataRef.current = data;
 
   const traceNodeIds = useMemo(() => {
     if (!trace) return null;
@@ -92,60 +132,162 @@ export default function GraphPanel({
     );
   }, [trace]);
 
-  /* THE RETRIEVAL CAMERA: fly to each hop as the query walks the graph,
-     then pull back to frame the whole path. */
-  useEffect(() => {
-    traceStart.current = performance.now();
+  const clearZoomTimers = useCallback(() => {
     zoomTimers.current.forEach(clearTimeout);
     zoomTimers.current = [];
+  }, []);
+
+  const stopRefreshLoop = useCallback(() => {
+    if (refreshRaf.current !== null) {
+      cancelAnimationFrame(refreshRaf.current);
+      refreshRaf.current = null;
+    }
+  }, []);
+
+  const startRefreshLoop = useCallback(
+    (durationMs: number) => {
+      stopRefreshLoop();
+      const start = performance.now();
+      const tick = () => {
+        fgRef.current?.refresh?.();
+        if (performance.now() - start < durationMs) {
+          refreshRaf.current = requestAnimationFrame(tick);
+        } else {
+          refreshRaf.current = null;
+        }
+      };
+      refreshRaf.current = requestAnimationFrame(tick);
+    },
+    [stopRefreshLoop],
+  );
+
+  useEffect(() => () => {
+    clearZoomTimers();
+    stopRefreshLoop();
+  }, [clearZoomTimers, stopRefreshLoop]);
+
+  /* Freeze layout once settled; fit camera once on first load. */
+  const handleEngineStop = useCallback(() => {
     const fg = fgRef.current;
-    if (!fg || !trace) return;
+    if (!fg) return;
+    const nodes = dataRef.current.nodes;
+    pinNodes(nodes);
 
-    const byId = new Map((data.nodes as FGNode[]).map((n) => [n.id, n]));
-    const hops: string[][] = [
-      trace.trend ? [trace.trend] : [],
-      trace.topics,
-      trace.videos,
-      [...trace.formats, ...trace.hooks],
-    ].filter((h) => h.length > 0);
+    if (!initialFitDone.current && !trace && !querying) {
+      fg.zoomToFit(400, 40);
+      initialFitDone.current = true;
+    }
+  }, [trace, querying]);
 
-    hops.forEach((ids, i) => {
+  /* New graph payload → one layout pass, then freeze via onEngineStop. */
+  useEffect(() => {
+    const sig = graphSig(graph);
+    if (sig === lastGraphSig.current) return;
+    lastGraphSig.current = sig;
+
+    initialFitDone.current = false;
+    lastAnimatedTrace.current = null;
+    const fg = fgRef.current;
+    if (!fg) return;
+    unpinNodes(data.nodes);
+    fg.d3ReheatSimulation?.();
+  }, [graph, data]);
+
+  /* Clear animation lock when a new query starts so re-runs can replay the path. */
+  useEffect(() => {
+    if (querying) lastAnimatedTrace.current = null;
+  }, [querying]);
+
+  /* Retrieval camera: only when a new trace arrives after querying finishes. */
+  useEffect(() => {
+    clearZoomTimers();
+    if (querying || !trace) {
+      if (!trace) lastAnimatedTrace.current = null;
+      return;
+    }
+
+    const key = traceKey(trace);
+    if (key === lastAnimatedTrace.current) return;
+
+    const fg = fgRef.current;
+    if (!fg) return;
+
+    const runCamera = () => {
+      lastAnimatedTrace.current = key;
+      traceStart.current = performance.now();
+
+      const nodes = dataRef.current.nodes;
+      const byId = new Map(nodes.map((n) => [n.id, n]));
+      const hops: string[][] = [
+        trace.trend ? [trace.trend] : [],
+        trace.topics,
+        trace.videos,
+        [...trace.formats, ...trace.hooks],
+      ].filter((h) => h.length > 0);
+
+      const animMs = hops.length * HOP_MS + 1000;
+      startRefreshLoop(animMs);
+
+      hops.forEach((ids, i) => {
+        zoomTimers.current.push(
+          setTimeout(() => {
+            const pts = ids
+              .map((nid) => byId.get(nid))
+              .filter((n) => n?.x !== undefined) as FGNode[];
+            if (!pts.length) return;
+            const cx = pts.reduce((s, n) => s + n.x!, 0) / pts.length;
+            const cy = pts.reduce((s, n) => s + n.y!, 0) / pts.length;
+            fg.centerAt(cx, cy, 550);
+            fg.zoom(3.2, 550);
+          }, i * HOP_MS),
+        );
+      });
+
       zoomTimers.current.push(
-        setTimeout(() => {
-          const pts = ids
-            .map((nid) => byId.get(nid))
-            .filter((n) => n?.x !== undefined) as FGNode[];
-          if (!pts.length) return;
-          const cx = pts.reduce((s, n) => s + n.x!, 0) / pts.length;
-          const cy = pts.reduce((s, n) => s + n.y!, 0) / pts.length;
-          fg.centerAt(cx, cy, 550);
-          fg.zoom(3.2, 550);
-        }, i * HOP_MS),
+        setTimeout(
+          () =>
+            fg.zoomToFit(
+              700,
+              60,
+              (n: FGNode) =>
+                new Set(
+                  [trace.trend, ...trace.topics, ...trace.videos, ...trace.formats, ...trace.hooks]
+                    .filter(Boolean) as string[],
+                ).has(n.id),
+            ),
+          hops.length * HOP_MS + 250,
+        ),
       );
-    });
-    // pull back: frame the full retrieved path
-    zoomTimers.current.push(
-      setTimeout(
-        () => fg.zoomToFit(700, 60, (n: FGNode) => traceNodeIds?.has(n.id) ?? false),
-        hops.length * HOP_MS + 250,
-      ),
-    );
-    return () => zoomTimers.current.forEach(clearTimeout);
-  }, [trace, data, traceNodeIds]);
+    };
+
+    const waitForPositions = (attempt = 0) => {
+      const nodes = dataRef.current.nodes;
+      const ids = [
+        trace.trend,
+        ...trace.topics,
+        ...trace.videos,
+        ...trace.formats,
+        ...trace.hooks,
+      ].filter(Boolean) as string[];
+      const ready =
+        ids.length === 0 ||
+        ids.every((id) => {
+          const n = nodes.find((node) => node.id === id);
+          return n?.x !== undefined && n?.y !== undefined;
+        });
+      if (ready || attempt > 30) {
+        runCamera();
+        return;
+      }
+      zoomTimers.current.push(setTimeout(() => waitForPositions(attempt + 1), 80));
+    };
+
+    waitForPositions();
+    return clearZoomTimers;
+  }, [trace, querying, clearZoomTimers, startRefreshLoop]);
 
   const id = (v: string | FGNode) => (typeof v === "string" ? v : v.id);
-
-  const [pulse, setPulse] = useState(false);
-
-  useEffect(() => {
-    if (!querying) return;
-    setPulse(true);
-    const t = setInterval(() => setPulse((p) => !p), 700);
-    return () => {
-      clearInterval(t);
-      setPulse(false);
-    };
-  }, [querying]);
+  const elapsed = () => performance.now() - traceStart.current;
 
   return (
     <div ref={wrapRef} className="relative h-full w-full">
@@ -162,63 +304,67 @@ export default function GraphPanel({
         height={size.h}
         graphData={data}
         backgroundColor="rgba(0,0,0,0)"
-        cooldownTicks={180}
-        onEngineStop={() => {
-          if (!trace) fgRef.current?.zoomToFit(600, 30);
-        }}
-        nodeRelSize={1}
+        cooldownTicks={80}
+        warmupTicks={0}
         enableNodeDrag={false}
+        autoPauseRedraw
+        onEngineStop={handleEngineStop}
+        nodeRelSize={1}
         linkColor={(link) => {
           const l = link as unknown as FGLink;
-          if (!traceNodeIds) return "rgba(58,63,44,0.14)";
+          if (!traceNodeIds || querying) return "rgba(58,63,44,0.14)";
           const on = traceNodeIds.has(id(l.source)) && traceNodeIds.has(id(l.target));
           return on ? ACCENT : "rgba(58,63,44,0.05)";
         }}
         linkWidth={(link) => {
           const l = link as unknown as FGLink;
-          return traceNodeIds && traceNodeIds.has(id(l.source)) && traceNodeIds.has(id(l.target))
+          return traceNodeIds &&
+            !querying &&
+            traceNodeIds.has(id(l.source)) &&
+            traceNodeIds.has(id(l.target))
             ? 1.8
             : 0.4;
         }}
         nodeCanvasObject={(obj, ctx: CanvasRenderingContext2D, scale: number) => {
           const node = obj as unknown as FGNode;
           const r = nodeRadius(node);
-          const hop = trace ? hopOf(node.id, trace) : null;
-          const elapsed = performance.now() - traceStart.current;
-          const lit = hop !== null && elapsed > hop * HOP_MS;
-          const dimmed = trace !== null && !lit && !querying;
-          const queryPulse = querying && pulse;
+          const hop = trace && !querying ? hopOf(node.id, trace) : null;
+          const ms = elapsed();
+          const lit = hop !== null && ms > hop * HOP_MS;
+          const dimmed = trace !== null && !querying && !lit;
 
-          ctx.globalAlpha = dimmed ? 0.09 : queryPulse ? 0.55 + (pulse ? 0.35 : 0.15) : 1;
+          ctx.globalAlpha = dimmed ? 0.12 : 1;
           ctx.beginPath();
           ctx.arc(node.x!, node.y!, lit ? r * 1.7 : r, 0, 2 * Math.PI);
           ctx.fillStyle = nodeColor(node);
           ctx.fill();
 
-          if (lit || queryPulse) {
+          if (lit) {
             ctx.strokeStyle = ACCENT;
-            ctx.lineWidth = queryPulse ? 1.2 : 0.8;
+            ctx.lineWidth = 0.8;
             ctx.beginPath();
-            ctx.arc(node.x!, node.y!, (lit ? r * 1.7 : r) + 2.5, 0, 2 * Math.PI);
+            ctx.arc(node.x!, node.y!, r * 1.7 + 2.5, 0, 2 * Math.PI);
             ctx.stroke();
           }
 
-          if ((lit || queryPulse || (!trace && node.type === "Trend")) && scale > 0.6) {
-            const label = node.label.length > 34 ? node.label.slice(0, 32) + "…" : node.label;
-            ctx.font = `500 ${Math.max(3.4, 10 / scale)}px var(--font-jetbrains), monospace`;
-            ctx.fillStyle = INK;
-            ctx.textAlign = "center";
-            ctx.fillText(label, node.x!, node.y! - r * 1.7 - 3);
+          if ((lit || !trace || querying) && scale > 0.55) {
+            const showLabel =
+              lit || querying || !trace || node.type === "Trend" || node.type === "Creator";
+            if (showLabel) {
+              const label = node.label.length > 34 ? node.label.slice(0, 32) + "…" : node.label;
+              ctx.font = `500 ${Math.max(3.4, 10 / scale)}px var(--font-jetbrains), monospace`;
+              ctx.fillStyle = INK;
+              ctx.textAlign = "center";
+              ctx.fillText(label, node.x!, node.y! - r * 1.7 - 3);
+            }
           }
           ctx.globalAlpha = 1;
         }}
         onRenderFramePost={(ctx: CanvasRenderingContext2D) => {
-          // the semantic hop (query ~ topic) is a vector edge, not a graph edge —
-          // draw it dashed, honestly different from real edges
-          if (!trace?.trend) return;
-          const elapsed = performance.now() - traceStart.current;
-          if (elapsed < HOP_MS) return;
-          const byId = new Map((data.nodes as FGNode[]).map((n) => [n.id, n]));
+          if (!trace?.trend || querying) return;
+          if (elapsed() < HOP_MS) return;
+          const nodes = dataRef.current.nodes;
+          const byId = new Map(nodes.map((n) => [n.id, n]));
           const t = byId.get(trace.trend);
           if (!t?.x) return;
           ctx.save();
@@ -242,7 +388,11 @@ export default function GraphPanel({
         <span style={{ color: ACCENT }}>●</span> trends&nbsp;&nbsp;
         <span style={{ color: TOPIC }}>●</span> topics&nbsp;&nbsp;
         <span style={{ color: AMBER }}>●</span> formats
-        {trace && <span className="ml-3" style={{ color: ACCENT }}>— — semantic hop</span>}
+        {trace && !querying && (
+          <span className="ml-3" style={{ color: ACCENT }}>
+            — — semantic hop
+          </span>
+        )}
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ export default function PulseStrip({
       <section className="panel p-4">
         <p className="label">discourse radar</p>
         <p className="mt-2 text-sm text-faint">
-          Reddit + Hacker News for your corner of the internet — ranked by fit to your fingerprint.
+          Reddit + niche news for your corner of the internet — ranked by fit to your fingerprint.
         </p>
       </section>
     );
@@ -23,7 +23,7 @@ export default function PulseStrip({
     <section>
       <div className="flex items-baseline justify-between">
         <span className="label">discourse · your corner of the internet</span>
-        <span className="font-mono text-[10px] text-faint">reddit · hacker news</span>
+        <span className="font-mono text-[10px] text-faint">reddit · news</span>
       </div>
       <div className="mt-2.5 flex gap-2.5 overflow-x-auto pb-2">
         {pulse.items.map((it, i) => (

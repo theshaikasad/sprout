@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import type { Card, Trace } from "@/lib/api";
-import { api } from "@/lib/api";
 import { copyFilmKit } from "@/lib/filmKit";
 import Thumb from "./Thumb";
 

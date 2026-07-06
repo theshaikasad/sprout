@@ -119,8 +119,22 @@ function Studio() {
   const [chatSeed, setChatSeed] = useState<string | null>(null);
   const [me, setMe] = useState<User | null>(null);
   const [memorySharpened, setMemorySharpened] = useState(false);
+  const [greeting, setGreeting] = useState("Hello");
   const improveToasted = useRef(false);
   const prevSuggest = useRef<SuggestResponse | null>(null);
+
+  useEffect(() => {
+    document.documentElement.classList.add("studio-shell");
+    document.body.classList.add("studio-shell");
+    const hour = new Date().getHours();
+    setGreeting(
+      hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening",
+    );
+    return () => {
+      document.documentElement.classList.remove("studio-shell");
+      document.body.classList.remove("studio-shell");
+    };
+  }, []);
 
   // the graph shows whichever retrieval happened last: a card's or a pitch's
   const trace: Trace | null =
@@ -268,8 +282,6 @@ function Studio() {
   }
 
   const firstName = lib?.creator.title.split(" ")[0] ?? "creator";
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   const avatar = me?.photoURL || lib?.creator.avatar || "";
 
   const underCount = track?.uploads.filter((u) => u.status === "under").length ?? 0;
@@ -351,23 +363,27 @@ function Studio() {
   );
 
   const graphPanel = (
-    <GraphPanel graph={graph} trace={trace} querying={graphQuerying} />
+    <GraphPanel
+      graph={graph}
+      trace={graphQuerying ? null : trace}
+      querying={graphQuerying}
+    />
   );
 
   return (
     <>
       <DashboardBackdrop />
-      <main className="relative z-10 flex min-h-screen">
+      <main className="relative z-10 flex h-dvh max-h-dvh overflow-hidden">
       {/* left — chat companion */}
-      <aside className="hidden w-[min(22rem,26vw)] shrink-0 flex-col border-r border-line bg-raised/90 backdrop-blur-sm lg:flex">
-        <div className="flex items-baseline justify-between border-b border-line px-4 py-3">
+      <aside className="hidden h-full w-[min(22rem,26vw)] shrink-0 flex-col overflow-hidden border-r border-line bg-raised/90 backdrop-blur-sm lg:flex">
+        <div className="flex shrink-0 items-baseline justify-between border-b border-line px-4 py-3">
           <h2 className="serif-accent text-[15px]">Sprout</h2>
           <span className="label !text-[9px]">talk · pitch · plan</span>
         </div>
-        <div className="min-h-0 flex-1 p-4">{chatPanel}</div>
+        <div className="min-h-0 flex-1 overflow-hidden p-4">{chatPanel}</div>
       </aside>
 
-      <div className="min-w-0 flex-1 px-5 pb-24 sm:px-6">
+      <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-24 sm:px-6">
       {/* top bar — brand · rooms · you */}
       <header className="flex flex-wrap items-center justify-between gap-3 py-4">
         <Link href="/">
@@ -809,8 +825,8 @@ function Studio() {
       </div>
 
       {/* right — memory graph */}
-      <aside className="hidden w-[min(24rem,30vw)] shrink-0 flex-col border-l border-line bg-[#faf4e6]/95 backdrop-blur-sm lg:flex">
-        <div className="flex items-center justify-between border-b border-line px-4 py-3">
+      <aside className="hidden h-full w-[min(24rem,30vw)] shrink-0 flex-col overflow-hidden border-l border-line bg-[#faf4e6]/95 backdrop-blur-sm lg:flex">
+        <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-3">
           <div>
             <h2 className="text-sm font-semibold tracking-tight">The memory</h2>
             <p className="font-mono text-[10px] text-faint">
@@ -825,7 +841,7 @@ function Studio() {
                 : "query chat or concepts"}
           </span>
         </div>
-        <div className="min-h-0 flex-1">{graphPanel}</div>
+        <div className="min-h-0 flex-1 overflow-hidden">{graphPanel}</div>
       </aside>
 
       {/* mobile graph drawer */}

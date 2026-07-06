@@ -309,7 +309,7 @@ export default function CoreLoop() {
                 />
               </span>
               <span className="whitespace-nowrap rounded-full border border-[color:var(--line)] px-2 py-1 text-[9.5px] text-[color:var(--ink-soft)]">
-                👎 you're wrong
+                👎 you&apos;re wrong
               </span>
             </div>
           </Station>

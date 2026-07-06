@@ -39,7 +39,7 @@ const BEATS = [
     tag: "04 · research",
     dot: "🌾",
     title: "The doomscroll, done for you",
-    body: "A velocity radar, your true competitors measured against their own baseline, and what Hacker News & Reddit are buzzing about — all crossed against your fingerprint, ranked by fit.",
+    body: "A velocity radar, your true competitors measured against their own baseline, and what Reddit & niche news are buzzing about — all crossed against your fingerprint, ranked by fit.",
     note: "create more · consume less",
   },
   {

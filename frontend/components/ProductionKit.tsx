@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import { useEffect, useState } from "react";
 import { BASE, api, type ProductionKit as Kit } from "@/lib/api";
 import Thumb from "./Thumb";
@@ -8,7 +10,6 @@ type Tab = "vision" | "production";
 
 export default function ProductionKitPanel({
   ideaId,
-  title,
   conceptArtPath,
 }: {
   ideaId: string;

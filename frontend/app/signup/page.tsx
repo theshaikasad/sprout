@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { api } from "@/lib/api";
@@ -237,9 +238,9 @@ export default function SignupPage() {
   return (
     <main className="relative z-10 mx-auto grid min-h-screen max-w-5xl items-center gap-12 px-6 py-16 lg:grid-cols-[1.1fr_1fr]">
       <div>
-        <a href="/">
+        <Link href="/">
           <Logo />
-        </a>
+        </Link>
         <h1 className="display mt-8 text-5xl leading-[1.05]">
           Stop checking analytics.
           <br />

@@ -8,7 +8,6 @@ import { motion, useInView } from "motion/react";
 import {
   Cognee,
   Firebase,
-  HackerNews,
   LogoChip,
   OpenAI,
   Python,
@@ -30,13 +29,21 @@ type Stage = {
 
 /* ——— step visualizations (warm Sprout palette, reference-style motion) ——— */
 
-function VizPanel({ active, children }: { active: boolean; children: React.ReactNode }) {
+function VizPanel({
+  active,
+  children,
+  className = "",
+}: {
+  active: boolean;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 28, scale: 0.97 }}
       animate={active ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0.35, y: 12, scale: 0.98 }}
       transition={{ duration: 0.7, ease: EASE }}
-      className="hiw-viz relative overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[color:var(--card)]/80 p-5 shadow-[var(--shadow)] backdrop-blur-sm"
+      className={`hiw-viz relative overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[color:var(--card)]/80 p-5 shadow-[var(--shadow)] backdrop-blur-sm ${className}`}
     >
       {children}
     </motion.div>
@@ -89,7 +96,7 @@ function Viz01({ active }: { active: boolean }) {
         </motion.g>
         {[
           { x: 72, label: "YouTube", color: "#cf7c4c" },
-          { x: 168, label: "HN", color: "#cf7c4c" },
+          { x: 168, label: "News", color: "#cf7c4c" },
           { x: 264, label: "Reddit", color: "#e08aa0" },
         ].map((ic, i) => (
           <motion.g
@@ -114,44 +121,64 @@ function Viz01({ active }: { active: boolean }) {
 }
 
 function Viz02({ active }: { active: boolean }) {
-  const cards = [
-    { x: 12, y: 8, w: 200, h: 52, label: "CTR vs median", val: "→ 2.1×", delay: 0 },
-    { x: 88, y: 52, w: 210, h: 48, label: "effect_size", val: "0.34 · n=12", delay: 0.15 },
-    { x: 28, y: 92, w: 180, h: 44, label: "rank_by", val: "growth_score ↓", delay: 0.28 },
+  const metrics = [
+    { label: "CTR vs median", val: "→ 2.1×", pos: "left-[5%] top-[7%] w-[56%]", z: "z-10", delay: 0 },
+    { label: "effect_size", val: "0.34 · n=12", pos: "left-[24%] top-[33%] w-[60%]", z: "z-30", delay: 0.12 },
+    { label: "rank_by", val: "growth_score ↓", pos: "left-[7%] top-[57%] w-[50%]", z: "z-20", delay: 0.24 },
   ];
   return (
-    <VizPanel active={active}>
-      <svg viewBox="0 0 320 148" className="w-full" fill="none">
-        {cards.map((c) => (
-          <motion.g
-            key={c.label}
-            initial={{ opacity: 0, x: -16, y: 10 }}
-            animate={active ? { opacity: 1, x: 0, y: 0 } : { opacity: 0.2, x: -8, y: 6 }}
-            transition={{ delay: c.delay, duration: 0.55, ease: EASE }}
-          >
-            <rect x={c.x} y={c.y} width={c.w} height={c.h} rx="10" fill="var(--card)" stroke="var(--moss-a40)" strokeWidth="1.2" />
-            <text x={c.x + 14} y={c.y + 22} fill="var(--ink-faint)" style={{ font: "500 9px var(--font-jetbrains)", letterSpacing: "0.08em" }}>
-              {c.label}
-            </text>
-            <text x={c.x + 14} y={c.y + 40} fill="var(--moss-deep)" style={{ font: "600 13px var(--font-jetbrains)" }}>
-              {c.val}
-            </text>
-          </motion.g>
-        ))}
-        <motion.g
-          initial={{ opacity: 0 }}
-          animate={active ? { opacity: 1 } : { opacity: 0.2 }}
-          transition={{ delay: 0.45, duration: 0.5 }}
+    <VizPanel active={active} className="hiw-viz-pipeline !border-white/60 !bg-white/55 !p-4 sm:!p-5">
+      <div className="hiw-pipeline-stage relative mx-auto aspect-[17/10] max-w-[340px]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -inset-1 rounded-[22px] bg-gradient-to-br from-[rgba(238,243,232,0.9)] via-[rgba(253,247,242,0.5)] to-[rgba(253,242,240,0.85)]"
+        />
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.96 }}
+          animate={active ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0.35, y: 10, scale: 0.98 }}
+          transition={{ duration: 0.7, ease: EASE }}
+          className="absolute inset-x-0 inset-y-1"
         >
-          <rect x="218" y="98" width="88" height="36" rx="8" fill="var(--clay-a12)" stroke="var(--clay)" strokeOpacity="0.4" />
-          <text x="262" y="120" textAnchor="middle" fill="var(--clay)" style={{ font: "600 10px var(--font-jetbrains)" }}>Python</text>
-          <rect x="218" y="8" width="88" height="36" rx="8" fill="var(--moss-a08)" stroke="var(--moss-a40)" />
-          <text x="262" y="30" textAnchor="middle" fill="var(--moss-deep)" style={{ font: "600 10px var(--font-jetbrains)" }}>gpt-4o-mini</text>
-          <text x="160" y="142" textAnchor="middle" fill="var(--ink-faint)" style={{ font: "500 8px var(--font-jetbrains)", letterSpacing: "0.1em" }}>
+          <div className={`hiw-pipeline-card relative h-full rounded-[20px] border border-white/80 bg-white/95 shadow-[0_10px_40px_-12px_rgba(74,62,34,0.16),0_2px_6px_-1px_rgba(74,62,34,0.06)] ${active ? "float" : ""}`}>
+          {metrics.map((m) => (
+            <motion.div
+              key={m.label}
+              initial={{ opacity: 0, x: -14, y: 10 }}
+              animate={active ? { opacity: 1, x: 0, y: 0 } : { opacity: 0.18, x: -8, y: 6 }}
+              transition={{ delay: m.delay, duration: 0.55, ease: EASE }}
+              className={`absolute ${m.pos} ${m.z} rounded-xl border border-[color:var(--line)]/80 bg-[color:var(--card)] px-3.5 py-2.5 shadow-[0_6px_18px_-8px_rgba(74,62,34,0.14),inset_0_1px_0_rgba(255,255,255,0.9)]`}
+            >
+              <p className="mono text-[8px] tracking-[0.12em] text-[color:var(--ink-faint)] uppercase">{m.label}</p>
+              <p className="mono mt-1 text-[13px] font-semibold leading-none text-[color:var(--ink)]">{m.val}</p>
+            </motion.div>
+          ))}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.88, y: -6 }}
+            animate={active ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0.2, scale: 0.94 }}
+            transition={{ delay: 0.32, duration: 0.5, ease: EASE }}
+            className="absolute right-[4%] top-[5%] z-40 rounded-[10px] border border-[rgba(200,230,201,0.9)] bg-[rgba(232,245,233,0.95)] px-3 py-2 shadow-[0_4px_12px_-6px_rgba(93,138,69,0.25)]"
+          >
+            <p className="mono text-[10px] font-semibold text-[color:var(--moss-deep)]">gpt-4o-mini</p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.88, y: 6 }}
+            animate={active ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0.2, scale: 0.94 }}
+            transition={{ delay: 0.42, duration: 0.5, ease: EASE }}
+            className="absolute right-[3%] bottom-[22%] z-40 rounded-[10px] border border-[rgba(255,224,178,0.95)] bg-[rgba(255,243,224,0.96)] px-3 py-2 shadow-[0_4px_12px_-6px_rgba(207,124,76,0.22)]"
+          >
+            <p className="mono text-[10px] font-semibold text-[color:var(--clay)]">Python</p>
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={active ? { opacity: 1 } : { opacity: 0.25 }}
+            transition={{ delay: 0.5, duration: 0.45 }}
+            className="mono absolute inset-x-0 bottom-2.5 text-center text-[7px] tracking-[0.16em] text-[color:var(--ink-faint)]"
+          >
             NUMBERS NEVER GUESSED
-          </text>
-        </motion.g>
-      </svg>
+          </motion.p>
+          </div>
+        </motion.div>
+      </div>
     </VizPanel>
   );
 }
@@ -387,7 +414,11 @@ function StepRow({ stage, index }: { stage: Stage; index: number }) {
         animate={active ? { opacity: 1, x: 0 } : { opacity: 0.35, x: flip ? 12 : -12 }}
         transition={{ duration: 0.65, ease: EASE }}
       >
-        <span className="display text-[clamp(3.5rem,8vw,5.5rem)] leading-none text-[color:var(--moss-a25)]">
+        <span
+          className={`display leading-none text-[color:var(--moss-a25)] ${
+            stage.key === "02" ? "text-[clamp(4rem,10vw,6.5rem)]" : "text-[clamp(3.5rem,8vw,5.5rem)]"
+          }`}
+        >
           {stage.key}
         </span>
         <p className="label mt-2">{stage.key} · pipeline</p>
@@ -457,13 +488,12 @@ export default function HowItWorks() {
           transition={{ duration: 0.55 }}
           className="mt-16"
         >
-          <p className="label text-center">built with · your data stays yours</p>
+          <p className="label text-center">built with</p>
           <div className="mt-6 flex flex-wrap justify-center gap-2.5">
             <LogoChip logo={<Cognee className="h-6 w-6" />} label="Cognee" sub="memory graph" />
             <LogoChip logo={<YouTube className="h-6 w-6" />} label="YouTube" sub="data + analytics" />
             <LogoChip logo={<Telegram className="h-6 w-6" />} label="Telegram" sub="bot surface" />
             <LogoChip logo={<OpenAI className="h-6 w-6" />} label="OpenAI" sub="gpt-4o-mini" />
-            <LogoChip logo={<HackerNews className="h-6 w-6" />} label="Hacker News" sub="discourse radar" />
             <LogoChip logo={<Reddit className="h-6 w-6" />} label="Reddit" sub="discourse radar" />
             <LogoChip logo={<Python className="h-6 w-6" />} label="Python" sub="pandas · numpy" />
             <LogoChip logo={<Firebase className="h-6 w-6" />} label="Firebase" sub="one-click auth" />

@@ -155,7 +155,7 @@ const FEATURES = [
   {
     icon: Icon.find,
     title: "The doomscroll, done for you",
-    body: "A velocity radar over your true niche, competitors measured against their own baselines (0.3×–10× your size), HN & Reddit crossed with your fingerprint. Distilled signal comes to you.",
+    body: "A velocity radar over your true niche, competitors measured against their own baselines (0.3×–10× your size), Reddit & niche news crossed with your fingerprint. Distilled signal comes to you.",
   },
   {
     icon: Icon.memory,
@@ -403,12 +403,11 @@ export default function Landing() {
           </Reveal>
         </section>
 
-        <footer className="mt-28 flex flex-col items-center justify-between gap-3 border-t border-[color:var(--line)] pt-6 text-[12px] text-[color:var(--ink-faint)] sm:flex-row">
+        <footer className="mt-28 flex flex-col items-center border-t border-[color:var(--line)] pt-6 text-[12px] text-[color:var(--ink-faint)]">
           <span className="flex items-center gap-2">
             <LogoMark size="sm" />
             Sprout — WeMakeDevs × Cognee hackathon, 2026
           </span>
-          <span className="mono">your data stays yours</span>
         </footer>
       </div>
     </div>

@@ -169,8 +169,10 @@ export default function SproutDashboard({ garden, creatorName = "your", onPlant 
               ))}
             </div>
             <p className="mt-3 text-[13px] leading-snug text-dim">
-              <span className="font-semibold text-fg">{momentum || "—"} weeks</span> of gentle momentum —
-              the garden&apos;s filling in. No pressure to post; it&apos;ll wait.
+              <span className="font-semibold text-fg">
+                {momentum > 0 ? `${momentum} weeks` : "— weeks"}
+              </span>
+              {" of gentle momentum — the garden's filling in. No pressure to post; it'll wait."}
             </p>
           </motion.div>
 
