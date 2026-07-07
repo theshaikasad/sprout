@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import uuid
 from datetime import datetime
 
@@ -163,9 +164,15 @@ async def run_onboarding(uid: str, email: str = "", use_real_analytics: bool = T
                 await asyncio.to_thread(build_analytics, corpus)
 
             _set_status(uid, "ingesting", "building knowledge graph")
+            # Cloud Run cannot reach OpenAI embeddings API — skip Lane B in prod.
+            prod_mode = bool(os.getenv("SPROUT_DATABASE_URL", ""))
+            skip_lane_b = prod_mode
+            if skip_lane_b:
+                print("onboarding ingest: prod mode — skipping Lane B (no embeddings available)", flush=True)
             lane_b_ok = True
             try:
-                await run_ingest(fresh=True, skip_lane_b=False)
+                await run_ingest(fresh=True, skip_lane_b=skip_lane_b)
+                lane_b_ok = not skip_lane_b
             except RecursionError as e:
                 print(f"onboarding ingest: RecursionError — {e}, attempting skip-lane-b fallback", flush=True)
                 try:
