@@ -109,20 +109,16 @@ async def _bootstrap_demo_memory():
                     uid="demo",
                     display_name="Demo Creator",
                     is_demo=True,
-                    onboarding_status="ready",
-                    onboarding_stage="done",
-                    onboarding_detail="pre-built fallback data (no Cognee ingest in prod)",
                 )
                 session.add(user)
                 session.flush()
                 session.add(Preference(uid="demo"))
                 session.commit()
                 session.refresh(user)
-            elif user.onboarding_status == "error":
-                user.onboarding_status = "ready"
-                user.onboarding_stage = "done"
-                user.onboarding_detail = "auto-recovered (using fallback data)"
-                session.commit()
+            user.onboarding_status = "ready"
+            user.onboarding_stage = "done"
+            user.onboarding_detail = "pre-built fallback data"
+            session.commit()
         print("demo bootstrap: user ready (pre-built fallback mode)", flush=True)
     except Exception as e:
         print(f"demo bootstrap failed ({e})", flush=True)
