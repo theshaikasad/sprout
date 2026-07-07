@@ -819,6 +819,8 @@ async def connect_route(body: ConnectBody):
     """Demo-only fast path — real users use POST /onboarding/start after YouTube OAuth."""
     from .onboarding import get_onboarding_status, run_onboarding
     from .db.context import get_current_user
+    from .db.sync_session import sync_session
+    from .db.models import User
 
     ctx = get_current_user()
     if ctx.uid != "demo" and not ctx.is_demo:
@@ -826,6 +828,24 @@ async def connect_route(body: ConnectBody):
     status = get_onboarding_status("demo")
     if status.get("status") == "building":
         raise HTTPException(409, "already building")
+
+    # If graph already has data but status is damaged, auto-heal.
+    if status.get("status") == "error":
+        try:
+            g = await Graph.load()
+            if len(g.props) >= 100:
+                with sync_session() as session:
+                    u = session.get(User, "demo")
+                    if u:
+                        u.onboarding_status = "ready"
+                        u.onboarding_stage = "done"
+                        u.onboarding_detail = "graph healthy (auto-recovered via /connect)"
+                        session.commit()
+                print("demo status auto-recovered via /connect: error → ready", flush=True)
+                return {"ok": True, "channel": status.get("channel"), "recovered": True}
+        except Exception:
+            pass
+
     task = asyncio.create_task(run_onboarding("demo", "demo@sprout.internal", use_real_analytics=False))
     task.add_done_callback(
         lambda t: print(
