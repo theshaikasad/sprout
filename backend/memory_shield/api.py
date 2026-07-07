@@ -144,18 +144,26 @@ async def _bootstrap_demo_memory():
                 )
 
         async with with_user_cognee():
-            g = await Graph.load()
-            n_trends = len(g.by_type("Trend"))
-            if n_trends >= 1:
-                print(
-                    f"demo graph ready: {len(g.props)} nodes, {n_trends} trends",
-                    flush=True,
-                )
-                return
+            try:
+                g = await Graph.load()
+                n_trends = len(g.by_type("Trend"))
+                if n_trends >= 1:
+                    print(
+                        f"demo graph ready: {len(g.props)} nodes, {n_trends} trends",
+                        flush=True,
+                    )
+                    return
+            except Exception as load_err:
+                print(f"demo graph load failed ({load_err}) — will attempt onboarding", flush=True)
 
         print("demo graph empty — starting fixture onboarding ingest", flush=True)
-        asyncio.create_task(
+        task = asyncio.create_task(
             run_onboarding("demo", "demo@sprout.internal", use_real_analytics=False)
+        )
+        task.add_done_callback(
+            lambda t: print(
+                f"demo onboarding crashed: {t.exception()}", flush=True
+            ) if t.exception() else None
         )
     except Exception as e:
         print(f"demo bootstrap failed ({e}) — will retry via /connect", flush=True)
@@ -388,43 +396,49 @@ async def analytics_route():
 
 @app.get("/trends")
 async def trends():
-    g = await Graph.load()
-    dists_niche = await topic_distances(NICHE)
-    out = []
-    for nid, p in sorted(
-        g.by_type("Trend"), key=lambda np: np[1].get("peaked_at", ""), reverse=True
-    ):
-        label = p.get("label") or ""
-        dists = await topic_distances(label)
-        bridge = build_bridge(g, dists)
-        evidence = []
-        for v in g.out_rel(nid, "evidenced_by"):
-            if not is_trend_evidence(g, v, label, dists, dists_niche):
-                continue
-            card = g.video_card(v)
-            fit = _video_fit(g, v, bridge)
-            if fit == "skip":
-                continue
-            evidence.append({**card, "fit": fit})
-        evidence.sort(key=lambda v: -(v["views"] or 0))
-        out.append({
-            "node_id": nid,
-            "label": label,
-            "peaked_at": p.get("peaked_at"),
-            "evidence": len(evidence),
-            "evidence_videos": [
-                {
-                    "video_id": v["video_id"],
-                    "title": v["title"],
-                    "channel": v["channel"],
-                    "views": v["views"],
-                    "published": v["published"],
-                    "fit": v["fit"],
-                }
-                for v in evidence[:6]
-            ],
-        })
-    return out
+    try:
+        g = await Graph.load()
+        dists_niche = await topic_distances(NICHE)
+        out = []
+        for nid, p in sorted(
+            g.by_type("Trend"), key=lambda np: np[1].get("peaked_at", ""), reverse=True
+        ):
+            label = p.get("label") or ""
+            try:
+                dists = await topic_distances(label)
+            except Exception:
+                dists = {}
+            bridge = build_bridge(g, dists)
+            evidence = []
+            for v in g.out_rel(nid, "evidenced_by"):
+                if not is_trend_evidence(g, v, label, dists, dists_niche):
+                    continue
+                card = g.video_card(v)
+                fit = _video_fit(g, v, bridge)
+                if fit == "skip":
+                    continue
+                evidence.append({**card, "fit": fit})
+            evidence.sort(key=lambda v: -(v["views"] or 0))
+            out.append({
+                "node_id": nid,
+                "label": label,
+                "peaked_at": p.get("peaked_at"),
+                "evidence": len(evidence),
+                "evidence_videos": [
+                    {
+                        "video_id": v["video_id"],
+                        "title": v["title"],
+                        "channel": v["channel"],
+                        "views": v["views"],
+                        "published": v["published"],
+                        "fit": v["fit"],
+                    }
+                    for v in evidence[:6]
+                ],
+            })
+        return out
+    except Exception:
+        return []
 
 
 @app.get("/library")
@@ -804,17 +818,25 @@ async def connect_route(body: ConnectBody):
     status = get_onboarding_status("demo")
     if status.get("status") == "building":
         raise HTTPException(409, "already building")
-    asyncio.create_task(run_onboarding("demo", "demo@sprout.internal", use_real_analytics=False))
+    task = asyncio.create_task(run_onboarding("demo", "demo@sprout.internal", use_real_analytics=False))
+    task.add_done_callback(
+        lambda t: print(
+            f"/connect demo onboarding crashed: {t.exception()}", flush=True
+        ) if t.exception() else None
+    )
     return {"ok": True, "channel": status.get("channel"), "rebuilding": True}
 
 
 @app.get("/connect/status")
 async def connect_status():
-    from .onboarding import get_onboarding_status
-    from .db.context import get_current_user
+    try:
+        from .onboarding import get_onboarding_status
+        from .db.context import get_current_user
 
-    s = get_onboarding_status(get_current_user().uid)
-    return {**s, "stage": s.get("stage", "idle"), "elapsed": 0}
+        s = get_onboarding_status(get_current_user().uid)
+        return {**s, "stage": s.get("stage", "idle"), "elapsed": 0}
+    except Exception as e:
+        return {"stage": "error", "detail": str(e)[:200], "status": "error", "error": str(e)[:200], "elapsed": 0}
 
 
 @app.get("/health")

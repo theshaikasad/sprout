@@ -18,6 +18,7 @@ export default function RagContrast({
     api
       .contrast(trend ?? undefined)
       .then(setData)
+      .catch(() => setData(null))
       .finally(() => setBusy(false));
   }, [trend]);
 

@@ -113,8 +113,10 @@ export default function IdeasBoard({
                 type="date"
                 value={it.target?.slice(0, 10) ?? ""}
                 onChange={async (e) => {
-                  await api.patchIdea(it.id, { target: e.target.value });
-                  onChanged();
+                  try {
+                    await api.patchIdea(it.id, { target: e.target.value });
+                    onChanged();
+                  } catch { /* retry if needed */ }
                 }}
                 className="rounded-md border border-line bg-raised px-1.5 py-1 font-mono text-[10px] text-dim outline-none focus:border-accent/50"
               />
@@ -125,8 +127,10 @@ export default function IdeasBoard({
                   const stateMap: Record<string, string> = {
                     saved: "seed", scripting: "planted", filming: "planted", posted: "sprouted",
                   };
-                  await api.patchIdea(it.id, { status: stateMap[v] || v });
-                  onChanged();
+                  try {
+                    await api.patchIdea(it.id, { status: stateMap[v] || v });
+                    onChanged();
+                  } catch { /* retry if needed */ }
                 }}
                 className="rounded-md border border-line bg-raised px-2 py-1 font-mono text-[11px] text-dim outline-none focus:border-accent/50"
               >
@@ -138,7 +142,9 @@ export default function IdeasBoard({
               </select>
               <button
                 onClick={async () => {
-                  await api.deleteIdea(it.id);
+                  try {
+                    await api.deleteIdea(it.id);
+                  } catch { /* retry if needed */ }
                   if (openId === it.id) setOpenId(null);
                   onChanged();
                 }}

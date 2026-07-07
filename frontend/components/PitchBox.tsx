@@ -27,7 +27,9 @@ export default function PitchBox({
       try {
         const r = await api.review(pitch);
         setReview(r);
-        onTrace(r.trace); // the graph flies through the evidence
+        onTrace(r.trace);
+      } catch {
+        setReview(null);
       } finally {
         setBusy(false);
       }
@@ -152,12 +154,16 @@ export default function PitchBox({
           <button
             disabled={saved}
             onClick={async () => {
-              await api.addIdea(review.recommended?.title || idea.trim(), "pitched", {
-                review,
-                trace: review.trace,
-              });
-              setSaved(true);
-              onSaved();
+              try {
+                await api.addIdea(review.recommended?.title || idea.trim(), "pitched", {
+                  review,
+                  trace: review.trace,
+                });
+                setSaved(true);
+                onSaved();
+              } catch {
+                // silently fail — user can retry
+              }
             }}
             className="btn-ghost mt-3 px-4 py-2 text-xs font-medium disabled:opacity-50"
           >

@@ -5,6 +5,7 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import {
   api,
   type BacktestResponse,
@@ -179,6 +180,8 @@ function Studio() {
     setBacktestBusy(true);
     try {
       setBacktest(await api.backtest());
+    } catch {
+      setBacktest(null);
     } finally {
       setBacktestBusy(false);
     }
@@ -264,8 +267,12 @@ function Studio() {
   }
 
   async function decay(trend: string) {
-    const res = await api.decay(trend);
-    flash(`forget(): "${trend}" decayed — ${res.deleted_nodes} nodes removed`);
+    try {
+      const res = await api.decay(trend);
+      flash(`forget(): "${trend}" decayed — ${res.deleted_nodes} nodes removed`);
+    } catch {
+      flash(`Could not decay "${trend}" — try again`);
+    }
     api.trends().then(setTrends).catch(() => {});
     api.graph().then(setGraph).catch(() => {});
     if (activeTrend === trend) runSuggest();
@@ -631,22 +638,30 @@ function Studio() {
                       toggleGraph(true);
                     }}
                     onCreate={async () => {
-                      await api.addIdea(
-                        card.title,
-                        "generated",
-                        { card, trace: card.trace, state: "planted" },
-                        defaultTarget(),
-                      );
-                      refreshIdeas();
-                      api.garden().then(setGarden).catch(() => {});
-                      flash("✨ Created — it's on your board with a target date");
+                      try {
+                        await api.addIdea(
+                          card.title,
+                          "generated",
+                          { card, trace: card.trace, state: "planted" },
+                          defaultTarget(),
+                        );
+                        refreshIdeas();
+                        api.garden().then(setGarden).catch(() => {});
+                        flash("✨ Created — it's on your board with a target date");
+                      } catch {
+                        flash("Could not save that idea — try again");
+                      }
                     }}
                     created={savedTitles.has(card.title)}
                     trace={card.trace}
                     onFeedback={async (confirmed) => {
-                      await api.feedback(card.trace, confirmed ? 25 : -25);
-                      flash(confirmed ? "Memory sharpened — nailed it" : "Got it — burying that pattern");
-                      runSuggest(activeTrend ?? undefined);
+                      try {
+                        await api.feedback(card.trace, confirmed ? 25 : -25);
+                        flash(confirmed ? "Memory sharpened — nailed it" : "Got it — burying that pattern");
+                        runSuggest(activeTrend ?? undefined);
+                      } catch {
+                        flash("Feedback not saved — try again");
+                      }
                     }}
                   />
                 ))
@@ -952,8 +967,10 @@ function Studio() {
 
 export default function StudioPage() {
   return (
-    <Suspense fallback={null}>
-      <Studio />
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={null}>
+        <Studio />
+      </Suspense>
+    </ErrorBoundary>
   );
 }
