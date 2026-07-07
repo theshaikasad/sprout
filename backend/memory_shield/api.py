@@ -89,13 +89,13 @@ async def _scheduled_refresh_loop():
 
 
 async def _bootstrap_demo_memory():
-    """Postgres: ensure demo uid has a Cognee dataset and kick ingest if graph is empty."""
-    from .config import SPROUT_DATABASE_URL
-    from .cognee_context import is_postgres_multi_user, with_user_cognee
-    from .db.context import UserContext, set_current_user
+    """Postgres: ensure demo user exists. In prod we skip Cognee graph building
+    entirely — Cloud Run cannot reach OpenAI for embeddings. The frontend
+    uses pre-built fallback JSON (fallback_suggest.json, fallback_graph.json,
+    fallback_backtest.json) shipped in the Docker image."""
+    from .cognee_context import is_postgres_multi_user
     from .db.models import Preference, User
     from .db.sync_session import init_sync_db, sync_session
-    from .onboarding import ensure_cognee_user, run_onboarding
 
     if not is_postgres_multi_user():
         return
@@ -109,72 +109,23 @@ async def _bootstrap_demo_memory():
                     uid="demo",
                     display_name="Demo Creator",
                     is_demo=True,
-                    onboarding_status="pending",
+                    onboarding_status="ready",
+                    onboarding_stage="done",
+                    onboarding_detail="pre-built fallback data (no Cognee ingest in prod)",
                 )
                 session.add(user)
                 session.flush()
                 session.add(Preference(uid="demo"))
                 session.commit()
                 session.refresh(user)
-
-        set_current_user(
-            UserContext(
-                uid=user.uid,
-                is_demo=user.is_demo,
-                cognee_user_id=user.cognee_user_id,
-                cognee_dataset_id=user.cognee_dataset_id,
-                youtube_channel_id=user.youtube_channel_id or "",
-                telegram_chat_id=user.telegram_chat_id or "",
-            )
-        )
-        await ensure_cognee_user("demo", "demo@sprout.internal")
-
-        with sync_session() as session:
-            user = session.get(User, "demo")
-            if user:
-                set_current_user(
-                    UserContext(
-                        uid=user.uid,
-                        is_demo=user.is_demo,
-                        cognee_user_id=user.cognee_user_id,
-                        cognee_dataset_id=user.cognee_dataset_id,
-                        youtube_channel_id=user.youtube_channel_id or "",
-                        telegram_chat_id=user.telegram_chat_id or "",
-                    )
-                )
-
-        async with with_user_cognee():
-            try:
-                g = await Graph.load()
-                n_trends = len(g.by_type("Trend"))
-                if n_trends >= 1:
-                    print(
-                        f"demo graph ready: {len(g.props)} nodes, {n_trends} trends",
-                        flush=True,
-                    )
-                    with sync_session() as session:
-                        u = session.get(User, "demo")
-                        if u and u.onboarding_status == "error":
-                            u.onboarding_status = "ready"
-                            u.onboarding_stage = "done"
-                            u.onboarding_detail = "graph healthy (auto-recovered)"
-                            session.commit()
-                            print("demo status auto-recovered: error → ready", flush=True)
-                    return
-            except Exception as load_err:
-                print(f"demo graph load failed ({load_err}) — will attempt onboarding", flush=True)
-
-        print("demo graph empty — starting fixture onboarding ingest", flush=True)
-        task = asyncio.create_task(
-            run_onboarding("demo", "demo@sprout.internal", use_real_analytics=False)
-        )
-        task.add_done_callback(
-            lambda t: print(
-                f"demo onboarding crashed: {t.exception()}", flush=True
-            ) if t.exception() else None
-        )
+            elif user.onboarding_status == "error":
+                user.onboarding_status = "ready"
+                user.onboarding_stage = "done"
+                user.onboarding_detail = "auto-recovered (using fallback data)"
+                session.commit()
+        print("demo bootstrap: user ready (pre-built fallback mode)", flush=True)
     except Exception as e:
-        print(f"demo bootstrap failed ({e}) — will retry via /connect", flush=True)
+        print(f"demo bootstrap failed ({e})", flush=True)
 
 
 @asynccontextmanager
@@ -816,43 +767,23 @@ class ConnectBody(BaseModel):
 
 @app.post("/connect")
 async def connect_route(body: ConnectBody):
-    """Demo-only fast path — real users use POST /onboarding/start after YouTube OAuth."""
-    from .onboarding import get_onboarding_status, run_onboarding
+    """Demo-only fast path — in prod, just sets status to ready (pre-built fallback data)."""
     from .db.context import get_current_user
-    from .db.sync_session import sync_session
     from .db.models import User
+    from .db.sync_session import sync_session
 
     ctx = get_current_user()
     if ctx.uid != "demo" and not ctx.is_demo:
         raise HTTPException(400, "use /onboarding/start after YouTube OAuth")
-    status = get_onboarding_status("demo")
-    if status.get("status") == "building":
-        raise HTTPException(409, "already building")
 
-    # If graph already has data but status is damaged, auto-heal.
-    if status.get("status") == "error":
-        try:
-            g = await Graph.load()
-            if len(g.props) >= 100:
-                with sync_session() as session:
-                    u = session.get(User, "demo")
-                    if u:
-                        u.onboarding_status = "ready"
-                        u.onboarding_stage = "done"
-                        u.onboarding_detail = "graph healthy (auto-recovered via /connect)"
-                        session.commit()
-                print("demo status auto-recovered via /connect: error → ready", flush=True)
-                return {"ok": True, "channel": status.get("channel"), "recovered": True}
-        except Exception:
-            pass
-
-    task = asyncio.create_task(run_onboarding("demo", "demo@sprout.internal", use_real_analytics=False))
-    task.add_done_callback(
-        lambda t: print(
-            f"/connect demo onboarding crashed: {t.exception()}", flush=True
-        ) if t.exception() else None
-    )
-    return {"ok": True, "channel": status.get("channel"), "rebuilding": True}
+    with sync_session() as session:
+        u = session.get(User, "demo")
+        if u:
+            u.onboarding_status = "ready"
+            u.onboarding_stage = "done"
+            u.onboarding_detail = "pre-built fallback data"
+            session.commit()
+    return {"ok": True, "channel": None, "recovered": True}
 
 
 @app.get("/connect/status")
