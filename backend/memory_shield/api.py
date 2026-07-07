@@ -152,6 +152,14 @@ async def _bootstrap_demo_memory():
                         f"demo graph ready: {len(g.props)} nodes, {n_trends} trends",
                         flush=True,
                     )
+                    with sync_session() as session:
+                        u = session.get(User, "demo")
+                        if u and u.onboarding_status == "error":
+                            u.onboarding_status = "ready"
+                            u.onboarding_stage = "done"
+                            u.onboarding_detail = "graph healthy (auto-recovered)"
+                            session.commit()
+                            print("demo status auto-recovered: error → ready", flush=True)
                     return
             except Exception as load_err:
                 print(f"demo graph load failed ({load_err}) — will attempt onboarding", flush=True)
