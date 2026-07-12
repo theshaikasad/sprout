@@ -68,6 +68,12 @@ else:
 # Spec §12: gpt-4o-mini everywhere (cognee 1.2.2 defaults to gpt-5-mini otherwise).
 os.environ.setdefault("LLM_MODEL", "openai/gpt-4o-mini")
 
+# Cognee session memory is unused here, and its auto_feedback runs an extra
+# structured-output LLM call per search() — with retry storms when it fails
+# (it stalled prod /contrast for minutes). Kill both.
+os.environ.setdefault("CACHING", "false")
+os.environ.setdefault("AUTO_FEEDBACK", "false")
+
 # --- Keys -------------------------------------------------------------------
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY", "")
