@@ -85,8 +85,8 @@ export default function ChatDock({
         {msgs.length === 0 && (
           <p className="text-sm italic leading-relaxed text-faint">
             “How are my last uploads doing?” · “What&apos;s overperforming in my
-            niche?” · “What did I actually say about tool use?” · “Is MCP worth
-            chasing for me?” · “Plan the best one for Saturday”
+            niche?” · “Which of my hooks actually hold people?” · “Is the morning-routine
+            wave worth riding?” · “Plan the best one for Saturday”
           </p>
         )}
         {msgs.map((m, i) => (

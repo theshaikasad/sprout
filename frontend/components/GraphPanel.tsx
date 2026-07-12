@@ -70,13 +70,6 @@ function pinNodes(nodes: FGNode[]) {
   }
 }
 
-function unpinNodes(nodes: FGNode[]) {
-  for (const n of nodes) {
-    n.fx = undefined;
-    n.fy = undefined;
-  }
-}
-
 export default function GraphPanel({
   graph,
   trace,
@@ -112,13 +105,32 @@ export default function GraphPanel({
     return () => ro.disconnect();
   }, []);
 
-  const data = useMemo(() => {
-    if (!graph) return { nodes: [], links: [] };
-    return {
-      nodes: graph.nodes.map((n) => ({ ...n })) as FGNode[],
-      links: graph.edges.map((e) => ({ ...e })) as FGLink[],
-    };
-  }, [graph]);
+  /* Positions must survive /graph refetches (chat + feedback refetch it), or the
+     whole layout re-explodes: same signature → same object reference (zero re-init);
+     changed signature → carry settled coordinates over by node id, pinned, so only
+     genuinely new nodes move. Render-phase state adjustment (react.dev: "storing
+     information from previous renders"). */
+  const [cache, setCache] = useState<{
+    sig: string;
+    data: { nodes: FGNode[]; links: FGLink[] };
+  }>({ sig: "", data: { nodes: [], links: [] } });
+  if (graph && graphSig(graph) !== cache.sig) {
+    const prevById = new Map(cache.data.nodes.map((n) => [n.id, n]));
+    const nodes = graph.nodes.map((n) => {
+      const node = { ...n } as FGNode;
+      const prev = prevById.get(n.id);
+      if (prev?.x !== undefined && prev?.y !== undefined) {
+        node.x = prev.x;
+        node.y = prev.y;
+        node.fx = prev.x;
+        node.fy = prev.y;
+      }
+      return node;
+    });
+    const links = graph.edges.map((e) => ({ ...e })) as FGLink[];
+    setCache({ sig: graphSig(graph), data: { nodes, links } });
+  }
+  const data = cache.data;
 
   const dataRef = useRef(data);
   useEffect(() => {
@@ -181,7 +193,8 @@ export default function GraphPanel({
     }
   }, [trace, querying]);
 
-  /* New graph payload → one layout pass, then freeze via onEngineStop. */
+  /* Genuinely new graph payload → one layout pass for the NEW nodes only
+     (carried-over nodes arrive pinned from the memo), then freeze via onEngineStop. */
   useEffect(() => {
     const sig = graphSig(graph);
     if (sig === lastGraphSig.current) return;
@@ -189,10 +202,7 @@ export default function GraphPanel({
 
     initialFitDone.current = false;
     lastAnimatedTrace.current = null;
-    const fg = fgRef.current;
-    if (!fg) return;
-    unpinNodes(data.nodes);
-    fg.d3ReheatSimulation?.();
+    fgRef.current?.d3ReheatSimulation?.();
   }, [graph, data]);
 
   /* Clear animation lock when a new query starts so re-runs can replay the path. */
@@ -218,8 +228,6 @@ export default function GraphPanel({
       lastAnimatedTrace.current = key;
       traceStart.current = performance.now();
 
-      const nodes = dataRef.current.nodes;
-      const byId = new Map(nodes.map((n) => [n.id, n]));
       const hops: string[][] = [
         trace.trend ? [trace.trend] : [],
         trace.topics,
@@ -227,39 +235,17 @@ export default function GraphPanel({
         [...trace.formats, ...trace.hooks],
       ].filter((h) => h.length > 0);
 
+      // keep repainting while the hop-by-hop lighting animates
       const animMs = hops.length * HOP_MS + 1000;
       startRefreshLoop(animMs);
 
-      hops.forEach((ids, i) => {
-        zoomTimers.current.push(
-          setTimeout(() => {
-            const pts = ids
-              .map((nid) => byId.get(nid))
-              .filter((n) => n?.x !== undefined) as FGNode[];
-            if (!pts.length) return;
-            const cx = pts.reduce((s, n) => s + n.x!, 0) / pts.length;
-            const cy = pts.reduce((s, n) => s + n.y!, 0) / pts.length;
-            fg.centerAt(cx, cy, 550);
-            fg.zoom(3.2, 550);
-          }, i * HOP_MS),
-        );
-      });
-
-      zoomTimers.current.push(
-        setTimeout(
-          () =>
-            fg.zoomToFit(
-              700,
-              60,
-              (n: FGNode) =>
-                new Set(
-                  [trace.trend, ...trace.topics, ...trace.videos, ...trace.formats, ...trace.hooks]
-                    .filter(Boolean) as string[],
-                ).has(n.id),
-            ),
-          hops.length * HOP_MS + 250,
-        ),
+      // one gentle settle onto the lit path — no fly-through
+      const inTrace = new Set(
+        [trace.trend, ...trace.topics, ...trace.videos, ...trace.formats, ...trace.hooks].filter(
+          Boolean,
+        ) as string[],
       );
+      fg.zoomToFit(700, 60, (n: FGNode) => inTrace.has(n.id));
     };
 
     const waitForPositions = (attempt = 0) => {

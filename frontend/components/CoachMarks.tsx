@@ -2,23 +2,28 @@
 
 import { useEffect, useState } from "react";
 
-const KEY = "ms_toured";
+const KEY = "ms_toured_v2";
 
 const STEPS = [
   {
-    target: "outliers",
-    title: "Real outlier videos",
-    body: "These are actual niche videos pulling views — watch one, then ride the wave or pass.",
+    target: "what is this",
+    title: "A live memory of one real channel",
+    body: "Sprout is an AI companion that remembers a creator. This demo runs on @LanaBlakely's real channel — her videos, transcripts, and analytics, distilled into the knowledge graph on the right. Nothing is mocked.",
   },
   {
-    target: "concepts",
-    title: "Cited concepts",
-    body: "Every card cites your proof videos first. Click to light up the graph path behind it.",
+    target: "how it works",
+    title: "Cited concepts, already loaded",
+    body: "The cards below are new video ideas retrieved from that memory. The thumbnails under each are receipts — her video that proves the pattern, plus one proving demand. Uncited ideas get discarded.",
   },
   {
-    target: "board",
-    title: "Plant it",
-    body: "🌱 plant it tucks the full shoot brief into your vision board with a target publish date.",
+    target: "teach it",
+    title: "Feedback actually changes it",
+    body: "“Nailed it” or “you're wrong” on a card reweights the graph (improve()) and the next batch visibly shifts. The memory gets sharper, not just bigger.",
+  },
+  {
+    target: "why believe it",
+    title: "Proof, not vibes",
+    body: "Scroll to “Why believe it”: a backtest where the memory was blinded to her last 3 months and pointed at videos she actually made — and a side-by-side against plain RAG.",
   },
 ];
 

@@ -22,7 +22,7 @@ import {
 import { watchAuth, type User } from "@/lib/firebase";
 import ConceptCard from "@/components/ConceptCard";
 import DashboardBackdrop from "@/components/DashboardBackdrop";
-import SproutDashboard from "@/components/SproutDashboard";
+import DemoIntro from "@/components/DemoIntro";
 import GraphPanel from "@/components/GraphPanel";
 import ChatDock from "@/components/ChatDock";
 import BacktestReveal from "@/components/BacktestReveal";
@@ -114,8 +114,6 @@ function Studio() {
   const [graphOpen, setGraphOpen] = useState(false);
   const [graphQuerying, setGraphQuerying] = useState(false);
   const [chatGraphPending, setChatGraphPending] = useState(false);
-  const [showAllConcepts, setShowAllConcepts] = useState(false);
-  const [conceptsRequested, setConceptsRequested] = useState(false);
   const [chatSeed, setChatSeed] = useState<string | null>(null);
   const [me, setMe] = useState<User | null>(null);
   const [memorySharpened, setMemorySharpened] = useState(false);
@@ -214,10 +212,13 @@ function Studio() {
       .catch(() => {});
     refreshIdeas();
     api.garden().then(setGarden).catch(() => {});
+    runSuggest(); // the cited cards ARE the demo — load them unprompted
     if (search.get("proof") === "1") runBacktest(); // onboarding: earn trust first
     return watchAuth(setMe);
+    // Mount-only on purpose: runSuggest's identity changes when /track lands,
+    // and re-running this effect refetches every endpoint in a loop.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runSuggest, refreshIdeas, runBacktest]);
+  }, []);
 
   useEffect(() => {
     if (!loading) return;
@@ -246,17 +247,6 @@ function Studio() {
     });
     if (open === true || open === undefined) {
       setChatGraphPending(false);
-    }
-  }
-
-  async function handlePlantSeed(id: string) {
-    try {
-      await api.plantIdea(id);
-      flash("🌱 planted — it takes root on your board");
-      api.garden().then(setGarden).catch(() => {});
-      refreshIdeas();
-    } catch {
-      flash("couldn't plant — try again");
     }
   }
 
@@ -314,7 +304,6 @@ function Studio() {
     "Your garden is waiting — here's what matters today.";
 
   const conceptCards = suggestion?.cards ?? [];
-  const visibleCards = showAllConcepts ? conceptCards : conceptCards.slice(0, 2);
 
   const sproutedIdeas = ideas.filter(
     (i) => i.state === "sprouted" || i.status === "posted",
@@ -329,7 +318,6 @@ function Studio() {
   const sproutedPlants = (garden?.plants ?? []).filter((p) => p.from_idea);
 
   function requestConcepts(trend?: string) {
-    setConceptsRequested(true);
     setPitchTrace(null);
     toggleGraph(true);
     runSuggest(trend ?? activeTrend ?? "slow living");
@@ -463,6 +451,14 @@ function Studio() {
 
       {tab === "today" && (
         <div className="mx-auto mt-6 max-w-3xl space-y-6">
+          {!me && (
+            <DemoIntro
+              onShowGraph={() => toggleGraph(true)}
+              onRunBacktest={runBacktest}
+              busy={backtestBusy}
+            />
+          )}
+
           <section>
             <h1 className="display text-[2.1rem]">
               {greeting}, <span className="serif-accent text-accent">{firstName}</span>.
@@ -502,84 +498,6 @@ function Studio() {
             )}
           </section>
 
-          <section>
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="display text-[1.35rem]">What you&apos;ve grown</h2>
-              {plantedIdeas.length > 0 && (
-                <button
-                  onClick={() => setTab("board")}
-                  className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent"
-                >
-                  {plantedIdeas.length} planted · ready to film →
-                </button>
-              )}
-            </div>
-            <p className="mt-1 text-sm text-faint">
-              Sprouted ideas and videos — your garden&apos;s history, not suggestions thrown back at you.
-            </p>
-
-            {sproutedIdeas.length === 0 && sproutedPlants.length === 0 ? (
-              <div className="panel mt-4 p-5">
-                <p className="text-sm text-dim">
-                  Nothing sprouted yet — plant an idea from chat, then mark it posted when you film it.
-                </p>
-              </div>
-            ) : (
-              <ul className="mt-4 space-y-2">
-                {sproutedIdeas.map((idea) => (
-                  <li
-                    key={idea.id}
-                    className="panel flex items-center gap-3 px-4 py-3"
-                  >
-                    <span aria-hidden>🌸</span>
-                    <button
-                      type="button"
-                      onClick={() => setTab("board")}
-                      className="min-w-0 flex-1 truncate text-left text-sm font-medium hover:text-accent"
-                    >
-                      {idea.title}
-                    </button>
-                    <span className="font-mono text-[10px] text-faint">sprouted</span>
-                  </li>
-                ))}
-                {sproutedPlants.map((p) => (
-                  <li
-                    key={p.video_id}
-                    className="panel flex items-center gap-3 px-4 py-3"
-                  >
-                    <Thumb videoId={p.video_id} title={p.title} w={56} />
-                    <a
-                      href={`https://youtube.com/watch?v=${p.video_id}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="min-w-0 flex-1 truncate text-sm font-medium hover:text-accent"
-                    >
-                      {p.title}
-                    </a>
-                    <span className="font-mono text-[10px] text-accent">from idea</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-
-          <section>
-            <p className="label">ask sprout</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {CHAT_ACTIONS.map((action) => (
-                <button
-                  key={action.id}
-                  onClick={() => openChatAction(action)}
-                  className="panel px-3.5 py-2.5 text-left transition-colors hover:border-accent/40"
-                >
-                  <span className="block text-sm font-medium">{action.label}</span>
-                  <span className="mt-0.5 block font-mono text-[10px] text-faint">{action.hint}</span>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          {conceptsRequested && (
           <section id="concepts">
             <div className="flex items-baseline justify-between">
               <h2 className="display text-[1.35rem]">
@@ -601,6 +519,11 @@ function Studio() {
                 )}
               </button>
             </div>
+            <p className="mt-1 text-sm text-faint">
+              New video ideas retrieved from her memory — not from a blank prompt. Click a card to
+              light up the graph path that justified it; the thumbs teach the memory (
+              <span className="font-mono text-[11px]">improve()</span>).
+            </p>
 
             <div className="mt-4 space-y-4">
               {loading ? (
@@ -618,7 +541,7 @@ function Studio() {
                   ))}
                 </>
               ) : (
-                visibleCards.map((card, i) => (
+                conceptCards.map((card, i) => (
                   <ConceptCard
                     key={`${suggestion?.trend}-${i}-${card.title}`}
                     card={card}
@@ -660,32 +583,119 @@ function Studio() {
                 ))
               )}
             </div>
-            {!loading && conceptCards.length > 2 && (
-              <button
-                onClick={() => setShowAllConcepts((v) => !v)}
-                className="mt-3 text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent"
-              >
-                {showAllConcepts
-                  ? "Show fewer concepts"
-                  : `See all ${conceptCards.length} concepts →`}
-              </button>
-            )}
           </section>
-          )}
 
-          <details className="panel group p-4">
-            <summary className="cursor-pointer text-sm font-medium text-fg hover:text-accent">
-              Your garden
-              <span className="ml-2 font-mono text-[10px] text-faint">seeds · planted · plants</span>
-            </summary>
-            <div className="mt-4">
-              <SproutDashboard
-                garden={garden}
-                creatorName={firstName}
-                onPlant={handlePlantSeed}
-              />
+          <section id="proof">
+            <h2 className="display text-[1.35rem]">Why believe it</h2>
+            <p className="mt-1 text-sm text-faint">
+              Two ways to check the memory isn&apos;t making things up.
+            </p>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="panel flex flex-col p-5">
+                <p className="label text-accent">the sealed backtest</p>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-dim">
+                  We hid her last 3 months from the memory, asked it what to make next, then broke
+                  the seal. It pointed at the videos she actually went on to make — the top one did
+                  2.06× her median.
+                </p>
+                <button
+                  onClick={runBacktest}
+                  disabled={backtestBusy}
+                  className="btn-primary mt-3 self-start px-4 py-2 text-xs disabled:opacity-50"
+                >
+                  break the seal →
+                </button>
+              </div>
+              <div className="panel flex flex-col p-5">
+                <p className="label text-blue">not just RAG</p>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-dim">
+                  The same question asked two ways: plain vector search over her transcripts
+                  (fluent, uncited prose) vs Sprout&apos;s graph join (cited concepts). Side by
+                  side.
+                </p>
+                <button
+                  onClick={() => setContrastOpen(true)}
+                  className="btn-ghost mt-3 self-start px-4 py-2 text-xs"
+                >
+                  see the contrast →
+                </button>
+              </div>
             </div>
-          </details>
+          </section>
+
+          <section>
+            <p className="label">ask sprout</p>
+            <p className="mt-1 text-sm text-faint">
+              The same memory, conversational — it may only state numbers that came out of a tool.
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {CHAT_ACTIONS.map((action) => (
+                <button
+                  key={action.id}
+                  onClick={() => openChatAction(action)}
+                  className="panel px-3.5 py-2.5 text-left transition-colors hover:border-accent/40"
+                >
+                  <span className="block text-sm font-medium">{action.label}</span>
+                  <span className="mt-0.5 block font-mono text-[10px] text-faint">{action.hint}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {(sproutedIdeas.length > 0 || sproutedPlants.length > 0) && (
+            <section>
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <h2 className="display text-[1.35rem]">What you&apos;ve grown</h2>
+                {plantedIdeas.length > 0 && (
+                  <button
+                    onClick={() => setTab("board")}
+                    className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent"
+                  >
+                    {plantedIdeas.length} planted · ready to film →
+                  </button>
+                )}
+              </div>
+              <p className="mt-1 text-sm text-faint">
+                Sprouted ideas and videos — your garden&apos;s history, not suggestions thrown back at you.
+              </p>
+
+              <ul className="mt-4 space-y-2">
+                {sproutedIdeas.map((idea) => (
+                  <li
+                    key={idea.id}
+                    className="panel flex items-center gap-3 px-4 py-3"
+                  >
+                    <span aria-hidden>🌸</span>
+                    <button
+                      type="button"
+                      onClick={() => setTab("board")}
+                      className="min-w-0 flex-1 truncate text-left text-sm font-medium hover:text-accent"
+                    >
+                      {idea.title}
+                    </button>
+                    <span className="font-mono text-[10px] text-faint">sprouted</span>
+                  </li>
+                ))}
+                {sproutedPlants.map((p) => (
+                  <li
+                    key={p.video_id}
+                    className="panel flex items-center gap-3 px-4 py-3"
+                  >
+                    <Thumb videoId={p.video_id} title={p.title} w={56} />
+                    <a
+                      href={`https://youtube.com/watch?v=${p.video_id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="min-w-0 flex-1 truncate text-sm font-medium hover:text-accent"
+                    >
+                      {p.title}
+                    </a>
+                    <span className="font-mono text-[10px] text-accent">from idea</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           <details className="panel group p-4">
             <summary className="cursor-pointer text-sm font-medium text-fg hover:text-accent">
@@ -762,7 +772,6 @@ function Studio() {
                 trends={trends}
                 activeTrend={activeTrend}
                 onPick={(label) => {
-                  setConceptsRequested(true);
                   runSuggest(label);
                   toggleGraph(true);
                 }}
@@ -771,35 +780,6 @@ function Studio() {
             </div>
           </details>
 
-          <details className="panel group p-4">
-            <summary className="cursor-pointer text-sm font-medium text-fg hover:text-accent">
-              Skeptic stack
-              <span className="ml-2 font-mono text-[10px] text-faint">proof tools</span>
-            </summary>
-            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
-              <button
-                onClick={() => setContrastOpen(true)}
-                className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent"
-              >
-                RAG contrast
-              </button>
-              <span className="text-faint">·</span>
-              <button
-                onClick={runBacktest}
-                disabled={backtestBusy}
-                className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent disabled:opacity-50"
-              >
-                sealed backtest
-              </button>
-              <span className="text-faint">·</span>
-              <button
-                onClick={() => toggleGraph(true)}
-                className="text-xs text-dim underline decoration-dotted underline-offset-4 hover:text-accent"
-              >
-                show memory graph
-              </button>
-            </div>
-          </details>
         </div>
       )}
 
@@ -820,6 +800,10 @@ function Studio() {
 
       {tab === "library" && (
         <div className="mt-6">
+          <p className="mb-4 text-sm text-faint">
+            The corpus the memory was built from — her channel, six competitors in her size band,
+            and this week&apos;s trend videos.
+          </p>
           {lib ? (
             <ChannelShelf lib={lib} />
           ) : (
@@ -839,6 +823,7 @@ function Studio() {
             <h2 className="text-sm font-semibold tracking-tight">The memory</h2>
             <p className="font-mono text-[10px] text-faint">
               {graph ? `${graph.nodes.length} nodes · ${graph.edges.length} edges` : "loading…"}
+              {" — the structure the cards come from"}
             </p>
           </div>
           <span className="max-w-36 truncate text-right font-mono text-[10px] text-dim">
@@ -846,7 +831,7 @@ function Studio() {
               ? "▸ evidence for your pitch"
               : trace
                 ? `▸ path behind concept ${String((selectedCard ?? 0) + 1).padStart(2, "0")}`
-                : "query chat or concepts"}
+                : "click a card to trace why"}
           </span>
         </div>
         <div className="min-h-0 flex-1 overflow-hidden">{graphPanel}</div>
@@ -863,6 +848,7 @@ function Studio() {
             <h2 className="text-sm font-semibold tracking-tight">The memory</h2>
             <p className="font-mono text-[10px] text-faint">
               {graph ? `${graph.nodes.length} nodes · ${graph.edges.length} edges` : "loading…"}
+              {" — the structure the cards come from"}
             </p>
           </div>
           <button

@@ -13,28 +13,36 @@ function ProofStrip({
   creatorName: string | null;
 }) {
   if (!citations.length) return null;
+  const first = creatorName?.split(" ")[0] ?? "the creator";
   return (
-    <div className="mt-3 flex gap-2.5 overflow-x-auto pb-1">
-      {citations.map((c) => {
-        const mine = creatorName && c.channel === creatorName;
-        return (
-          <div key={c.video_id} className="shrink-0">
-            <span
-              className={`label block pb-1 ${mine ? "text-accent" : "text-blue"}`}
-              style={{ fontSize: "9px" }}
-            >
-              {mine ? "your proof" : "trending now"}
-            </span>
-            <Thumb
-              videoId={c.video_id}
-              title={`${c.title} — ${c.views.toLocaleString()} views`}
-              views={c.views}
-              channel={c.channel}
-              w={136}
-            />
-          </div>
-        );
-      })}
+    <div className="mt-3">
+      <p className="text-[11px] leading-snug text-faint">
+        <span className="font-medium text-dim">receipts, not recommendations</span> — {first}
+        &rsquo;s video that proves the pattern, plus one proving demand right now
+      </p>
+      <div className="mt-1.5 flex gap-2.5 overflow-x-auto pb-1">
+        {citations.map((c) => {
+          const mine = creatorName && c.channel === creatorName;
+          return (
+            <div key={c.video_id} className="shrink-0">
+              <span
+                className={`mb-1 inline-block rounded px-1.5 py-px font-mono text-[10px] font-medium ${
+                  mine ? "bg-accent-soft text-accent" : "bg-blue/10 text-blue"
+                }`}
+              >
+                {mine ? `${first}'s receipt` : "demand now"}
+              </span>
+              <Thumb
+                videoId={c.video_id}
+                title={`${c.title} — ${c.views.toLocaleString()} views`}
+                views={c.views}
+                channel={c.channel}
+                w={136}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -162,7 +170,7 @@ export default function ConceptCard({
 
       <details className="mt-3 border-t border-line pt-3">
         <summary className="cursor-pointer text-[11px] text-faint hover:text-dim">
-          why this works (cited)
+          why the memory believes this →
         </summary>
         <p className="mt-2 text-[13px] leading-relaxed text-dim">{card.why}</p>
       </details>
