@@ -1,0 +1,935 @@
+{
+ "trend": "slow living",
+ "cards": [
+  {
+   "title": "Transform Your Mindset with 5 Simple Slow Living Practices",
+   "title_variants": [
+    "Unlock the Secret to Mindful Living: 5 Easy Steps",
+    "Are You Making These Slow Living Mistakes?"
+   ],
+   "angle": "While many explore slow living, few offer actionable steps to integrate it into daily life; discover how to truly embody these practices.",
+   "hook": {
+    "text": "What if your everyday routine could feel like a retreat?",
+    "style": "question"
+   },
+   "format": "listicle",
+   "outline": [
+    "Explain the concept of slow living and its benefits.",
+    "Introduce 5 practical methods to slow down your lifestyle.",
+    "Provide examples of each method in action.",
+    "Share personal reflections on the transformational effects.",
+    "Encourage viewers to start their slow living journey today."
+   ],
+   "why": "By focusing on actionable steps for slow living, I can tap into a trend growing at 2.0×, n=4. Previous videos like '$0 luxuries that elevate your everyday life' performed well with a growth score of 2.02. Additionally, videos from creators like Matt D'Avella show that topics like 'I tried to optimize my life. It made it worse.' resonate well with audiences seeking lifestyle changes.",
+   "topic_labels_used": [
+    "slow living",
+    "mindful living",
+    "personal growth"
+   ],
+   "cited_video_ids": [
+    "g5MkJP6udxQ",
+    "-WM5U9xUrgY",
+    "Jawt_HcJWeA"
+   ],
+   "broll_keywords": [
+    "peaceful nature scenes",
+    "sipping tea",
+    "journaling",
+    "home workspace"
+   ],
+   "thumbnail": {
+    "concept": "your face center, serene smile; lush greenery background",
+    "overlay_text": "5 Slow Living Steps"
+   },
+   "citations": [
+    {
+     "video_id": "g5MkJP6udxQ",
+     "title": "Let life surprise you",
+     "channel": "Lana Blakely",
+     "views": 32495,
+     "published": "2025-11-25"
+    },
+    {
+     "video_id": "-WM5U9xUrgY",
+     "title": "$0 luxuries that elevate your everyday life",
+     "channel": "Lana Blakely",
+     "views": 57423,
+     "published": "2025-11-02"
+    },
+    {
+     "video_id": "Jawt_HcJWeA",
+     "title": "The water bottle trend has gone too far",
+     "channel": "Matt D'Avella",
+     "views": 605882,
+     "published": "2025-12-11"
+    }
+   ],
+   "trace": {
+    "trend": "3690f2cf-67e5-5a4f-b968-21c26fd4afc1",
+    "topics": [
+     "191cae51-79e4-5a81-bfe4-797de485b22d",
+     "ed6fa74d-8cb4-50c0-aef8-136c53b263ce"
+    ],
+    "videos": [
+     "29be28b8-b492-55ab-8f9f-32dcddb077ce",
+     "2a8aee09-7bb5-5c40-82c2-c31c7b83309b",
+     "1111f62c-dfd4-52b7-a749-314770bb8422"
+    ],
+    "formats": [
+     "359fd047-b103-5fcf-b416-c868c57aded9",
+     "3b902a25-2c07-55b7-84a6-b4c000156ad5",
+     "4070ab4d-4378-5822-836b-bbf11ee9056b"
+    ],
+    "hooks": [
+     "2b3bb630-8b8e-5435-9969-a3e96498019b",
+     "49d4130e-9a24-5285-9401-cd7051b7c1de",
+     "a51abbe3-a51b-5c18-8c0b-929928e5b829"
+    ]
+   }
+  },
+  {
+   "title": "The 3 Biggest Myths About Slow Living—and Why They're Wrong",
+   "title_variants": [
+    "Debunking Slow Living Myths: What You Need to Know",
+    "Are You Falling for These Slow Living Misconceptions?"
+   ],
+   "angle": "Most videos on slow living reinforce popular myths; I'll debunk these myths with evidence and personal experiences.",
+   "hook": {
+    "text": "Think slow living is about being lazy? Think again!",
+    "style": "pattern-interrupt"
+   },
+   "format": "personal-essay",
+   "outline": [
+    "Introduce the concept of slow living and its misconceptions.",
+    "Discuss the first myth and my personal experience relating to it.",
+    "Dispel the second myth with evidence and examples.",
+    "Challenge the third myth with a personal story.",
+    "Conclude with how embracing the truth can enhance life."
+   ],
+   "why": "Debunking myths improves viewer retention, with validated patterns showing a 1.1× increase in retention for vulnerable confessions, n=8. My previous video '$0 luxuries that elevate your everyday life' achieved a 2.02 performance ratio, indicating viewers engage deeply with clarifying content.",
+   "topic_labels_used": [
+    "slow living",
+    "personal growth",
+    "self-reflection"
+   ],
+   "cited_video_ids": [
+    "g5MkJP6udxQ",
+    "v01ojp9E9_E",
+    "-WM5U9xUrgY"
+   ],
+   "broll_keywords": [
+    "cozy living spaces",
+    "thoughtful reflections",
+    "nature walks",
+    "calm environments"
+   ],
+   "thumbnail": {
+    "concept": "your face left, playful frown; vibrant question mark graphic right",
+    "overlay_text": "Myth-Busting Slow Living"
+   },
+   "citations": [
+    {
+     "video_id": "g5MkJP6udxQ",
+     "title": "Let life surprise you",
+     "channel": "Lana Blakely",
+     "views": 32495,
+     "published": "2025-11-25"
+    },
+    {
+     "video_id": "v01ojp9E9_E",
+     "title": "a slow day in nature to soothe your mind 🌲📖",
+     "channel": "Lana Blakely",
+     "views": 31617,
+     "published": "2025-09-14"
+    },
+    {
+     "video_id": "-WM5U9xUrgY",
+     "title": "$0 luxuries that elevate your everyday life",
+     "channel": "Lana Blakely",
+     "views": 57423,
+     "published": "2025-11-02"
+    }
+   ],
+   "trace": {
+    "trend": "3690f2cf-67e5-5a4f-b968-21c26fd4afc1",
+    "topics": [
+     "191cae51-79e4-5a81-bfe4-797de485b22d"
+    ],
+    "videos": [
+     "29be28b8-b492-55ab-8f9f-32dcddb077ce",
+     "4f05f60b-c3bf-5838-a0a8-b9f59661f68b",
+     "2a8aee09-7bb5-5c40-82c2-c31c7b83309b"
+    ],
+    "formats": [
+     "359fd047-b103-5fcf-b416-c868c57aded9",
+     "3b902a25-2c07-55b7-84a6-b4c000156ad5",
+     "c004503e-d166-56cc-9af6-350a64149952"
+    ],
+    "hooks": [
+     "49d4130e-9a24-5285-9401-cd7051b7c1de",
+     "a51abbe3-a51b-5c18-8c0b-929928e5b829",
+     "ff93620d-93a1-57fe-a295-01cc900283a7"
+    ]
+   }
+  },
+  {
+   "title": "How to Cultivate a Slower, More Fulfilling Lifestyle",
+   "title_variants": [
+    "Simple Habits to Embrace Slow Living Every Day",
+    "Is Your Life Too Fast? Learn to Slow Down!"
+   ],
+   "angle": "While others provide a broad overview, this video focuses on implementing specific daily habits that lead to a fulfilling slow living experience.",
+   "hook": {
+    "text": "Ready to find joy in the simple things?",
+    "style": "stat"
+   },
+   "format": "talking-head",
+   "outline": [
+    "Introduce the concept of a fulfilling slow lifestyle.",
+    "Share key habits to incorporate right away.",
+    "Provide personal anecdotes for each habit.",
+    "Discuss potential challenges and how to overcome them.",
+    "Invite viewers to share their slow living practices."
+   ],
+   "why": "Cultivating specific habits can drive engagement, with validated growth in self-improvement content showing a 1.6× benefit, n=6. Noting how my previous work on '$0 luxuries that elevate your everyday life' generated significant interest at a growth of 2.02 supports this approach. External creators like Pick Up Limes have also effectively engaged audiences with stories of mindful practices.",
+   "topic_labels_used": [
+    "slow living",
+    "self-improvement",
+    "mindfulness"
+   ],
+   "cited_video_ids": [
+    "g5MkJP6udxQ",
+    "v01ojp9E9_E",
+    "_ckqGRUXTbI"
+   ],
+   "broll_keywords": [
+    "slow morning routines",
+    "meditative spaces",
+    "thoughtful cooking",
+    "nature walks"
+   ],
+   "thumbnail": {
+    "concept": "your face center, enjoying a sunny day; soft background light",
+    "overlay_text": "Embrace a Fulfilling Life"
+   },
+   "citations": [
+    {
+     "video_id": "g5MkJP6udxQ",
+     "title": "Let life surprise you",
+     "channel": "Lana Blakely",
+     "views": 32495,
+     "published": "2025-11-25"
+    },
+    {
+     "video_id": "v01ojp9E9_E",
+     "title": "a slow day in nature to soothe your mind 🌲📖",
+     "channel": "Lana Blakely",
+     "views": 31617,
+     "published": "2025-09-14"
+    },
+    {
+     "video_id": "_ckqGRUXTbI",
+     "title": "The art of noticing (colour walk) 🌼",
+     "channel": "Pick Up Limes",
+     "views": 455901,
+     "published": "2026-06-10"
+    }
+   ],
+   "trace": {
+    "trend": "3690f2cf-67e5-5a4f-b968-21c26fd4afc1",
+    "topics": [
+     "191cae51-79e4-5a81-bfe4-797de485b22d"
+    ],
+    "videos": [
+     "29be28b8-b492-55ab-8f9f-32dcddb077ce",
+     "4f05f60b-c3bf-5838-a0a8-b9f59661f68b",
+     "539338d1-beed-51dd-82ea-0f39e6b7f8ea"
+    ],
+    "formats": [
+     "359fd047-b103-5fcf-b416-c868c57aded9",
+     "c004503e-d166-56cc-9af6-350a64149952"
+    ],
+    "hooks": [
+     "49d4130e-9a24-5285-9401-cd7051b7c1de",
+     "ccb45b37-8a8a-5a2b-b6cd-5129fcaafd9e",
+     "ff93620d-93a1-57fe-a295-01cc900283a7"
+    ]
+   }
+  }
+ ],
+ "facts": {
+  "cold_start": false,
+  "trend": {
+   "label": "slow living",
+   "peaked_at": "2026-07-02"
+  },
+  "creator_baseline_views": 26167.0,
+  "baselines": {
+   "long_form_views": 28387,
+   "short_form_views": 36367,
+   "method": "recency_weighted",
+   "half_life_days": 180
+  },
+  "genre_fingerprint": {
+   "label": "personal growth / self-reflection / self-improvement",
+   "summary": "Your last 48 videos lean toward personal growth / self-reflection / self-improvement, mostly as talking head — and your vulnerable personal essays convert best when they're honest and specific. Sound right?",
+   "topic_distribution": {
+    "personal growth": 0.0749,
+    "self-reflection": 0.0624,
+    "self-improvement": 0.0591,
+    "mental health": 0.0455,
+    "self-acceptance": 0.0364,
+    "vulnerable storytelling": 0.0304,
+    "self-expression": 0.0299,
+    "women's fashion": 0.0244,
+    "personal style": 0.0244,
+    "self-discovery": 0.0192,
+    "adult friendships": 0.0173,
+    "emotional connections": 0.0173,
+    "rest and rejuvenation": 0.0173,
+    "mindfulness": 0.0135,
+    "self-care": 0.0135,
+    "social withdrawal": 0.0116,
+    "slow living": 0.0111,
+    "dating experience": 0.0109,
+    "motivation": 0.0101,
+    "everyday luxuries": 0.01,
+    "budget-friendly tips": 0.01,
+    "mindful living": 0.01,
+    "cultural critique": 0.01,
+    "ordinary life": 0.01,
+    "literary analysis": 0.01,
+    "dating in your 30s": 0.0093,
+    "emotional exhaustion": 0.0093,
+    "modern relationships": 0.0093,
+    "youth and beauty": 0.0085,
+    "anxiety management": 0.0082,
+    "daily routines": 0.0082,
+    "introvert challenges": 0.0081,
+    "dinner party tips": 0.0081,
+    "social anxiety": 0.0081,
+    "narrative exploration": 0.008,
+    "constant reinvention": 0.0076,
+    "finding stability": 0.0076,
+    "dating life": 0.0076,
+    "emotional intelligence": 0.0073,
+    "poor decision making": 0.0073,
+    "self-awareness": 0.007,
+    "self-love": 0.0068,
+    "emotional vulnerability": 0.0068,
+    "traveling tips": 0.0061,
+    "curly hair care": 0.0061,
+    "authenticity": 0.0061,
+    "life lessons": 0.0061,
+    "embracing uncertainty": 0.0059,
+    "creative burnout": 0.0058,
+    "feeling lost": 0.0057,
+    "realistic self-love": 0.0056,
+    "confidence building": 0.0055,
+    "stuck in life": 0.0055,
+    "finding direction": 0.0055,
+    "luck and opportunity": 0.0055,
+    "preparation": 0.0055,
+    "networking": 0.0055,
+    "virginia woolf": 0.0054,
+    "ordinary moments": 0.0054,
+    "memory exploration": 0.0054,
+    "traveling greece": 0.0053,
+    "romantic longing": 0.0053,
+    "curly hair routine": 0.0053,
+    "nature therapy": 0.0052,
+    "mindfulness practice": 0.0052,
+    "journaling practice": 0.0051,
+    "writing habits": 0.0051,
+    "deep friendship": 0.0049,
+    "relationship struggles": 0.0049,
+    "social connections": 0.0049,
+    "embracing embarrassment": 0.0046,
+    "trying new things": 0.0046,
+    "day in life": 0.0046,
+    "stockholm living": 0.0046,
+    "weekend routine": 0.0046,
+    "exploring parks": 0.0044,
+    "london food": 0.0044,
+    "hidden gems": 0.0044,
+    "urban adventures": 0.0044,
+    "finding love": 0.0043,
+    "encouragement": 0.0043,
+    "relationship advice": 0.0043,
+    "young love": 0.0043,
+    "happiness": 0.0042,
+    "kindness": 0.0042,
+    "social dynamics": 0.004,
+    "friendship struggles": 0.004,
+    "ego vs passion": 0.0038,
+    "overwhelm management": 0.0037,
+    "podcast insights": 0.0037,
+    "creative balance": 0.0037,
+    "self-sabotage": 0.0036,
+    "decision making": 0.0032,
+    "podcast episode": 0.0032,
+    "digital communication": 0.0032,
+    "self-compassion": 0.0032,
+    "personal development": 0.0032,
+    "self-advocacy": 0.0032,
+    "simple skills": 0.0031,
+    "productivity hacks": 0.0026,
+    "journaling techniques": 0.0026
+   },
+   "format_distribution": {
+    "talking-head": 0.441,
+    "personal-essay": 0.271,
+    "vlog": 0.1712,
+    "interview": 0.043,
+    "voiceover-broll": 0.0413,
+    "listicle": 0.0323
+   },
+   "dominant_format": "talking-head"
+  },
+  "validated_patterns": [
+   {
+    "kind": "Topic",
+    "label": "mental health (2.0× growth, n=4)",
+    "is_short": false,
+    "support_n": 4,
+    "effect_size": 2.02,
+    "metric": "growth_score",
+    "confidence": "strong",
+    "evidence_video_ids": [
+     "Jruf-XfzSbk",
+     "Tzj6ljg2OQs",
+     "CGDU1ASnnFs",
+     "4XfcZH3cJM8"
+    ],
+    "feature_value": "mental health"
+   },
+   {
+    "kind": "Topic",
+    "label": "self-improvement (1.6× growth, n=6)",
+    "is_short": false,
+    "support_n": 6,
+    "effect_size": 1.65,
+    "metric": "growth_score",
+    "confidence": "strong",
+    "evidence_video_ids": [
+     "BBzFa8kvh0E",
+     "BSaDe4PT_eE",
+     "cd1RcSZJxAo",
+     "-WM5U9xUrgY",
+     "4XfcZH3cJM8",
+     "HIf6CMA9fz4"
+    ],
+    "feature_value": "self-improvement"
+   },
+   {
+    "kind": "Format",
+    "label": "personal-essay (1.3× growth score, n=5)",
+    "is_short": false,
+    "support_n": 5,
+    "effect_size": 1.3,
+    "metric": "growth_score",
+    "confidence": "validated",
+    "evidence_video_ids": [
+     "Ih4R3QFBxoE",
+     "Jruf-XfzSbk",
+     "cd1RcSZJxAo",
+     "CGDU1ASnnFs",
+     "cokNOQwM9ig"
+    ],
+    "feature_value": "personal-essay"
+   },
+   {
+    "kind": "Format",
+    "label": "talking-head (1.2× growth score, n=9)",
+    "is_short": false,
+    "support_n": 9,
+    "effect_size": 1.18,
+    "metric": "growth_score",
+    "confidence": "validated",
+    "evidence_video_ids": [
+     "29b4xrt9YJ8",
+     "0jWUGOToulI",
+     "BBzFa8kvh0E",
+     "BSaDe4PT_eE",
+     "Tzj6ljg2OQs",
+     "3zY8ioknD90",
+     "4XfcZH3cJM8",
+     "vFnXQNnCM9s",
+     "pHun510l2xM"
+    ],
+    "feature_value": "talking-head"
+   },
+   {
+    "kind": "Hook",
+    "label": "question (1.1× ctr, n=10)",
+    "is_short": false,
+    "support_n": 10,
+    "effect_size": 1.15,
+    "metric": "ctr",
+    "confidence": "validated",
+    "evidence_video_ids": [
+     "BBzFa8kvh0E",
+     "BSaDe4PT_eE",
+     "KluNgOvoHvo",
+     "Jruf-XfzSbk",
+     "Tzj6ljg2OQs",
+     "3zY8ioknD90",
+     "Ur42oPWFaBk",
+     "cd1RcSZJxAo",
+     "v01ojp9E9_E",
+     "vFnXQNnCM9s"
+    ],
+    "feature_value": "question"
+   },
+   {
+    "kind": "Hook",
+    "label": "question (1.1× retention, n=10)",
+    "is_short": false,
+    "support_n": 10,
+    "effect_size": 1.12,
+    "metric": "retention",
+    "confidence": "validated",
+    "evidence_video_ids": [
+     "BBzFa8kvh0E",
+     "BSaDe4PT_eE",
+     "KluNgOvoHvo",
+     "Jruf-XfzSbk",
+     "Tzj6ljg2OQs",
+     "3zY8ioknD90",
+     "Ur42oPWFaBk",
+     "cd1RcSZJxAo",
+     "v01ojp9E9_E",
+     "vFnXQNnCM9s"
+    ],
+    "feature_value": "question"
+   },
+   {
+    "kind": "Hook",
+    "label": "vulnerable-confession (1.1× retention, n=8)",
+    "is_short": false,
+    "support_n": 8,
+    "effect_size": 1.08,
+    "metric": "retention",
+    "confidence": "validated",
+    "evidence_video_ids": [
+     "Ih4R3QFBxoE",
+     "cokNOQwM9ig",
+     "4CQH7C2dj7U",
+     "VLFFARE-0Gs",
+     "4XfcZH3cJM8",
+     "HXv0gyZfvRc",
+     "HIf6CMA9fz4",
+     "pHun510l2xM"
+    ],
+    "feature_value": "vulnerable-confession"
+   },
+   {
+    "kind": "Hook",
+    "label": "vulnerable-confession (1.1× ctr, n=8)",
+    "is_short": false,
+    "support_n": 8,
+    "effect_size": 1.06,
+    "metric": "ctr",
+    "confidence": "validated",
+    "evidence_video_ids": [
+     "Ih4R3QFBxoE",
+     "cokNOQwM9ig",
+     "4CQH7C2dj7U",
+     "VLFFARE-0Gs",
+     "4XfcZH3cJM8",
+     "HXv0gyZfvRc",
+     "HIf6CMA9fz4",
+     "pHun510l2xM"
+    ],
+    "feature_value": "vulnerable-confession"
+   },
+   {
+    "kind": "Packaging",
+    "label": "no number in title (1.0× CTR, n=20)",
+    "is_short": false,
+    "support_n": 20,
+    "effect_size": 1.05,
+    "metric": "ctr",
+    "confidence": "validated",
+    "evidence_video_ids": [
+     "29b4xrt9YJ8",
+     "BBzFa8kvh0E",
+     "BSaDe4PT_eE",
+     "KluNgOvoHvo",
+     "Jruf-XfzSbk",
+     "Tzj6ljg2OQs",
+     "K_d6B58lCHM",
+     "3zY8ioknD90",
+     "Ur42oPWFaBk",
+     "cd1RcSZJxAo",
+     "CGDU1ASnnFs",
+     "v01ojp9E9_E",
+     "cokNOQwM9ig",
+     "4CQH7C2dj7U",
+     "JZlT6UAcptA",
+     "aKRVLEd8AcI",
+     "VLFFARE-0Gs",
+     "vFnXQNnCM9s",
+     "HXv0gyZfvRc",
+     "pHun510l2xM"
+    ],
+    "feature_value": "no number in title"
+   },
+   {
+    "kind": "Packaging",
+    "label": "number in title (1.0× CTR, n=7)",
+    "is_short": false,
+    "support_n": 7,
+    "effect_size": 1.0,
+    "metric": "ctr",
+    "confidence": "validated",
+    "evidence_video_ids": [
+     "sE1OAKdBqpo",
+     "0jWUGOToulI",
+     "Ih4R3QFBxoE",
+     "-WM5U9xUrgY",
+     "42f1BPK6XvY",
+     "4XfcZH3cJM8",
+     "HIf6CMA9fz4"
+    ],
+    "feature_value": "number in title"
+   }
+  ],
+  "my_hook_style_conversion": {
+   "vulnerable-confession": {
+    "videos": 4,
+    "avg_ratio_vs_median": 2.03
+   },
+   "question": {
+    "videos": 32,
+    "avg_ratio_vs_median": 1.42
+   },
+   "story": {
+    "videos": 6,
+    "avg_ratio_vs_median": 1.3
+   },
+   "pattern-interrupt": {
+    "videos": 2,
+    "avg_ratio_vs_median": 1.04
+   },
+   "stat": {
+    "videos": 4,
+    "avg_ratio_vs_median": 1.02
+   }
+  },
+  "trending_now_evidence": [],
+  "my_related_topics": [
+   {
+    "label": "slow living",
+    "semantic_distance_to_trend": 0.0,
+    "feedback_weight": 0.28964689484280626,
+    "best_converting_format": "vlog",
+    "my_videos": [
+     {
+      "node_id": "29be28b8-b492-55ab-8f9f-32dcddb077ce",
+      "video_id": "g5MkJP6udxQ",
+      "title": "Let life surprise you",
+      "views": 32495,
+      "published": "2025-11-25",
+      "channel": "Lana Blakely",
+      "format": "personal-essay",
+      "format_node_id": "359fd047-b103-5fcf-b416-c868c57aded9",
+      "hook": "Have you ever thought about letting life surprise you?",
+      "hook_style": "question",
+      "hook_node_id": "49d4130e-9a24-5285-9401-cd7051b7c1de",
+      "topics": [
+       "slow living",
+       "embracing uncertainty",
+       "personal growth"
+      ],
+      "ratio": 0.89,
+      "ctr": 0.065,
+      "avg_view_percentage": 66.7
+     },
+     {
+      "node_id": "4f05f60b-c3bf-5838-a0a8-b9f59661f68b",
+      "video_id": "v01ojp9E9_E",
+      "title": "a slow day in nature to soothe your mind 🌲📖",
+      "views": 31617,
+      "published": "2025-09-14",
+      "channel": "Lana Blakely",
+      "format": "vlog",
+      "format_node_id": "c004503e-d166-56cc-9af6-350a64149952",
+      "hook": "Have you ever felt the need to take a break and just breathe in the beauty of nature?",
+      "hook_style": "question",
+      "hook_node_id": "ff93620d-93a1-57fe-a295-01cc900283a7",
+      "topics": [
+       "slow living",
+       "nature therapy",
+       "mindfulness practice"
+      ],
+      "ratio": 1.11,
+      "ctr": 0.0581,
+      "avg_view_percentage": 48.4
+     }
+    ]
+   },
+   {
+    "label": "mindful living",
+    "semantic_distance_to_trend": 0.506,
+    "feedback_weight": 1.3,
+    "best_converting_format": "listicle",
+    "my_videos": [
+     {
+      "node_id": "2a8aee09-7bb5-5c40-82c2-c31c7b83309b",
+      "video_id": "-WM5U9xUrgY",
+      "title": "$0 luxuries that elevate your everyday life",
+      "views": 57423,
+      "published": "2025-11-02",
+      "channel": "Lana Blakely",
+      "format": "listicle",
+      "format_node_id": "3b902a25-2c07-55b7-84a6-b4c000156ad5",
+      "hook": "$0 luxuries can completely change how you experience daily life.",
+      "hook_style": "stat",
+      "hook_node_id": "a51abbe3-a51b-5c18-8c0b-929928e5b829",
+      "topics": [
+       "everyday luxuries",
+       "self-improvement",
+       "budget-friendly tips",
+       "mindful living"
+      ],
+      "ratio": 2.02,
+      "ctr": 0.039,
+      "avg_view_percentage": 40.9
+     }
+    ]
+   }
+  ],
+  "competitor_videos_on_related_topics": [
+   {
+    "node_id": "1111f62c-dfd4-52b7-a749-314770bb8422",
+    "video_id": "Jawt_HcJWeA",
+    "title": "The water bottle trend has gone too far",
+    "views": 605882,
+    "published": "2025-12-11",
+    "channel": "Matt D'Avella",
+    "format": "talking-head",
+    "format_node_id": "4070ab4d-4378-5822-836b-bbf11ee9056b",
+    "hook": "Have we taken the water bottle trend too far?",
+    "hook_style": "question",
+    "hook_node_id": "2b3bb630-8b8e-5435-9969-a3e96498019b",
+    "topics": [
+     "water bottle trend",
+     "minimalism",
+     "slow living"
+    ],
+    "related_topic": "slow living",
+    "outlier_score": 23.15
+   },
+   {
+    "node_id": "539338d1-beed-51dd-82ea-0f39e6b7f8ea",
+    "video_id": "_ckqGRUXTbI",
+    "title": "The art of noticing (colour walk) 🌼",
+    "views": 455901,
+    "published": "2026-06-10",
+    "channel": "Pick Up Limes",
+    "format": "vlog",
+    "format_node_id": "c004503e-d166-56cc-9af6-350a64149952",
+    "hook": "Have you ever thought about how many little details you miss in your everyday life?",
+    "hook_style": "question",
+    "hook_node_id": "ccb45b37-8a8a-5a2b-b6cd-5129fcaafd9e",
+    "topics": [
+     "mindfulness practice",
+     "colour walk",
+     "slow living"
+    ],
+    "related_topic": "slow living",
+    "outlier_score": 17.42
+   },
+   {
+    "node_id": "16abb99b-c141-5b09-8c3d-64f53c2dc98f",
+    "video_id": "A44NyVVKYuU",
+    "title": "this LATTE → no more Starbucks ☕",
+    "views": 420127,
+    "published": "2026-05-06",
+    "channel": "Pick Up Limes",
+    "format": "voiceover-broll",
+    "format_node_id": "7cca1136-86fa-5d25-b496-f92fd516e1c5",
+    "hook": "Are you tired of spending too much on your favorite coffee?",
+    "hook_style": "question",
+    "hook_node_id": "90e625cf-8fd1-51cd-b4c8-dd391b0abdc9",
+    "topics": [
+     "coffee recipes",
+     "homemade drinks",
+     "slow mornings"
+    ],
+    "related_topic": "slow mornings",
+    "outlier_score": 16.06
+   },
+   {
+    "node_id": "92346a17-97de-5419-8bec-374d0f653698",
+    "video_id": "-1Fhry-Mqks",
+    "title": "I tried to optimize my life. It made it worse.",
+    "views": 366006,
+    "published": "2026-04-30",
+    "channel": "Matt D'Avella",
+    "format": "personal-essay",
+    "format_node_id": "359fd047-b103-5fcf-b416-c868c57aded9",
+    "hook": "I tried to optimize my life. It made it worse.",
+    "hook_style": "vulnerable-confession",
+    "hook_node_id": "a7c15e26-2900-5c4a-9648-28ab031bea7f",
+    "topics": [
+     "life optimization",
+     "slow living",
+     "personal growth"
+    ],
+    "related_topic": "slow living",
+    "outlier_score": 13.99
+   },
+   {
+    "node_id": "7cfddc36-605e-544e-a942-1c431478cedd",
+    "video_id": "hhOCMACyLhk",
+    "title": "I meal prepped 46 boring lunches to be healthier",
+    "views": 257805,
+    "published": "2026-01-30",
+    "channel": "Matt D'Avella",
+    "format": "vlog",
+    "format_node_id": "c004503e-d166-56cc-9af6-350a64149952",
+    "hook": "Ever wonder how to make your lunches healthier without breaking the bank?",
+    "hook_style": "question",
+    "hook_node_id": "ed887294-319a-579c-8e7d-c1030ac19ceb",
+    "topics": [
+     "meal prepping",
+     "healthy eating",
+     "slow living",
+     "mindful cooking"
+    ],
+    "related_topic": "slow living",
+    "outlier_score": 9.85
+   },
+   {
+    "node_id": "31fc2c6a-7b30-5dca-aa99-d3a504d4ab3b",
+    "video_id": "2YxKpQtyb5I",
+    "title": "SLOW RESET WITH ME 🪩💫 life admin + productive prep",
+    "views": 14676,
+    "published": "2026-04-23",
+    "channel": "muchelleb",
+    "format": "vlog",
+    "format_node_id": "c004503e-d166-56cc-9af6-350a64149952",
+    "hook": "Are you ready to hit the reset button on your life and boost your productivity?",
+    "hook_style": "question",
+    "hook_node_id": "e9dcb3b7-664b-5ff5-bed2-9cd245a874ea",
+    "topics": [
+     "slow reset",
+     "life admin",
+     "productive prep",
+     "self-care routine"
+    ],
+    "related_topic": "slow reset",
+    "outlier_score": 0.56
+   }
+  ],
+  "allowed_citation_ids": [
+   {
+    "video_id": "Jawt_HcJWeA",
+    "title": "The water bottle trend has gone too far",
+    "channel": "Matt D'Avella",
+    "source": "external"
+   },
+   {
+    "video_id": "_ckqGRUXTbI",
+    "title": "The art of noticing (colour walk) 🌼",
+    "channel": "Pick Up Limes",
+    "source": "external"
+   },
+   {
+    "video_id": "A44NyVVKYuU",
+    "title": "this LATTE → no more Starbucks ☕",
+    "channel": "Pick Up Limes",
+    "source": "external"
+   },
+   {
+    "video_id": "-1Fhry-Mqks",
+    "title": "I tried to optimize my life. It made it worse.",
+    "channel": "Matt D'Avella",
+    "source": "external"
+   },
+   {
+    "video_id": "hhOCMACyLhk",
+    "title": "I meal prepped 46 boring lunches to be healthier",
+    "channel": "Matt D'Avella",
+    "source": "external"
+   },
+   {
+    "video_id": "2YxKpQtyb5I",
+    "title": "SLOW RESET WITH ME 🪩💫 life admin + productive prep",
+    "channel": "muchelleb",
+    "source": "external"
+   },
+   {
+    "video_id": "g5MkJP6udxQ",
+    "title": "Let life surprise you",
+    "channel": "Lana Blakely",
+    "source": "creator"
+   },
+   {
+    "video_id": "v01ojp9E9_E",
+    "title": "a slow day in nature to soothe your mind 🌲📖",
+    "channel": "Lana Blakely",
+    "source": "creator"
+   },
+   {
+    "video_id": "-WM5U9xUrgY",
+    "title": "$0 luxuries that elevate your everyday life",
+    "channel": "Lana Blakely",
+    "source": "creator"
+   }
+  ],
+  "already_published_titles": [
+   "My 102nd Date… Let’s Get Ready",
+   "Why Some People Get Lucky (And You Don't)",
+   "Why I Still Journal After 25 Years",
+   "Loving yourself fully is UNREALISTIC",
+   "The Problem with Being Ordinary in 2026",
+   "being the friend who CARES more",
+   "why friendships don't work anymore",
+   "stop SILENCING yourself",
+   "Why Embarrassment Is Part of Trying",
+   "adult friendships are dying (and we're to blame)",
+   "are you even on your own team?",
+   "you win by surviving the boring middle",
+   "Feeling Lost? Nothing Has Caught You Yet",
+   "you're NOT passionate, just egocentric",
+   "Not choosing is choosing",
+   "for us who want to do EVERYTHING 😩",
+   "emotional arguments and text messages age poorly",
+   "Second chances don't work",
+   "why you quit before you've started",
+   "are you just waiting for your life to start?",
+   "Life Without a Clear Narrative",
+   "you're NOT ugly, you just...",
+   "the women's section SUCKS 😫",
+   "when an anxious person has ONE appointment in the day",
+   "this is what truly defines you",
+   "this works better than ANY productivity hack",
+   "no you're NOT weak for wanting love",
+   "my dating life 2025 wrapped",
+   "happy people are just nicer 🤷‍♀️",
+   "Virginia Woolf on Life’s Quiet Complexities",
+   "introvert faces problem when hosting dinner party",
+   "how ppl who found love by luck at age 19 try to encourage you",
+   "when you're 30 and dating is exhausting",
+   "you must UNDERSTAND this SIMPLE skill to get ahead in life",
+   "the REAL reason some girls have NO friends",
+   "The one who NEVER leaves you behind",
+   "The elevator story that EXPOSED me",
+   "Why Life Feels Stuck in the Middle",
+   "Let life surprise you",
+   "In London: Parks, Food, and Hidden Gems",
+   "The Problem with Constant Reinvention",
+   "$0 luxuries that elevate your everyday life",
+   "Youth and Beauty Isn’t What You Think",
+   "a slow day in nature to soothe your mind 🌲📖",
+   "I can’t keep making videos like this",
+   "travelling greece: longing for romance & my curly hair routine",
+   "travelling croatia: flirting, self-discovery and curly hair",
+   "a normal weekend in my life in Stockholm :)"
+  ]
+ },
+ "cold_start": false
+}

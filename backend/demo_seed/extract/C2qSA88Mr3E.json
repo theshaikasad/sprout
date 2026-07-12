@@ -1,0 +1,13 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "emotional music",
+  "indie songs",
+  "nostalgic vibes",
+  "soothing voice"
+ ],
+ "hook": {
+  "text": "Kabhi Chup Chup Rahe… Kabhi Gaaya Ye Kare…",
+  "style": "pattern-interrupt"
+ }
+}

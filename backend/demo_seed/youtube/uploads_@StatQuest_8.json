@@ -1,0 +1,146 @@
+[
+ {
+  "video_id": "mIlw5j3WyVk",
+  "title": "StatQuest: Random Forests Part 2: Missing data and clustering",
+  "description": "NOTE: This StatQuest is the updated version of the original Random Forests Part 3 and includes two minor corrections.\n\nLast time we talked about how to create, use and evaluate random forests. Now it's time to see how they can deal with missing data and how they can be used to cluster samples, even when the data comes from all kinds of crazy sources.\n\nNOTE: This StatQuest is based on Leo Breiman's (one of the creators of Random Forests) website: https://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm\n\nFor a complete index of all the StatQuest videos, check out:\nhttps://statquest.org/video-index/\n\nIf you'd like to support StatQuest, please consider...\n\nPatreon: https://www.patreon.com/statquest\n...or...\nYouTube Membership: https://www.youtube.com/channel/UCtYLUTtgS3k1Fg4y5tAhLbw/join\n\n...buying one of my books, a study guide, a t-shirt or hoodie, or a song from the StatQuest store...\nhttps://statquest.org/statquest-store/\n\n...or just donating to StatQuest!\nhttps://www.paypal.me/statquest\n\nLastly, if you want to keep up with me as I research and create new StatQuests, follow me on twitter:\nhttps://twitter.com/joshuastarmer\n\n#statquest #randomforest",
+  "published": "2026-06-08",
+  "channel_id": "UCtYLUTtgS3k1Fg4y5tAhLbw",
+  "channel_title": "StatQuest with Josh Starmer",
+  "tags": [
+   "Josh Starmer",
+   "StatQuest",
+   "Machine Learning",
+   "Statistics",
+   "Data Science"
+  ],
+  "views": 3600,
+  "likes": 99,
+  "comments": 25
+ },
+ {
+  "video_id": "L3nlGfSyHV0",
+  "title": "False Discovery Rates, FDR, clearly explained",
+  "description": "One of the best ways to prevent p-hacking is to adjust p-values for multiple testing. This StatQuest explains how the Benjamini-Hochberg method corrects for multiple-testing and FDR.\n\nFor a complete index of all the StatQuest videos, check out:\nhttps://statquest.org/video-index/\n\nIf you'd like to support StatQuest, please consider...\n\nPatreon: https://www.patreon.com/statquest\n...or...\nYouTube Membership: https://www.youtube.com/channel/UCtYLUTtgS3k1Fg4y5tAhLbw/join\n\n...buying one of my books, a study guide, a t-shirt or hoodie, or a song from the StatQuest store...\nhttps://statquest.org/statquest-store/\n\n...or just donating to StatQuest!\nhttps://www.paypal.me/statquest\n\nLastly, if you want to keep up with me as I research and create new StatQuests, follow me on twitter:\nhttps://twitter.com/joshuastarmer\n\n#statistics #pvalue #fdr",
+  "published": "2026-06-08",
+  "channel_id": "UCtYLUTtgS3k1Fg4y5tAhLbw",
+  "channel_title": "StatQuest with Josh Starmer",
+  "tags": [
+   "Josh Starmer",
+   "StatQuest",
+   "Machine Learning",
+   "Statistics",
+   "Data Science"
+  ],
+  "views": 1300,
+  "likes": 31,
+  "comments": 7
+ },
+ {
+  "video_id": "aFDOzpTeg0s",
+  "title": "The Essence of Linear Regression",
+  "description": "This StatQuest takes you through basic linear regression, step-by-step, explaining both the method and the motivation behind the method. Each step is broken down into easy-to-understand parts so that anyone can develop a deep understanding of how to do and interpret a linear regression. BAM!\n\nIf you'd like to support StatQuest, please consider...\nPatreon: https://www.patreon.com/statquest\n...or...\nYouTube Membership: https://www.youtube.com/channel/UCtYLUTtgS3k1Fg4y5tAhLbw/join\n\n...buying a book, a study guide, a t-shirt or hoodie, or a song from the StatQuest store...\nhttps://statquest.org/statquest-store/\n\n...or just donating to StatQuest!\npaypal: https://www.paypal.me/statquest\nvenmo: @JoshStarmer\n\nLastly, if you want to keep up with me as I research and create new StatQuests, follow me on twitter:\nhttps://twitter.com/joshuastarmer\n\n0:00 Awesome song and introduction\n9:45 Quantifying Prediction Accuracy with the Sum of Squared Residuals\n14:43 Fitting a Line with Least Squares\n17:11 Assessing Predictions with R-Squared\n24:29 Assessing Predictions with a p-value\n30:03 Putting it all together\n\n\n#StatQuest",
+  "published": "2026-05-18",
+  "channel_id": "UCtYLUTtgS3k1Fg4y5tAhLbw",
+  "channel_title": "StatQuest with Josh Starmer",
+  "tags": [
+   "Josh Starmer",
+   "StatQuest",
+   "Machine Learning",
+   "Statistics",
+   "Data Science"
+  ],
+  "views": 23598,
+  "likes": 795,
+  "comments": 109
+ },
+ {
+  "video_id": "q-BiW5srMFQ",
+  "title": "How AI works in Super Simple Terms!!!",
+  "description": "In this StatQuest we explain how AI, like ChatGPT, works. However, instead of using lots of complicated math, we're going to use a super simple example and super simple terms. If math scares you, this StatQuest is for you! And even if math doesn't scare you, this StatQuest will give you a deeper understanding of what goes on under the hood. BAM!\n\nIf you'd like to support StatQuest, please consider...\nPatreon: https://www.patreon.com/statquest\n...or...\nYouTube Membership: https://www.youtube.com/channel/UCtYLUTtgS3k1Fg4y5tAhLbw/join\n\n...buying a book, a study guide, a t-shirt or hoodie, or a song from the StatQuest store...\nhttps://statquest.org/statquest-store/\n\n...or just donating to StatQuest!\npaypal: https://www.paypal.me/statquest\nvenmo: @JoshStarmer\n\nLastly, if you want to keep up with me as I research and create new StatQuests, follow me on twitter:\nhttps://twitter.com/joshuastarmer\n\n0:00 Awesome song and introduction\n2:24 Main Idea #1: How an AI writes poems\n10:21 Main Idea #2: How an AI is created\n16:31 Main Idea #3: How an AI is aligned to do useful things\n\n#StatQuest",
+  "published": "2026-01-12",
+  "channel_id": "UCtYLUTtgS3k1Fg4y5tAhLbw",
+  "channel_title": "StatQuest with Josh Starmer",
+  "tags": [
+   "Josh Starmer",
+   "StatQuest",
+   "Machine Learning",
+   "Statistics",
+   "Data Science"
+  ],
+  "views": 33449,
+  "likes": 1234,
+  "comments": 157
+ },
+ {
+  "video_id": "WRYk7oZiogg",
+  "title": "StatQuest: Career Advice from Tech Industry Leaders",
+  "description": "This year, for my Pop's birthday, we're going to hear from current tech industry leaders that all started out working for my pop in the IT-Lab at the Medical University of South Carolina. These leaders have started all kinds of startups, pioneered Oscar award winning computer graphics and designed the best user interfaces that I've ever seen. I believe the advice that these leaders give is so valuable that I've awarded them the rare, but highly coveted, Quadruple Bam!!!\n\nIf you'd like to support StatQuest, please consider...\nPatreon: https://www.patreon.com/statquest\n...or...\nYouTube Membership: https://www.youtube.com/channel/UCtYLUTtgS3k1Fg4y5tAhLbw/join\n\n...buying a book, a study guide, a t-shirt or hoodie, or a song from the StatQuest store...\nhttps://statquest.org/statquest-store/\n\n...or just donating to StatQuest!\npaypal: https://www.paypal.me/statquest\nvenmo: @JoshStarmer\n\nLastly, if you want to keep up with me as I research and create new StatQuests, follow me on twitter:\nhttps://twitter.com/joshuastarmer\n\n0:00 Awesome song and introduction\n1:07 Ask questions to uncover the real problem\n1:44 Value everyone's contribution\n2:24 Small steps lead to significant progress\n3:18 Unix pipes as a software design pattern\n\n#StatQuest",
+  "published": "2025-09-04",
+  "channel_id": "UCtYLUTtgS3k1Fg4y5tAhLbw",
+  "channel_title": "StatQuest with Josh Starmer",
+  "tags": [
+   "Josh Starmer",
+   "StatQuest",
+   "Machine Learning",
+   "Statistics",
+   "Data Science"
+  ],
+  "views": 32309,
+  "likes": 1078,
+  "comments": 97
+ },
+ {
+  "video_id": "qPN_XZcJf_s",
+  "title": "Reinforcement Learning with Human Feedback (RLHF), Clearly Explained!!!",
+  "description": "Generative Large Language Models, like ChatGPT and DeepSeek, are trained on massive text based datasets, like the entire Wikipedia. However, this training alone fails to teach the models how to generate polite and useful responses to your prompts. Thus, LLMs rely on Supervised Fine-Tuning and Reinforcement Learning with Human Feedback (RLHF) to align the models to how we actually want to use them. This StatQuest explains every step in training an LLM, with special attention to how RLHF is done.\n\nNOTE: This video is based on the original manuscript for Instruct-GPT: https://arxiv.org/abs/2203.02155\n\nAlso, you should check out Serrano Academy if you can:\nhttps://www.youtube.com/@SerranoAcademy\n\nIf you'd like to support StatQuest, please consider...\nPatreon: https://www.patreon.com/statquest\n...or...\nYouTube Membership: https://www.youtube.com/channel/UCtYLUTtgS3k1Fg4y5tAhLbw/join\n\n...buying a book, a study guide, a t-shirt or hoodie, or a song from the StatQuest store...\nhttps://statquest.org/statquest-store/\n\n...or just donating to StatQuest!\npaypal: https://www.paypal.me/statquest\nvenmo: @JoshStarmer\n\nLastly, if you want to keep up with me as I research and create new StatQuests, follow me on twitter:\nhttps://twitter.com/joshuastarmer\n\n0:00 Awesome song and introduction\n2:25 Pre-Training an LLM\n5:06 Supervised Fine-Tuning\n7:35 Reinforcement Learning with Human Feedback (RLHF)\n10:07 RLHF - training the reward model\n15:02 RLHF - using the reward model\n\n#StatQuest",
+  "published": "2025-05-05",
+  "channel_id": "UCtYLUTtgS3k1Fg4y5tAhLbw",
+  "channel_title": "StatQuest with Josh Starmer",
+  "tags": [
+   "Josh Starmer",
+   "StatQuest",
+   "Machine Learning",
+   "Statistics",
+   "Data Science"
+  ],
+  "views": 61888,
+  "likes": 1676,
+  "comments": 161
+ },
+ {
+  "video_id": "DVGmsnxB2UQ",
+  "title": "Reinforcement Learning with Neural Networks: Mathematical Details",
+  "description": "Here we go through the math required to update a parameter in a neural network using reinforcement learning and we do it one step a time. We show how the derivatives are calculated (BAM!), then updated (DOUBLE BAM!!), and then used to optimize the parameters (TRIPLE BAM!!!).\n\nIf you'd like to support StatQuest, please consider...\nPatreon: https://www.patreon.com/statquest\n...or...\nYouTube Membership: https://www.youtube.com/channel/UCtYLUTtgS3k1Fg4y5tAhLbw/join\n\n...buying a book, a study guide, a t-shirt or hoodie, or a song from the StatQuest store...\nhttps://statquest.org/statquest-store/\n\n...or just donating to StatQuest!\npaypal: https://www.paypal.me/statquest\nvenmo: @JoshStarmer\n\nLastly, if you want to keep up with me as I research and create new StatQuests, follow me on twitter:\nhttps://twitter.com/joshuastarmer\n\n0:00 Awesome song and introduction\n4:09 Calculating a derivative\n12:16 Updating the derivative with a reward\n15:39 Updating a parameter in the neural network\n16:28 A second example\n\n#StatQuest",
+  "published": "2025-04-14",
+  "channel_id": "UCtYLUTtgS3k1Fg4y5tAhLbw",
+  "channel_title": "StatQuest with Josh Starmer",
+  "tags": [
+   "Josh Starmer",
+   "StatQuest",
+   "Machine Learning",
+   "Statistics",
+   "Data Science"
+  ],
+  "views": 31233,
+  "likes": 781,
+  "comments": 69
+ },
+ {
+  "video_id": "9hbQieQh7-o",
+  "title": "Reinforcement Learning with Neural Networks: Essential Concepts",
+  "description": "Reinforcement Learning has helped train neural networks to win games, drive cars and even get ChatGPT to sound more human when it responds to your prompt. This StatQuest covers the essential concepts of how this process works. BAM!\n\nIf you'd like to support StatQuest, please consider...\nPatreon: https://www.patreon.com/statquest\n...or...\nYouTube Membership: https://www.youtube.com/channel/UCtYLUTtgS3k1Fg4y5tAhLbw/join\n\n...buying a book, a study guide, a t-shirt or hoodie, or a song from the StatQuest store...\nhttps://statquest.org/statquest-store/\n\n...or just donating to StatQuest!\npaypal: https://www.paypal.me/statquest\nvenmo: @JoshStarmer\n\nLastly, if you want to keep up with me as I research and create new StatQuests, follow me on twitter:\nhttps://twitter.com/joshuastarmer\n\n0:00 Awesome song and introduction\n4:01 Backpropagation review\n6:25 The problem with standard backpropagation\n7:04 Taking a guess to calculate the derivative\n11:20 Using a reward to update the derivative\n14:56 Alternative rewards\n16:01 Updating a parameter with the updated derivative\n16:56 A second example\n22:05 Summary\n\n#StatQuest",
+  "published": "2025-04-07",
+  "channel_id": "UCtYLUTtgS3k1Fg4y5tAhLbw",
+  "channel_title": "StatQuest with Josh Starmer",
+  "tags": [
+   "Josh Starmer",
+   "StatQuest",
+   "Machine Learning",
+   "Statistics",
+   "Data Science"
+  ],
+  "views": 53881,
+  "likes": 1379,
+  "comments": 109
+ }
+]

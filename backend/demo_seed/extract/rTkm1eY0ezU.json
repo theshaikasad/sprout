@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai engineering terms",
+  "large language models",
+  "prompt engineering",
+  "understanding ai"
+ ],
+ "hook": {
+  "text": "Welcome everyone. I'm Sha and today I'm going to talk about 30 AI engineering buzzwords and explain them in simple terms.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

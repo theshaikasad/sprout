@@ -1,0 +1,13 @@
+{
+ "format": "vlog",
+ "topics": [
+  "day in life",
+  "stockholm living",
+  "weekend routine"
+ ],
+ "hook": {
+  "text": "Join me as I share a glimpse into a normal weekend in my life in Stockholm.",
+  "style": "story"
+ },
+ "_had_transcript": false
+}

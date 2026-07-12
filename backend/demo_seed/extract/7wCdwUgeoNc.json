@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "gemma 4",
+  "local coding model",
+  "reasoning ai",
+  "python execution"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how a 12B model can enhance your coding experience offline?",
+  "style": "question"
+ }
+}

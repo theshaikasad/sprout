@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "self-compassion",
+  "personal development",
+  "motivation",
+  "self-advocacy"
+ ],
+ "hook": {
+  "text": "Are you cheering on yourself? Are you standing in your own way?",
+  "style": "question"
+ },
+ "_had_transcript": true
+}

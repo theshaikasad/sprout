@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "adult friendships",
+  "vulnerable storytelling",
+  "emotional connections"
+ ],
+ "hook": {
+  "text": "And now maybe the problem is not that adult friendships are weaker.",
+  "style": "pattern-interrupt"
+ },
+ "_had_transcript": true
+}

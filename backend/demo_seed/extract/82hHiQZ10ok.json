@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "self-empowerment",
+  "energy management",
+  "self-care"
+ ],
+ "hook": {
+  "text": "How do you stay in your power?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

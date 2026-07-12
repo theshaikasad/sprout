@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "personal growth",
+  "transformation process",
+  "small actions",
+  "life design"
+ ],
+ "hook": {
+  "text": "You’ve learned enough. Now it's time to take action.",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

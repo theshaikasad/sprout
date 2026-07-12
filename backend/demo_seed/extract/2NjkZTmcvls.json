@@ -1,0 +1,14 @@
+{
+ "format": "vlog",
+ "topics": [
+  "morning routine",
+  "self-care",
+  "motivation",
+  "cleaning"
+ ],
+ "hook": {
+  "text": "Have you ever wanted to wake up early and start your day refreshed?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

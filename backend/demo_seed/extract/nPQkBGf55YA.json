@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai buzzwords",
+  "large language models",
+  "entrepreneurship terms"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw. In this video, I'm going to explain 30 AI buzzwords in simple terms.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

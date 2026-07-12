@@ -1,0 +1,12 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "reinforcement learning",
+  "neural networks",
+  "parameter optimization"
+ ],
+ "hook": {
+  "text": "Are you ready to dive into the math of reinforcement learning with neural networks?",
+  "style": "question"
+ }
+}

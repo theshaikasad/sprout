@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "claude tutorial",
+  "ai for beginners",
+  "non-technical users"
+ ],
+ "hook": {
+  "text": "Welcome to the Claude tutorial designed specifically for beginners!",
+  "style": "story"
+ }
+}

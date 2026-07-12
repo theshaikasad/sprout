@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai buzzwords",
+  "leadership in ai",
+  "large language models",
+  "business ai terms"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Sha. In this video, I'm going to explain 30 AI buzzwords in simple terms.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

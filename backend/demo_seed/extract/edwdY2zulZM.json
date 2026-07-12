@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "amazon bedrock",
+  "ai agents",
+  "enterprise security"
+ ],
+ "hook": {
+  "text": "Amazon Bedrock Agent Core comes down to three things.",
+  "style": "stat"
+ }
+}

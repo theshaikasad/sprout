@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "python coding",
+  "ai app development",
+  "cursor workflow"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw. In this video, I'm going to share how I build AI apps with Cursor, Python, and Claude Code.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

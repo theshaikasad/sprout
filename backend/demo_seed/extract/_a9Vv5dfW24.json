@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "giant models",
+  "vibecoder 3b",
+  "reasoning techniques",
+  "benchmark performance"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how a model can outperform giants 300 times its size?",
+  "style": "question"
+ }
+}

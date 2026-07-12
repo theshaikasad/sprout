@@ -1,0 +1,13 @@
+{
+ "format": "screencast",
+ "topics": [
+  "python for ai",
+  "ai applications",
+  "learning python",
+  "programming basics"
+ ],
+ "hook": {
+  "text": "Are you ready to unlock the power of AI with Python?",
+  "style": "question"
+ }
+}

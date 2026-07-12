@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "supply chain attacks",
+  "python security",
+  "npm safety",
+  "pypi vulnerabilities"
+ ],
+ "hook": {
+  "text": "Your Pip install could be putting your projects at risk!",
+  "style": "pattern-interrupt"
+ }
+}

@@ -18,7 +18,7 @@ from datetime import date
 from statistics import median as med
 
 from .config import CACHE_DIR
-from .corpus import load_corpus
+from .corpus import demo_today, load_corpus
 from .kg import Graph
 from .ops import improve
 from .youtube import _client, _video_details
@@ -84,7 +84,7 @@ async def get_track(force: bool = False) -> dict:
         vid = t["video_id"]
         views = (fresh.get(vid) or t)["views"]
         prev = state["videos"].get(vid, {})
-        age_days = max((date.today() - date.fromisoformat(t["published"])).days, 1)
+        age_days = max((demo_today() - date.fromisoformat(t["published"])).days, 1)
         ratio = views / median
         projected = (views / age_days * 30 if age_days < 30 else views) / median
         pct = max(-100.0, min(300.0, (ratio - 1) * 100))

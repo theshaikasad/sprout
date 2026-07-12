@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "claude skills",
+  "ai workshops",
+  "subagents",
+  "mcp features"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

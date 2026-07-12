@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "llm evaluation",
+  "app improvement",
+  "evaluation types"
+ ],
+ "hook": {
+  "text": "hey everyone I'm sha in this video I'm going to talk about how we can evaluate large language model applications",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

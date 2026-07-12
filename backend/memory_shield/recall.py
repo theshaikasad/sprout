@@ -83,7 +83,8 @@ Produce {n} distinct video concepts as JSON: {{"cards": [...]}}. Each card:
 HARD RULES: stay inside the creator's niche and audience — if a trending video targets a different
 audience (e.g. game developers when this creator teaches AI/ML engineers), you may use it as
 evidence that the trend is big, but never point the card's direction at that other audience.
-Every cited_video_id must appear in the facts. Every number in "why" must belong to a
+cited_video_ids must be picked ONLY from allowed_citation_ids in the facts — copy the video_id
+values exactly, and include at least one with source "creator" and one with source "external". Every number in "why" must belong to a
 video in cited_video_ids — never quote a view count from a video you did not cite. Write a NEW hook
 line (never copy a transcript opening verbatim) and make its text actually match its style. Never
 invent videos, numbers, formats, or channels. The trend supplies the angle; the creator's history
@@ -558,6 +559,21 @@ async def suggest(trend_label: str | None = None, n_cards: int = 3) -> dict:
 
     facts = gather_facts(g, trend_id, bridge, dists, dists_niche, cold_start=cold)
     facts["_bridge"] = bridge  # keep topic ids for the trace
+
+    # The model must copy citation ids exactly; a flat menu beats digging them
+    # out of nested facts (the #1 cause of gate-dropped cards).
+    creator_ids = {
+        v["video_id"] for t in facts["my_related_topics"] for v in t["my_videos"]
+    }
+    facts["allowed_citation_ids"] = [
+        {
+            "video_id": vid,
+            "title": v.get("title"),
+            "channel": v.get("channel"),
+            "source": "creator" if vid in creator_ids else "external",
+        }
+        for vid, v in _allowed_ids(facts).items()
+    ]
 
     # LIVE catalog only: the memory is blind to the holdout, so it cannot (and
     # must not) avoid holdout titles — re-inventing one is the backtest's win.

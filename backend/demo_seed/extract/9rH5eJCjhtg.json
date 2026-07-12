@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "self-help critique",
+  "personal growth",
+  "vulnerability in advice"
+ ],
+ "hook": {
+  "text": "Have you ever questioned the true value of self-help gurus?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

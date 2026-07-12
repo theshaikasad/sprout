@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "tech industry",
+  "career advice",
+  "startup leaders",
+  "user interface design"
+ ],
+ "hook": {
+  "text": "Have you ever wondered what advice top tech leaders would give?",
+  "style": "question"
+ }
+}

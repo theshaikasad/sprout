@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "phd defense",
+  "applied physics",
+  "ai research"
+ ],
+ "hook": {
+  "text": "Thank you all for attending this talk.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

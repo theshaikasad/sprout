@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "reinforcement learning",
+  "llm agents",
+  "ai training"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw. This is the second video in a larger series on reinforcement learning with LLMs.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

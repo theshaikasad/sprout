@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai agents",
+  "llms and tools",
+  "real-world applications",
+  "beginner to advanced"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Sha.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

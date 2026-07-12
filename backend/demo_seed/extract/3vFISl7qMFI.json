@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "reinforcement learning",
+  "llms",
+  "practical introduction",
+  "trial and error"
+ ],
+ "hook": {
+  "text": "What is reinforcement learning?",
+  "style": "question"
+ },
+ "_had_transcript": true
+}

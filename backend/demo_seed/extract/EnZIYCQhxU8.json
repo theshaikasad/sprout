@@ -1,0 +1,13 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "speech recognition",
+  "code navigation",
+  "assemblyai integration",
+  "developer tools"
+ ],
+ "hook": {
+  "text": "Technical words are hard for speech recognition—but they don't have to be.",
+  "style": "stat"
+ }
+}

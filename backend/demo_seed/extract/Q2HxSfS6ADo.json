@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "llm prompts",
+  "ai best practices",
+  "prompt engineering",
+  "language models"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Sha. In this video, I'll discuss five tips for writing good AI prompts.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

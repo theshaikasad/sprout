@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "agentic engineering",
+  "workflow optimization",
+  "attention management"
+ ],
+ "hook": {
+  "text": "Have you ever thought about how your attention can become your biggest bottleneck?",
+  "style": "question"
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "format": "personal-essay",
+ "topics": [
+  "cozy nights",
+  "family bonding",
+  "cooking memories",
+  "slow living"
+ ],
+ "hook": {
+  "text": "What do you do when your parents show up unexpectedly in the middle of the night?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

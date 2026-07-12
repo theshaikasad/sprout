@@ -1,0 +1,13 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "summer recipes",
+  "easy cocktails",
+  "sangria recipe"
+ ],
+ "hook": {
+  "text": "Looking for a refreshing summer drink that's super easy to make?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

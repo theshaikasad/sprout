@@ -1,0 +1,13 @@
+{
+ "format": "personal-essay",
+ "topics": [
+  "youth and beauty",
+  "self-acceptance",
+  "mental health"
+ ],
+ "hook": {
+  "text": "Youth and beauty isn’t what you think.",
+  "style": "pattern-interrupt"
+ },
+ "_had_transcript": false
+}

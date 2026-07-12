@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "llm ops",
+  "agent harness",
+  "loop engineering",
+  "rag evaluation"
+ ],
+ "hook": {
+  "text": "You can build anything. You can learn anything.",
+  "style": "pattern-interrupt"
+ }
+}

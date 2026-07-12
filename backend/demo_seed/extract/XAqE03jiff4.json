@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "peter thiel",
+  "ai ethics",
+  "technology critiques"
+ ],
+ "hook": {
+  "text": "This is actually terrifying.",
+  "style": "pattern-interrupt"
+ },
+ "_had_transcript": false
+}

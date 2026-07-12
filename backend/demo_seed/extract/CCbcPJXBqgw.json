@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai foundations",
+  "business applications",
+  "non-technical overview"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Sha. In this video, I'll cover AI foundations for business people.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ml fundamentals",
+  "ai engineering",
+  "machine learning concepts"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Sha.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

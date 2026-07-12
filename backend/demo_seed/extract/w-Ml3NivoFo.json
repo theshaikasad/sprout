@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "custom ai agents",
+  "mcp server",
+  "llm tools"
+ ],
+ "hook": {
+  "text": "Welcome everyone. I'm Shaw and today we're going to talk about how to build your custom AI agent with MCP.",
+  "style": "question"
+ },
+ "_had_transcript": true
+}

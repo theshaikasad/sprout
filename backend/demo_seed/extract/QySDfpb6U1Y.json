@@ -1,0 +1,12 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "universal-3.5",
+  "context carryover",
+  "ai demo"
+ ],
+ "hook": {
+  "text": "Are you ready to see the incredible features of Universal-3.5 in action?",
+  "style": "question"
+ }
+}

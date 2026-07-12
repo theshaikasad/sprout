@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai saas",
+  "tech stack",
+  "tool selection",
+  "product development"
+ ],
+ "hook": {
+  "text": "It's never been easier to build an AI SAS.",
+  "style": "stat"
+ },
+ "_had_transcript": true
+}

@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai video editing",
+  "claude training",
+  "automation skills"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai coding",
+  "claude code",
+  "practical guide",
+  "hands-on demo"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shreya. In this video, I'm going to give a short and practical introduction to Claude code.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

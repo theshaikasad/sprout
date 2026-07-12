@@ -1,0 +1,12 @@
+{
+ "format": "skit",
+ "topics": [
+  "sri lanka wedding",
+  "rag ceremony",
+  "friendship memories"
+ ],
+ "hook": {
+  "text": "Have you ever witnessed a wedding celebration that stands out for its unique traditions?",
+  "style": "question"
+ }
+}

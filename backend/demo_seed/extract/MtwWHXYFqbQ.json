@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "memory engineering",
+  "cursor feature",
+  "ai memory",
+  "developer insights"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how memory features in AI can change the way we interact with technology?",
+  "style": "question"
+ }
+}

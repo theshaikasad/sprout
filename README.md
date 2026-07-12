@@ -43,14 +43,11 @@ Built for the **WeMakeDevs × Cognee hackathon** ("The Hangover"). Python packag
 
 | Surface | URL |
 |---|---|
-| **Live frontend** | [sprout-frontend-1041216984106.us-central1.run.app](https://sprout-frontend-1041216984106.us-central1.run.app) |
-| **Live API** | [sprout-backend-1041216984106.us-central1.run.app/health](https://sprout-backend-1041216984106.us-central1.run.app/health) |
-| **Demo studio** (no sign-in) | [/studio](https://sprout-frontend-1041216984106.us-central1.run.app/studio) |
-| **Real-user signup** | [/signup](https://sprout-frontend-1041216984106.us-central1.run.app/signup) |
+| **Live demo studio** (no sign-in) | [sprout.asad.codes/studio](https://sprout.asad.codes/studio) |
+| **Landing page** | [sprout.asad.codes](https://sprout.asad.codes) |
+| **Live API** | [api.sprout.asad.codes/health](https://api.sprout.asad.codes/health) |
 
-**Target custom domains:** `sprout.asad.codes` (frontend) · `api.sprout.asad.codes` (backend) — DNS cutover pending.
-
-**Legacy VM fallback:** `35.193.172.43` (do not delete until Cloud Run custom-domain smoke test passes).
+**How the public demo runs (honest note):** the deployed demo is the real system — live graph queries, live `improve()` reweighting, a live chat agent — running **single-tenant** on a frozen snapshot of one creator's memory (@LanaBlakely, built by the same pipeline you can run locally) baked into the Docker image as `backend/demo_graph/` + `backend/demo_seed/`. The demo world's clock is anchored to the fixture (`demo_today()`), so it stays coherent no matter when you visit. Multi-user isolation on Cloud SQL is implemented in the codebase (see [Multi-user & storage](#multi-user--storage)) but is not wired to the public demo.
 
 ---
 
@@ -396,6 +393,8 @@ Threshold: `CATALOG_ESTABLISHED_MIN = 10` in `config.py`.
 
 ## Multi-user & storage
 
+**The public demo runs single-tenant** (same mode as local dev — SQLite + kuzu, store baked into the image, `max-instances=1` because kuzu is single-writer). The multi-user design below is implemented and code-complete for real accounts, but not wired to the public demo.
+
 ### Auth (two-step for real users)
 
 1. **Firebase** — Google sign-in, Bearer ID token on every API call
@@ -403,7 +402,7 @@ Threshold: `CATALOG_ESTABLISHED_MIN = 10` in `config.py`.
 
 Demo: no token → auto `uid=demo`.
 
-### Three logical databases (production Cloud SQL)
+### Three logical databases (multi-user mode, Cloud SQL)
 
 | Database | Contents |
 |---|---|
@@ -411,17 +410,17 @@ Demo: no token → auto `uid=demo`.
 | **`cognee_meta`** | Cognee relational tables (`ENABLE_BACKEND_ACCESS_CONTROL=true`) |
 | **Per-user dataset DBs** | Graph + pgvector (max 10 creators) |
 
-Every Cognee call in multi-user paths runs inside **`user_cognee_context(dataset_id, user_id)`**.
+Every Cognee call in multi-user paths runs inside **`user_cognee_context(dataset_id, user_id)`**. Multi-user mode switches on when `SPROUT_DATABASE_URL` points at Postgres.
 
-### Local dev fallback
+### Single-tenant mode (local dev + the public demo)
 
-| Piece | Local |
+| Piece | Store |
 |---|---|
 | App state | SQLite `backend/.cache/sprout_app.db` |
 | Graph | Kuzu + LanceDB under `backend/.cognee/` |
 | Cognee access control | `ENABLE_BACKEND_ACCESS_CONTROL=false` |
 
-**Rule:** stop uvicorn before `python -m memory_shield.ingest` locally (Kuzu single-writer). Postgres prod has no file lock.
+**Rule:** stop uvicorn before `python -m memory_shield.ingest` locally (Kuzu single-writer). The deployed demo caps Cloud Run at one instance for the same reason.
 
 ---
 
@@ -769,16 +768,17 @@ python -m memory_shield.scripts.phase0_smoke
 
 | Service | Name |
 |---|---|
-| Backend | `sprout-backend` (min-instances=1, timeout=3600) |
+| Backend | `sprout-backend` — single-tenant demo mode, kuzu store baked into the image, `min-instances=1`, `max-instances=1` |
 | Frontend | `sprout-frontend` |
-| Database | Cloud SQL `sprout-db` (Postgres 15, pgvector) |
+
+The deployed backend runs with **no database attachment** — the frozen demo world ships in the image (`backend/demo_graph/` + `backend/demo_seed/`, rebuilt via `./scripts/snapshot-demo-world.sh` after a local `corpus` + `ingest --fresh`).
 
 ### One-time setup
 
 ```bash
-./scripts/gcp-provision-sql.sh       # Cloud SQL + databases
 ./scripts/bootstrap-gcp-secrets.sh   # .env → Secret Manager
 ./scripts/setup-github-wif.sh        # GitHub Actions WIF auth
+./scripts/gcp-provision-sql.sh       # (multi-user mode only) Cloud SQL + databases
 ```
 
 ### Deploy
@@ -788,7 +788,7 @@ python -m memory_shield.scripts.phase0_smoke
 
 Full guide: [.github/DEPLOY.md](.github/DEPLOY.md) · Sign-in: [.github/SIGNIN_SETUP.md](.github/SIGNIN_SETUP.md)
 
-### Phase 0 gate (Postgres)
+### Phase 0 gate (multi-user Postgres mode only)
 
 ```bash
 export SPROUT_DATABASE_URL=...
@@ -817,10 +817,12 @@ python -m memory_shield.scripts.phase0_smoke
 
 ## Known limitations
 
-Honest gaps as of Jul 2026 hackathon build:
+Honest gaps as of Jul 2026:
 
 | Area | Status |
 |---|---|
+| Public demo scope | Single-tenant frozen world; sign-in hidden from the UI (Firebase auth for the custom domain never configured); Cloud SQL multi-user path implemented but not deployed |
+| Demo state persistence | Ideas planted / feedback given on the public demo live in the container's ephemeral filesystem — they reset when the instance recycles (by design for a public demo) |
 | Vision board `payload` (card + trace) | Frontend sends it; backend `Draft` model doesn't persist — board detail view thin |
 | Target publish date on drafts | `PATCH target` silently ignored — no DB column yet |
 | Genre reveal "— right?" confirm | UI display only; no interactive reweight from user correction in chat |

@@ -1,0 +1,13 @@
+{
+ "format": "vlog",
+ "topics": [
+  "zone 2 training",
+  "fitness journey",
+  "self-improvement"
+ ],
+ "hook": {
+  "text": "I tried zone 2 training for 30 days and this is what I learned.",
+  "style": "story"
+ },
+ "_had_transcript": false
+}

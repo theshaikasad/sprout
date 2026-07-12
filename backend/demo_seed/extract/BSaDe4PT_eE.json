@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "adult friendships",
+  "emotional connections",
+  "social withdrawal",
+  "self-improvement"
+ ],
+ "hook": {
+  "text": "When was the last time someone insisted on you?",
+  "style": "question"
+ },
+ "_had_transcript": true
+}

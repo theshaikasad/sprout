@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ideal customer profile",
+  "lcm analysis",
+  "ai workshops",
+  "embedding models"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

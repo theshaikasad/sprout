@@ -107,6 +107,23 @@ def load_corpus() -> dict:
     return json.loads(CORPUS_PATH.read_text())
 
 
+def demo_today() -> date:
+    """The demo world's frozen 'now': two days after the fixture's newest upload.
+
+    Every cadence/staleness/velocity read must use this instead of the wall
+    clock — the corpus is a frozen snapshot, so real elapsed time would make
+    the channel read as abandoned within weeks of a deploy."""
+    try:
+        corpus = load_corpus()
+        newest = max(
+            date.fromisoformat(v["published"])
+            for v in corpus["live"] + corpus["holdout"]
+        )
+        return newest + timedelta(days=2)
+    except Exception:
+        return date.today()
+
+
 if __name__ == "__main__":
     c = build_corpus()
     n_comp = sum(len(v) for v in c["competitors"].values())

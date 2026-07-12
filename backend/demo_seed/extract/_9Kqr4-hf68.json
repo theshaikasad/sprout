@@ -1,0 +1,13 @@
+{
+ "format": "interview",
+ "topics": [
+  "voice ai",
+  "transcription quality",
+  "multilingual support",
+  "real-time tradeoffs"
+ ],
+ "hook": {
+  "text": "How is voice AI moving beyond just transcription?",
+  "style": "question"
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "format": "screencast",
+ "topics": [
+  "unreal engine 5.8",
+  "mcp plugin",
+  "claude code",
+  "setup guide"
+ ],
+ "hook": {
+  "text": "In this video i'll be showing you how to setup and configure the new Unreal Engine 5.8 MCP plugin with claude code.",
+  "style": "story"
+ }
+}

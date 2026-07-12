@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "llm tool calling",
+  "python functions",
+  "openai api"
+ ],
+ "hook": {
+  "text": "In this video, we'll explore how to connect an LLM to Python functions.",
+  "style": "story"
+ }
+}

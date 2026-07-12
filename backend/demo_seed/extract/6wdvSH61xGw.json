@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "agent skills",
+  "mcp comparison",
+  "ai customization",
+  "tool use cases"
+ ],
+ "hook": {
+  "text": "Welcome everyone. I'm Sha and today I'm going to talk about agent skills and what makes this similar and different from MCP.",
+  "style": "stat"
+ },
+ "_had_transcript": true
+}

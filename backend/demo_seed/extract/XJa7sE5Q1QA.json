@@ -1,0 +1,13 @@
+{
+ "format": "personal-essay",
+ "topics": [
+  "journaling",
+  "punk aesthetics",
+  "self-expression"
+ ],
+ "hook": {
+  "text": "Journalling but make it punk.",
+  "style": "pattern-interrupt"
+ },
+ "_had_transcript": false
+}

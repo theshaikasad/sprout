@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "life-changing advice",
+  "self-improvement",
+  "personal growth"
+ ],
+ "hook": {
+  "text": "Have you ever received a piece of advice that completely changed your life?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

@@ -1,0 +1,14 @@
+{
+ "format": "vlog",
+ "topics": [
+  "slow reset",
+  "life admin",
+  "productive prep",
+  "self-care routine"
+ ],
+ "hook": {
+  "text": "Are you ready to hit the reset button on your life and boost your productivity?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

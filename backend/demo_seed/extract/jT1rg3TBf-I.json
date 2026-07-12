@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "claude code",
+  "agent teams",
+  "ai agents",
+  "subagents comparison"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

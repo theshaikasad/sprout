@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "notion ai agent",
+  "openai sdk",
+  "content management",
+  "python coding"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

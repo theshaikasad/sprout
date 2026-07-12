@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "rlhf",
+  "llm training",
+  "generative models",
+  "human feedback"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how large language models like ChatGPT learn to respond politely?",
+  "style": "question"
+ }
+}

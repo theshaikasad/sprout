@@ -1,5 +1,6 @@
-# Sprout backend — FastAPI + Cognee (postgres or local kuzu fallback).
-# Production: Cloud Run + Cloud SQL. Env via Secret Manager.
+# Sprout backend — FastAPI + Cognee, single-tenant demo mode on Cloud Run.
+# The demo world ships pre-built in the image: kuzu+lancedb store (demo_graph/)
+# and caches (demo_seed/). No Cloud SQL in the serving path.
 
 FROM python:3.12-slim
 
@@ -12,7 +13,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY memory_shield ./memory_shield
-# Demo corpus + analytics for Cloud Run (gitignored .cache/ is local-only).
+# Frozen demo world (gitignored .cognee/ and .cache/ are local-only; these are
+# their committed snapshots — rebuild with scripts/snapshot-demo-world.sh).
+COPY demo_graph/ ./.cognee/
 COPY demo_seed/ ./.cache/
 
 ENV PYTHONUNBUFFERED=1

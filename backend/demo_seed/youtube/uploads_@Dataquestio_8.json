@@ -1,0 +1,98 @@
+[
+ {
+  "video_id": "yc4oDNKEfQQ",
+  "title": "Build an LLM Gateway in Python | Connect OpenAI and Anthropic with One Function",
+  "description": "Build an LLM gateway in Python using the requests library, REST APIs, and custom error handling. This project walkthrough is perfect if you're ready to move beyond single-provider LLM calls and build a flexible, provider-agnostic interface from scratch. Follow along with Dataquest's Director of Curriculum, Anna Strahl.\n\nComplete the project free here: https://app.dataquest.io/m/1047/guided-project%3A-build-a-multi-provider-llm-gateway\n\nWhat you'll learn:\n- How to send direct HTTP requests to OpenAI and Anthropic with Python's requests library\n- How to normalize different JSON response formats into one consistent output\n- How to design a provider-agnostic abstraction layer with a single generate() function\n- How to implement custom exceptions and structured error handling for API calls\n\nKey skills covered: Python, REST APIs, HTTP requests with requests, JSON parsing, custom exceptions, API abstraction design\n\nNew to Python? Build the foundational skills you need with our AI Engineering career path: https://www.dataquest.io/path/ai-engineering/",
+  "published": "2026-04-24",
+  "channel_id": "UC_lePY0Lm0E2-_IkYUWpI5A",
+  "channel_title": "Dataquest",
+  "tags": [],
+  "views": 1089,
+  "likes": 28,
+  "comments": 3
+ },
+ {
+  "video_id": "d7pC4H0Y_cY",
+  "title": "Your First Python App: Build a Food Ordering App from Scratch [Beginner Walkthrough]",
+  "description": "Build a complete food ordering app in Python using dictionaries, functions, and loops. This beginner-friendly project walkthrough is perfect if you're ready to move beyond isolated exercises and build a real, interactive application from scratch. Follow along with Dataquest's Director of Curriculum, Anna Strahl.\n\nComplete the project here: https://app.dataquest.io/c/161/m/718\n\nWhat you'll learn:\n- How to use dictionaries to manage menu items, prices, and quantities\n- How to build reusable functions to organize your app's logic\n- How to implement loops and control flow for user interaction\n- How to structure a complete interactive Python application\n\nKey skills covered: Python dictionaries, custom functions, loops and conditionals, handling user input, structuring larger Python programs\n\nNew to Python? Build the foundational skills you need with our Python Basics for Data Analysis course: https://www.dataquest.io/path/python-basics-for-data-analysis/\n\n\n00:00:00 - Introduction\n00:08:48 - Setting up variables and menu data in Python\n00:14:25 - Building a display menu function\n00:20:40 - Writing an add-to-cart function\n00:27:00 - Writing a remove-from-cart function\n00:33:00 - Modifying cart items with an update function\n00:34:30 - Displaying the cart with formatted output\n00:39:29 - Building a checkout and total calculation function\n00:40:40 - Handling user input\n00:46:25 - Creating the main ordering loop\n00:54:40 - Testing the complete food ordering app\n00:59:53 - Audience Q&A\n\n\n[timestamps to be added]",
+  "published": "2026-03-27",
+  "channel_id": "UC_lePY0Lm0E2-_IkYUWpI5A",
+  "channel_title": "Dataquest",
+  "tags": [],
+  "views": 1238,
+  "likes": 44,
+  "comments": 0
+ },
+ {
+  "video_id": "QXZN2ZEvgqw",
+  "title": "Clean & Analyze Real Car Sales Data with pandas | Beginner Python Project Walkthrough",
+  "description": "In this video, we guide you through a real-world data analysis project using pandas to explore and clean a dataset of used car listings scraped from eBay Kleinanzeigen, the German eBay classifieds site. You'll step into the role of a data analyst for a used car classifieds service, tackling the kind of messy, real-world data challenges you'd actually encounter on the job.\n\nWhat You'll Learn in This Video:\n✔️ How to clean messy column names and standardize datasets\n✔️ How to identify and handle missing or invalid data\n✔️ How to clean and convert price and mileage columns from strings to usable numbers\n✔️ How to explore and filter out unrealistic registration year values\n✔️ How to group and aggregate data to uncover pricing trends by brand\n✔️ How to store and organize aggregate results in a new DataFrame\n\nWhether you're building your first data portfolio project or looking to sharpen your pandas skills on real scraped data, this walkthrough gives you hands-on practice with:\nPython\npandas\nNumPy\nExploratory data analysis (EDA)\nData cleaning and type conversion\nBoolean indexing and filtering\nGrouping and aggregation\n\nRecommended Prerequisites:\nIntroduction to NumPy and Pandas → https://www.dataquest.io/course/pandas-fundamentals/\n\nAccess the Project: https://www.dataquest.io/\n\nVideo Chapters:\n00:00:00 - Intro\n00:02:21 - Project Brief & Dataset Overview\n00:04:06 - Loading the Data & Encoding Issues\n00:07:22 - Exploratory Data Analysis\n00:21:15 - Data Cleaning: Columns, Price & Odometer\n00:38:05 - Handling Outliers & Invalid Values\n00:40:20 - Brand & Mileage Analysis\n00:48:24 - Creating a GitHub Gist\n00:50:13 - Q&A\n\n#Python #DataScience #pandas #DataCleaning #PythonProjects #EDA #DataAnalysis #BeginnerPython",
+  "published": "2026-02-27",
+  "channel_id": "UC_lePY0Lm0E2-_IkYUWpI5A",
+  "channel_title": "Dataquest",
+  "tags": [],
+  "views": 1391,
+  "likes": 44,
+  "comments": 3
+ },
+ {
+  "video_id": "liV0bfZ5Wu0",
+  "title": "How to Connect an LLM to Python Functions (Tool Calling Tutorial)",
+  "description": "In this video, Dataquest’s Director of Curriculum, Anna Strahl, walks through a practical walkthrough on LLM tool calling (function calling) in Python using the OpenAI API.\n\nYou’ll learn how to build a real AI product assistant that can reliably:\n- Look up real product details\n- Return accurate pricing information\n- Calculate bulk order discounts\n\nInstead of letting the model guess, you’ll connect your LLM to external Python functions using the tool calling / function calling workflow supported by modern AI APIs.\n\nThis is a key skill for anyone building AI agents, chatbots with tools, or production-style assistants that need to interact with real systems like databases, pricing logic, or APIs.\n\nBy the end of this walkthrough, you’ll understand how function calling works conceptually and how to implement it step-by-step in code.\n\nWhat You’ll Learn:\n- LLM Function Calling in Python: Register tools and let the model decide when to call them\n- Tool Schema Design: Write clear JSON schemas so the model uses functions correctly\n- Preventing Hallucinations: Force accurate responses through external data sources\n- Bulk Pricing Calculations: Use Python functions for reliable math and discounts\n\nRecommended Prerequisites:\n- Prompting Large Language Models in Python → https://www.dataquest.io/course/prompting-large-language-models-in-python/\n\nAccess the lesson: https://app.dataquest.io/m/3000058\n\nVideo chapters:\n00:00:00 - Intro\n00:03:12 - Function calling workflow overview\n00:05:39 - Why LLMs hallucinate without tools\n00:09:21 - Writing the get_product_info function\n00:12:53 - Defining tools with JSON schema\n00:17:51 - Connecting the model to tools\n00:22:26 - Executing tool calls and returning results\n00:35:55 - Adding bulk pricing with calculate_bulk_price\n00:43:45 - Making tool execution dynamic (tool_functions mapping)\n00:46:03 - Next Steps\n00:48:10 - Q&A\n\n#LLMFunctionCalling #PythonAI #AIAgents #OpenAIAPI #GenerativeAI",
+  "published": "2026-02-06",
+  "channel_id": "UC_lePY0Lm0E2-_IkYUWpI5A",
+  "channel_title": "Dataquest",
+  "tags": [],
+  "views": 1778,
+  "likes": 43,
+  "comments": 4
+ },
+ {
+  "video_id": "oP_-uLoqqbQ",
+  "title": "Learn Python OOP by Building a Text-Based Game | Garden Simulator Project Walkthrough",
+  "description": "In this video, you’ll step into the role of a Python game developer to build an interactive text-based game called Garden Simulator. With guidance from Dataquest’s Director of Curriculum, Anna Strahl, you’ll apply your Python skills to create a game where players can plant, tend, and harvest virtual crops, all from a Jupyter notebook.\n\nYou’ll learn to use object-oriented programming (OOP) to design plant classes and game logic, implement error handling for smoother user interactions, and add randomness to make gameplay more dynamic and fun. Whether you’re brushing up on classes or exploring how Python powers real games, this project is a perfect addition to your portfolio.\n\nThis session is ideal for beginners and intermediate learners who want to apply foundational Python skills to a real coding project.\n\nWhat You'll Learn:\n- Design a class-based game using OOP principles in Python\n- Create interactive gameplay loops with user input\n- Use error handling to manage invalid user actions\n- Add randomness to simulate foraging and plant behavior\n- Organize and structure your code for reusability and readability\n\nRecommended Prerequisites:\n- Python Basics→ https://www.dataquest.io/path/python-basics-for-data-analysis/\n\nAccess the Project: https://www.dataquest.io/projects/guided-project-a-garden-simulator-text-based-game/\n\nVideo chapters:\n00:00 - Intro\n02:55 - Creating the Plant class\n10:40 - Using inheritance for subclasses\n14:36 - Creating the Gardener class\n25:19 - Defining the select_item function\n29:12 - Building the main game loop\n39:54 - Audience Q&A\n\n#pythonprojects #Python #oop #pythongaming #objectorientedprogramming",
+  "published": "2026-01-19",
+  "channel_id": "UC_lePY0Lm0E2-_IkYUWpI5A",
+  "channel_title": "Dataquest",
+  "tags": [],
+  "views": 1014,
+  "likes": 41,
+  "comments": 2
+ },
+ {
+  "video_id": "1B0s3cc71a8",
+  "title": "Your First Deep Learning Project: IPO Prediction with TensorFlow & Keras",
+  "description": "In this hands-on Project Lab, you'll step into the role of a data scientist at an investment firm analyzing the Indian IPO market. With guidance from the Dataquest’s Director of Curriculum, Anna Strahl, you’ll build a deep learning classification model using TensorFlow to predict IPO listing gains, a high-impact task with direct real-world applications.\n\nThis project is ideal for learners looking to deepen their deep learning knowledge and apply it to financial datasets. You’ll go through the full machine learning pipeline: from exploring a real IPO dataset to preprocessing, building, training, and evaluating your modelall inside a Jupyter notebook.\n\nWhat You'll Learn:\n- How to explore and visualize real-world IPO data\n- How to identify and treat outliers in financial datasets\n- How to build and train a deep learning model using TensorFlow and Keras\n- How to evaluate model performance for classification tasks\n- How to apply machine learning to guide investment decisions\n\nRecommended Prerequisites:\n- Python Basics for Data Analysis → https://www.dataquest.io/course/introduction-to-deep-learning-in-tensorflow\n\nAccess the Project: https://www.dataquest.io/projects/guided-project-a-predicting-listing-gains-in-the-indian-ipo-market-using-tensorflow/\n\nVideo Chapters:\n00:00:00 - Intro\n00:06:06 - Project Brief\n00:07:27 - Loading and Inspecting the Data\n00:09:52 - Exploratory Data Analysis (EDA)\n00:24:28 - Building the Model\n00:30:16 - Evaluating Model Performance\n00:33:28 - Analyzing and Interpreting Residuals\n00:39:43 - Refining the Model\n00:49:26 - Audience Q&A\n\n#MachineLearning #pythonprojects #DeepLearning #Python #DataScience #tensorflow",
+  "published": "2025-12-05",
+  "channel_id": "UC_lePY0Lm0E2-_IkYUWpI5A",
+  "channel_title": "Dataquest",
+  "tags": [],
+  "views": 1554,
+  "likes": 44,
+  "comments": 2
+ },
+ {
+  "video_id": "OS2xRBNeNqM",
+  "title": "Building a Salary Predictor Part 2: Model Training & Feature Importance | Stack Overflow 2023",
+  "description": "In this video, we train and evaluate a linear regression model to predict developer salaries using the cleaned 2023 Stack Overflow Survey data from Part 1. You'll learn how to interpret model performance, analyze feature importance through coefficients, and understand where the model succeeds and struggles. This session focuses on extracting actionable insights about what actually impacts developer salaries—from technical skills to role types and company characteristics.\n\nWhat You'll Learn:\nWhat You'll Learn:\n- Handling multicollinearity in correlated features (experience metrics)\n- Training linear regression models with scikit-learn\n- Interpreting model coefficients to understand feature impact\n- Analyzing residual plots to identify model weaknesses\n- Evaluating performance across different salary ranges\n- Identifying controllable factors that boost salary (skills, roles, tools)\n- Understanding model limitations and next steps for improvement\n\nRecommended Prerequisites:\n- Watch Part 1 (data cleaning) here → https://youtu.be/d7WzK1Wn1yg\n- Machine Learning in Python → https://www.dataquest.io/path/machine-learning-in-python/\n- Familiarity with pandas, NumPy, and basic data manipulation\n\nAccess the Project: https://app.dataquest.io/m/950\n\n#MachineLearning #Python #DataScience #SalaryPrediction #FeatureEngineering #DataCleaning #StackOverflow #TechCareers #DataAnalysis #PythonProjects",
+  "published": "2025-11-04",
+  "channel_id": "UC_lePY0Lm0E2-_IkYUWpI5A",
+  "channel_title": "Dataquest",
+  "tags": [],
+  "views": 1107,
+  "likes": 29,
+  "comments": 1
+ },
+ {
+  "video_id": "d7WzK1Wn1yg",
+  "title": "Build a Salary Prediction Model: Cleaning Messy Survey Data with Python (Part 1)",
+  "description": "In this video, we guide you through building a machine learning salary prediction model using the 2023 Stack Overflow Developer Survey. You'll work with real-world survey data from tens of thousands of developers worldwide, transforming messy, multi-select responses into features ready for predictive modeling. This session covers the critical data cleaning and feature engineering steps that make or break ML projects—from handling missing data to encoding high-cardinality categorical variables.\n\nWhat You'll Learn:\n- How to clean and prepare large-scale survey data for machine learning\n- Strategies for handling missing data and deciding what to drop vs. impute\n- Techniques for investigating and filtering outliers in salary data\n- Feature engineering approaches for multi-select columns (skills, tools, tech stacks)\n- Encoding strategies: ordinal encoding for rankings, one-hot encoding for categories, and grouping high-cardinality features\n- Real-world tradeoffs in data preprocessing decisions\n\nWhat's Next: Part 2 (next week) will cover model building, evaluation, and interpreting feature importance to find what actually impacts developer salaries.\n\nRecommended Prerequisites:\n- Machine Learning in Python → https://www.dataquest.io/path/machine-learning-in-python/\n- Familiarity with pandas, NumPy, and basic data manipulation\n\nAccess the Project: https://app.dataquest.io/m/950\n\nComing in Part 2:\n- Linear regression model training\n- Model evaluation (R², MAE, residuals)\n- Feature importance analysis\n- What skills and factors actually impact salary\n\n#MachineLearning #Python #DataScience #SalaryPrediction #FeatureEngineering #DataCleaning #StackOverflow #TechCareers #DataAnalysis #PythonProjects",
+  "published": "2025-10-24",
+  "channel_id": "UC_lePY0Lm0E2-_IkYUWpI5A",
+  "channel_title": "Dataquest",
+  "tags": [],
+  "views": 1952,
+  "likes": 46,
+  "comments": 1
+ }
+]

@@ -1,0 +1,13 @@
+{
+ "format": "vlog",
+ "topics": [
+  "anxiety management",
+  "self-care",
+  "daily routines"
+ ],
+ "hook": {
+  "text": "Have you ever felt overwhelmed just by having one appointment in a day?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

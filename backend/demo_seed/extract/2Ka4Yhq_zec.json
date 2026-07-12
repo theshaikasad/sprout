@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "dating life",
+  "personal growth",
+  "self-reflection"
+ ],
+ "hook": {
+  "text": "Have you ever thought about how your dating life changes year to year?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

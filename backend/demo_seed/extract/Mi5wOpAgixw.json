@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "multi-agent systems",
+  "ai agents",
+  "llm development",
+  "collaborative ai"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw. In this video, I'm going to explain multi-agent systems.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

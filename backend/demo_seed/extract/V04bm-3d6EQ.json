@@ -1,0 +1,13 @@
+{
+ "format": "interview",
+ "topics": [
+  "ai agents",
+  "autonomous systems",
+  "multi-agent negotiation",
+  "future technology"
+ ],
+ "hook": {
+  "text": "What happens when millions of these agents are not just working for us?",
+  "style": "question"
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "format": "screencast",
+ "topics": [
+  "local llm setup",
+  "gemma4 performance",
+  "fable 5 comparison",
+  "composer 2.5"
+ ],
+ "hook": {
+  "text": "In this video, I want to test the Gemma 4 12B finetune with Fable 5 and Composer 2.5.",
+  "style": "story"
+ }
+}

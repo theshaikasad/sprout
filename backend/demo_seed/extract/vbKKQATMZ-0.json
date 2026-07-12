@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "large language models",
+  "transformers",
+  "context engineering",
+  "agentic ai"
+ ],
+ "hook": {
+  "text": "Most people think they understand AI, but they only understand the part where you type something into ChatGPT and it types something back.",
+  "style": "stat"
+ }
+}

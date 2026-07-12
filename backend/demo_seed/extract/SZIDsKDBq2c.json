@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai transformation",
+  "business strategy",
+  "leadership in ai",
+  "roadmap for ai"
+ ],
+ "hook": {
+  "text": "These days, most leaders I talk to are feeling the pressure to do something with AI fast.",
+  "style": "stat"
+ },
+ "_had_transcript": true
+}

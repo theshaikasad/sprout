@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "context engineering",
+  "llm optimization",
+  "ai best practices",
+  "practical tips"
+ ],
+ "hook": {
+  "text": "Today I'm going to be talking about context engineering which has kind of emerged over the past several weeks as yet another buzzword in the AI space.",
+  "style": "pattern-interrupt"
+ },
+ "_had_transcript": true
+}

@@ -1,0 +1,13 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "emotional intelligence",
+  "poor decision making",
+  "digital communication"
+ ],
+ "hook": {
+  "text": "Have you ever regretted sending an emotional text?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

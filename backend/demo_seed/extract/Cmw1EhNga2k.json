@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "self-help myths",
+  "personal growth",
+  "mindset shift"
+ ],
+ "hook": {
+  "text": "Have you ever wondered if self-help is actually doing more harm than good?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

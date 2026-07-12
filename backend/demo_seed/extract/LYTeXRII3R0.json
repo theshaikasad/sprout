@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "meta prompting",
+  "claude insights",
+  "prompt engineering"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how to enhance your prompts with Claude?",
+  "style": "question"
+ }
+}

@@ -1,0 +1,60 @@
+[
+ {
+  "video_id": "GrNbuWWJYiI",
+  "title": "You Can Learn AI Agent Harness & Loop Engineering In 19 Min | LLM Ops, Eval, Tracing, RAG",
+  "description": "An LLM is an incredibly powerful brain that knows everything about humanity and nothing about you or the software you run. This video walks through the four buzzwords that turn that raw brain into a system you can trust: agent harness, loop engineering, LLM Ops, and eval. No jargon, step by step, technical or not.\n\nYou can build anything. You can learn anything. 💪\n\nTimeline\n0:00 Intro: the 4 AI agent buzzwords\n0:42 What an AI agent run actually is\n1:52 The memory system: procedural, semantic, episodic\n3:37 What \"harness\" really means (the horse)\n5:07 Storing and updating memory (databases, skills, summarizer agent)\n8:28 Retrieval: RAG, SQL vs semantic search\n10:00 Tool calling and why agents loop\n10:52 Loop engineering and end-loop guardrails\n13:21 A Claude Code hooks example\n14:18 Eval and LLM Ops: why you need them\n15:55 Tracing every run (Langfuse, LangSmith)\n16:43 Evaluation: LLM as a judge\n17:20 Diagnosing what broke\n18:16 The gate: ship the fix or fix the bug\n18:57 Zoom out: the full system\n19:53 Wrap up\n\nLaunch Full-Stack App Template: https://github.com/ShenSeanChen/launch-mvp-stripe-nextjs-supabase\nMy AI Agent Startup AutoManus.io is an AI sales lead manager for made-to-order product sales. We embed directly where conversations happen (WhatsApp, email, web chat) to capture inbound, automate follow‑ups, and kill CRM busywork; live with 4 pilots and 2 contracts in motion, pre‑seed backed by Character VC. Focused on US/UK/Germany, raising to expand engineering and scale deployments.\n\n☕️ Buy me a coffee: https://buy.stripe.com/5kA176bA895ggog4gh\n- X: https://x.com/ShenSeanChen \n- Sean's Discord: https://discord.gg/tvECErKcFr\n- AutoManus Discord: https://discord.gg/5HhcNjCR\n- LinkedIn: https://linkedin.com/in/shen-sean-chen \n- Github Link: https://github.com/ShenSeanChen\n- Instagram: https://www.instagram.com/sean_ai_stories\n\nSub Count when launched: 13,050\n\nTop Github Repos\n- LaunchMVP NextJS,Supabase,Stripe (1015 stars): https://github.com/ShenSeanChen/launch-mvp-stripe-nextjs-supabase\n- ReactNextJSTips (114 stars): https://github.com/ShenSeanChen/yt-react-nextjs-tips\n- DeepResearchAgentBackend (70 stars): https://github.com/ShenSeanChen/yt-DeepResearch-Backend\n- SupabaseTipsKanban (64 stars): https://github.com/ShenSeanChen/yt-supabase-tips-kanban\n- RAGVectorDB (56 stars): https://github.com/ShenSeanChen/yt-rag\n- KimiK2Claude (37 stars): https://github.com/ShenSeanChen/yt-kimi-k2-claude\n- DeepResearchAgentFrontend (33 stars): https://github.com/ShenSeanChen/yt-DeepResearch-Frontend\n- AgenticRAG (13 stars): https://github.com/ShenSeanChen/yt-agentic-rag\n\nYou Can Build Anything Playlist (Full-Stack Dev Without CS Degrees)\n- Core7: 95% React/NextJS Use Cases https://www.youtube.com/watch?v=vZzFlAjz4rA&list=PLE9hy4A7ZTmpGq7GHf5tgGFWh2277AeDR&index=16\n- Core6: 95% Supabase Use Cases https://www.youtube.com/watch?v=Pnoq2tIif3s&list=PLE9hy4A7ZTmpGq7GHf5tgGFWh2277AeDR&index=15\n- Core5: StripeNextJSSupabase https://www.youtube.com/watch?v=ad1BxZufer8&list=PLE9hy4A7ZTmpGq7GHf5tgGFWh2277AeDR&index=8\n- Core4: AuthSupabaseGoogle https://www.youtube.com/watch?v=AZAU3ClAWWE&list=PLE9hy4A7ZTmpGq7GHf5tgGFWh2277AeDR&index=6\n- Core3: FastapiGCPPro https://www.youtube.com/watch?v=u3sfqpzzo-U&list=PLE9hy4A7ZTmpGq7GHf5tgGFWh2277AeDR&index=5\n- Core2: SupabaseHero https://www.youtube.com/watch?v=V0kmgkyPsVQ&list=PLE9hy4A7ZTmpGq7GHf5tgGFWh2277AeDR&index=4\n- Core1: LaunchAnApp https://www.youtube.com/watch?v=iQ2izvGG4tQ&list=PLE9hy4A7ZTmpGq7GHf5tgGFWh2277AeDR&index=3\n- Launch WhereToMeet w/ GoogleMaps, Calendar, Supabase, Cursor: https://www.youtube.com/watch?v=5xMjX1QxGUY&list=PLE9hy4A7ZTmpGq7GHf5tgGFWh2277AeDR&index=2\n- Launch EncourageMe w/ Cursor, Supabase, Vercel https://www.youtube.com/watch?v=hnvL4xa2DHA&list=PLE9hy4A7ZTmpGq7GHf5tgGFWh2277AeDR",
+  "published": "2026-06-26",
+  "channel_id": "UCx-OfB7xsTN_GnoplitHfXg",
+  "channel_title": "Sean‘s AI Stories",
+  "tags": [],
+  "views": 44146,
+  "likes": 2185,
+  "comments": 98
+ },
+ {
+  "video_id": "iynIylRPqY4",
+  "title": "My coworkers read my personal ChatGPT chats via Meta Analytics... Let's talk Evals and AI Safety!!",
+  "description": "emaline introduces you to the concept of llm evaluations and why they are crucial to ai safety. she breaks down fundamental concepts to cutting edge engineering practices in a way anyone, regardless of prior experience, will be able to follow.",
+  "published": "2026-06-23",
+  "channel_id": "UCZdyKh5VBXMIzVqSQ6qE9sg",
+  "channel_title": "Emaline Gayhart",
+  "tags": [],
+  "views": 94169,
+  "likes": 90,
+  "comments": 13
+ },
+ {
+  "video_id": "cNF_MO82Qew",
+  "title": "Introduction to LLM Evaluations – Model Evals vs Application Evals | CampusX",
+  "description": "This lecture explains what LLM Evaluations (LLM Evals) are, why they are different from traditional software testing, and how they help measure the quality of LLMs and LLM-powered applications. The session introduces the concepts of systematic evaluation, evaluation criteria, model evaluations, application evaluations, benchmarks, and the role of AI engineers in evaluating real-world AI systems.\n\nThis lecture was taken live for insiders, join here: https://youtu.be/j_G30FLmCcw\n\n📱 Grow with us:\nCampusX' LinkedIn: https://www.linkedin.com/company/campusx-official\nCampusX on Instagram for daily tips: https://www.instagram.com/campusx.official\nMy LinkedIn: https://www.linkedin.com/in/nitish-singh-03412789\nDiscord: https://discord.gg/PsWu8R87Z8 (@suf for queries)\nE-mail us at support@campusx.in\n\nChapters\n\n00:00 - What are LLM Evaluations?\n05:34 - LLM Evals vs Metrics\n08:37 - Types of LLM Evaluations\n10:33 - Understanding Model Evaluations\n15:14 - How AI Engineers Use Model Benchmarks\n17:46 - Introduction to Application Evaluations\n20:02 - Smartphone Analogy: Models vs Applications\n21:45 - What Should We Evaluate in AI Applications?\n23:30 - Model Evals vs Application Evals: Recap\n24:02 - What’s Coming Next? Application Evaluation Frameworks",
+  "published": "2026-06-19",
+  "channel_id": "UCCWi3hpnq_Pe03nGxuS7isg",
+  "channel_title": "CampusX",
+  "tags": [
+   "Education",
+   "Engineering",
+   "Campus",
+   "Placement",
+   "Skills",
+   "Machine Learning",
+   "Software",
+   "Web Development",
+   "Profile Building"
+  ],
+  "views": 16434,
+  "likes": 683,
+  "comments": 80
+ },
+ {
+  "video_id": "fpAthTtha8c",
+  "title": "Cooking with OpenAI’s Research Chief: AGI, o1, Evals, and Scaling Laws — Mark Chen",
+  "description": "In this episode, we have Mark Chen, Chief Research Officer at OpenAI, joining us to make Korean tofu stew and flambé shrimp. From scaling laws and why pre-training is not dead, to the o1 reasoning bet, evals crisis, research taste, long-context learning, and the future of end-to-end AI research, we cover what it takes to push models toward the frontier.\n\nWe talk about:\n• Why Mark still believes in scaling laws and the exponential\n• How OpenAI chooses research bets and allocates compute\n• Why reasoning became one of OpenAI’s biggest bets\n• How to develop research taste without a traditional ML background\n• Why evals are in crisis and benchmarks can be misleading\n• What it takes for models to do long-horizon, real-world work\n• How AI could change the future of research itself\n\n00:00 – Intro\n00:13 – Welcome to Latent Space Cooking\n00:28 – The Soup Story: Meta, OpenAI, and Research Recruiting\n01:52 – From Trading to AI Research\n03:21 – Developing Research Taste\n04:26 – AlphaGo, Move 37, and the Rise of Agents\n05:23 – RL, Hard-to-Grade Tasks, and Superhuman Evals\n08:17 – Cooking Begins on the Impulse Stove\n08:53 – Scaling Laws, Pre-Training, and Bear Takes\n10:26 – Why Reasoning Became a Core Bet\n12:33 – OpenAI’s Research Roadmap and Compute Allocation\n15:48 – What Makes a Great Researcher\n17:44 – Top Researchers vs. Top Engineers\n19:33 – The Evals Crisis and Benchmark-Maxing\n21:32 – Building Better Benchmarks\n23:40 – Jakub Pachocki, Humor, and “Dumb IOI Gold Medalists”\n24:34 – Jagged Intelligence and Why Models Miss Easy Tasks\n25:56 – Long Context, Compaction, and Long-Horizon Learning\n27:14 – Shrimp Flambé and One-Shot Learning\n28:36 – Low-Hanging Fruit vs. New Research Bets\n29:39 – Continual Learning and the Road to AGI\n31:32 – Multimodal Models and One Architecture\n32:36 – Vibe Researching and End-to-End AI Research\n34:36 – Failed Bets, Postmortems, and OpenAI’s Alpha\n37:07 – Final Seasoning and Taste Test\n37:53 – Overrated vs. Underrated AI Research\n38:42 – Plating and First Taste\n39:15 – External Evals: The Soup Judge\n41:00 – ChatGPT Prep and Closing",
+  "published": "2026-06-25",
+  "channel_id": "UCxBcwypKK-W3GHd_RZ9FZrQ",
+  "channel_title": "Latent Space",
+  "tags": [],
+  "views": 10257,
+  "likes": 234,
+  "comments": 14
+ }
+]

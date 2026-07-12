@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "text embeddings",
+  "ml analysis",
+  "ideal customer avatar"
+ ],
+ "hook": {
+  "text": "Today I want to talk about text embeddings.",
+  "style": "question"
+ },
+ "_had_transcript": true
+}

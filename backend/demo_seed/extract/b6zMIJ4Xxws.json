@@ -1,0 +1,13 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "tofu recipes",
+  "healthy cooking",
+  "plant-based meals"
+ ],
+ "hook": {
+  "text": "If you've ever wondered how to make perfect tofu, you're in the right place.",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai saas",
+  "launch lessons",
+  "coding tips",
+  "go-to-market strategy"
+ ],
+ "hook": {
+  "text": "Last week, I launched my second AI SAS in just 30 days.",
+  "style": "stat"
+ },
+ "_had_transcript": true
+}

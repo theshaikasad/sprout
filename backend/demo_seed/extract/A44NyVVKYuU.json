@@ -1,0 +1,13 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "coffee recipes",
+  "homemade drinks",
+  "slow mornings"
+ ],
+ "hook": {
+  "text": "Are you tired of spending too much on your favorite coffee?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

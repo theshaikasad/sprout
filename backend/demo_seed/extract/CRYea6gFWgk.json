@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "freelance ai",
+  "ml career",
+  "data engineering",
+  "scaling services"
+ ],
+ "hook": {
+  "text": "In this video I break down the exact three-part framework I'd",
+  "style": "question"
+ }
+}

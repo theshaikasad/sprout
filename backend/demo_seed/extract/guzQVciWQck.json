@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai saas",
+  "customer retention",
+  "service to software",
+  "developer insights"
+ ],
+ "hook": {
+  "text": "Why Most Developers Build SaaS Backwards",
+  "style": "question"
+ }
+}

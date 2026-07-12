@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "fine-tuning llms",
+  "reinforcement learning",
+  "rlvr techniques"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

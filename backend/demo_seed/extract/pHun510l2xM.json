@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "living alone",
+  "human connection",
+  "self-reflection"
+ ],
+ "hook": {
+  "text": "So, I have this problem where I don't want to be alone, but I also want to be alone.",
+  "style": "vulnerable-confession"
+ },
+ "_had_transcript": true
+}

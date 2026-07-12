@@ -31,7 +31,6 @@ import ChannelShelf from "@/components/ChannelShelf";
 import IdeasBoard from "@/components/IdeasBoard";
 import OutlierStrip from "@/components/OutlierStrip";
 import CoachMarks from "@/components/CoachMarks";
-import ConnectTelegram from "@/components/ConnectTelegram";
 import Thumb, { fmtViews } from "@/components/Thumb";
 import { touchesGraph } from "@/lib/graphTools";
 import { Logo } from "@/components/Logo";
@@ -431,20 +430,20 @@ function Studio() {
           >
             🌿 Chat
           </button>
-          <Link href="/signup" title={me ? `${me.displayName} — switch channel` : "switch channel"}>
+          <span title={me?.displayName || "demo channel"}>
             {avatar ? (
               <img
                 src={avatar}
                 alt=""
                 referrerPolicy="no-referrer"
-                className="h-8 w-8 rounded-full border border-line transition-transform hover:scale-105"
+                className="h-8 w-8 rounded-full border border-line"
               />
             ) : (
               <span className="flex h-8 w-8 items-center justify-center rounded-full border border-line bg-raised font-semibold text-dim">
                 {firstName[0]}
               </span>
             )}
-          </Link>
+          </span>
         </div>
       </header>
 
@@ -472,12 +471,6 @@ function Studio() {
               <p className="label text-accent">today&apos;s signal</p>
               <p className="mt-1.5 text-[15px] font-medium leading-snug">{todayHeadline}</p>
             </div>
-
-            {me && (
-              <div className="mt-4">
-                <ConnectTelegram compact />
-              </div>
-            )}
 
             {overdueIdeas.length > 0 && (
               <div className="panel mt-4 border-amber/30 bg-amber/5 p-4">

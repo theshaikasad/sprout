@@ -1,0 +1,13 @@
+{
+ "format": "interview",
+ "topics": [
+  "openai research",
+  "scaling laws",
+  "agi development",
+  "korean tofu stew"
+ ],
+ "hook": {
+  "text": "In this episode, we have Mark Chen, Chief Research Officer at OpenAI, joining us to make Korean tofu stew and flambé shrimp.",
+  "style": "story"
+ }
+}

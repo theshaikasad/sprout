@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "happiness",
+  "kindness",
+  "self-improvement"
+ ],
+ "hook": {
+  "text": "Have you ever wondered why happy people seem to be nicer?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

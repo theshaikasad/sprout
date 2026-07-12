@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai basics",
+  "chatgpt explained",
+  "understanding ai"
+ ],
+ "hook": {
+  "text": "Ever wondered how AI works without all the complicated math?",
+  "style": "question"
+ }
+}

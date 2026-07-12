@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "self-discovery",
+  "personal growth",
+  "vulnerable storytelling"
+ ],
+ "hook": {
+  "text": "What truly defines you?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

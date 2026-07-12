@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "luck and opportunity",
+  "personal growth",
+  "preparation",
+  "networking"
+ ],
+ "hook": {
+  "text": "I think luck is what happens when preparation meets a moment that you almost missed.",
+  "style": "stat"
+ },
+ "_had_transcript": true
+}

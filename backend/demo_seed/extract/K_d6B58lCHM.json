@@ -1,0 +1,13 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "virginia woolf",
+  "ordinary moments",
+  "memory exploration"
+ ],
+ "hook": {
+  "text": "In a world that often celebrates the extraordinary, Virginia Woolf invites us to find beauty in life's quiet complexities.",
+  "style": "story"
+ },
+ "_had_transcript": false
+}

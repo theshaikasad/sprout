@@ -1,0 +1,102 @@
+[
+ {
+  "id": "66df5a56-ad0f-40ec-bfc7-23132e59c690",
+  "title": "a video about digital minimalism and phone-free mornings",
+  "angle": "",
+  "format_name": "",
+  "topic_labels": [],
+  "state": "planted",
+  "provenance": "demo_seed",
+  "derived_from": "",
+  "concept_art_path": "/concept-art/66df5a56-ad0f-40ec-bfc7-23132e59c690.png",
+  "created_at": "2026-07-04T19:56:50.925105Z",
+  "updated_at": "2026-07-05T06:47:07.147014Z",
+  "planted_at": "2026-07-05T06:44:02.193638Z",
+  "sprouted_at": ""
+ },
+ {
+  "id": "5d73b5c3-4432-4774-a0c3-6a92844ab1c8",
+  "title": "something on journaling prompts for self-doubt",
+  "angle": "",
+  "format_name": "",
+  "topic_labels": [],
+  "state": "seed",
+  "provenance": "demo_seed",
+  "derived_from": "",
+  "concept_art_path": "",
+  "created_at": "2026-07-04T19:56:50.925345Z",
+  "updated_at": "2026-07-04T19:56:50.925349Z",
+  "planted_at": "",
+  "sprouted_at": ""
+ },
+ {
+  "id": "7fac9f3d-c176-4f15-8ae6-b5b93af0f822",
+  "title": "maybe a friendship/loneliness essay like the old ones",
+  "angle": "",
+  "format_name": "",
+  "topic_labels": [],
+  "state": "seed",
+  "provenance": "demo_seed",
+  "derived_from": "",
+  "concept_art_path": "",
+  "created_at": "2026-07-04T19:56:50.925500Z",
+  "updated_at": "2026-07-04T19:56:50.925504Z",
+  "planted_at": "",
+  "sprouted_at": ""
+ },
+ {
+  "id": "68894213-4832-4f28-88e9-aff75f61c1ab",
+  "title": "The Slow Morning Reset: 5 Rituals That Actually Stuck",
+  "angle": "Not another 5am routine video — the ones that survived a busy month, with the ones that didn't.",
+  "format_name": "personal essay",
+  "topic_labels": [
+   "morning routine",
+   "slow living"
+  ],
+  "state": "sprouted",
+  "provenance": "demo_seed",
+  "derived_from": "",
+  "concept_art_path": "linear-gradient(160deg, #f6eedd 0%, #d4c4a0 55%, #47702f 100%)",
+  "created_at": "2026-07-04T19:56:50.925635Z",
+  "updated_at": "2026-07-04T19:58:48.648406Z",
+  "planted_at": "2026-07-04T19:56:50.925976Z",
+  "sprouted_at": "2026-07-04T19:58:48.648400Z",
+  "posted_video_id": "test_vid_123"
+ },
+ {
+  "id": "041f3b57-58f9-4ced-825c-2e562fd5767c",
+  "title": "What Nobody Tells You About Turning 30 Alone",
+  "angle": "A vulnerable, specific essay in the same register as the hearing-loss update — the pattern that converts.",
+  "format_name": "personal essay",
+  "topic_labels": [
+   "self-improvement",
+   "loneliness"
+  ],
+  "state": "planted",
+  "provenance": "demo_seed",
+  "derived_from": "",
+  "concept_art_path": "linear-gradient(135deg, #f3ead7 0%, #c8d4a8 50%, #8fa86e 100%)",
+  "created_at": "2026-07-04T19:56:50.926126Z",
+  "updated_at": "2026-07-04T19:56:50.926249Z",
+  "planted_at": "2026-07-04T19:56:50.926246Z",
+  "sprouted_at": ""
+ },
+ {
+  "id": "b22bbad0-ce19-491e-a9ee-159e8479d4b2",
+  "title": "The Friendship Reset: Why Adult Friendships Quietly Fade",
+  "angle": "A callback to the old Lies of Friendships essays, updated for 2026 — what actually changed vs what she got wrong then.",
+  "format_name": "personal essay",
+  "topic_labels": [
+   "friendship",
+   "self-improvement"
+  ],
+  "state": "planted",
+  "provenance": "demo_seed",
+  "derived_from": "",
+  "concept_art_path": "linear-gradient(160deg, #f6eedd 0%, #d4c4a0 55%, #47702f 100%)",
+  "created_at": "2026-07-04T19:59:13.993205Z",
+  "updated_at": "2026-07-04T19:59:13.993663Z",
+  "planted_at": "2026-07-04T19:59:13.993659Z",
+  "sprouted_at": ""
+ }
+]

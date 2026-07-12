@@ -1,0 +1,14 @@
+{
+ "format": "day-in-life",
+ "topics": [
+  "slow summer",
+  "home reset",
+  "family dinner",
+  "homegoods shopping"
+ ],
+ "hook": {
+  "text": "Come spend a slow summer day with me.",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

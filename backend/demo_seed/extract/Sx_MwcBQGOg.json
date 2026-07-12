@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai deployment",
+  "streamlit tutorials",
+  "docker apps",
+  "hugging face"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw.",
+  "style": "pattern-interrupt"
+ },
+ "_had_transcript": true
+}

@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "monthly recap",
+  "machine learning",
+  "deep learning"
+ ],
+ "hook": {
+  "text": "Welcome to our recap of May 2026 where we cover all the latest developments.",
+  "style": "pattern-interrupt"
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "fdr explanation",
+  "benjamini-hochberg",
+  "p-hacking prevention"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how to effectively adjust p-values for multiple testing?",
+  "style": "question"
+ }
+}

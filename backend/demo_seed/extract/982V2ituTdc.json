@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "error analysis",
+  "llm improvement",
+  "ai applications",
+  "gpt4.1 usage"
+ ],
+ "hook": {
+  "text": "In this video, I'll discuss how you can improve your AI apps with error analysis.",
+  "style": "question"
+ },
+ "_had_transcript": true
+}

@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai coding",
+  "software development",
+  "productivity tactics",
+  "technical debt"
+ ],
+ "hook": {
+  "text": "Welcome everyone. I'm Shaw and today we're going to talk about how we can code 10 times faster using AI.",
+  "style": "question"
+ },
+ "_had_transcript": true
+}

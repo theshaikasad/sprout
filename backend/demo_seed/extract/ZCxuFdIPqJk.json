@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "shame cycle",
+  "procrastination tips",
+  "self-improvement"
+ ],
+ "hook": {
+  "text": "Are you stuck in a cycle of shame and procrastination?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

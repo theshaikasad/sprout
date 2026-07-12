@@ -1,0 +1,9 @@
+# Upload only what the Docker build needs. Without this file, gcloud would
+# mirror .gitignore — which excludes demo_graph/demo_seed's siblings but would
+# also skip nothing here — or upload the local runtime stores (.cognee/.cache).
+.gcloudignore
+.cognee/
+.cache/
+__pycache__/
+*.pyc
+graph.html

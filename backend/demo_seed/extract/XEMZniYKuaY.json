@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "remote server setup",
+  "mcp integration",
+  "authentication protocols",
+  "chatgpt tools"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

@@ -1,0 +1,14 @@
+{
+ "format": "live-coding",
+ "topics": [
+  "cursor python",
+  "upwork dashboard",
+  "data visualization",
+  "vibe coding"
+ ],
+ "hook": {
+  "text": "Oh, that's slick. That is slick. We are now vibe coding.",
+  "style": "pattern-interrupt"
+ },
+ "_had_transcript": true
+}

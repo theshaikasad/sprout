@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "job automation",
+  "ai investment",
+  "future of work"
+ ],
+ "hook": {
+  "text": "Have you ever wondered which jobs are at risk of automation?",
+  "style": "question"
+ }
+}

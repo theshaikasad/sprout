@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "claude optimization",
+  "founder productivity",
+  "ai delegation",
+  "busywork reduction"
+ ],
+ "hook": {
+  "text": "Most founder CEOs I meet are using Claude, but they still treat it like a tool instead of an employee.",
+  "style": "stat"
+ },
+ "_had_transcript": true
+}

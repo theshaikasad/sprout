@@ -1,0 +1,14 @@
+{
+ "format": "vlog",
+ "topics": [
+  "cooking journey",
+  "vegetarian lifestyle",
+  "meat cooking experience",
+  "personal growth"
+ ],
+ "hook": {
+  "text": "I'm going to be cooking some meat today for the first time in over 10 years.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

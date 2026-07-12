@@ -1,0 +1,14 @@
+{
+ "format": "vlog",
+ "topics": [
+  "exploring parks",
+  "london food",
+  "hidden gems",
+  "urban adventures"
+ ],
+ "hook": {
+  "text": "Have you ever discovered a hidden gem in a bustling city like London?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

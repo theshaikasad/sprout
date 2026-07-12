@@ -123,18 +123,6 @@ const Icon = {
   ),
 };
 
-function YouTubeGlyph({ className = "h-5 w-5" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <path
-        fill="#ff0033"
-        d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8Z"
-      />
-      <path fill="#fff" d="M9.6 15.6 15.8 12 9.6 8.4Z" />
-    </svg>
-  );
-}
-
 /* ── content ─────────────────────────────────────────────────────────────── */
 const FEATURES = [
   {
@@ -201,11 +189,8 @@ export default function Landing() {
             >
               Built on Cognee
             </a>
-            <Link href="/studio" className="hidden transition-colors hover:text-[color:var(--ink)] sm:inline">
-              Live demo
-            </Link>
-            <Link href="/signup" className="btn-yt px-4 py-2 text-[13px]">
-              <YouTubeGlyph className="h-4 w-4" /> Connect
+            <Link href="/studio" className="btn-yt px-4 py-2 text-[13px]">
+              🌱 Open the studio
             </Link>
           </nav>
         </header>
@@ -250,11 +235,8 @@ export default function Landing() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.28, duration: 0.5 }}
             >
-              <Link href="/signup" className="btn-yt px-6 py-3.5 text-[15px]">
-                <YouTubeGlyph /> Connect with YouTube
-              </Link>
-              <Link href="/studio" className="btn-quiet px-5 py-3.5 text-[15px]">
-                🌱 See the live demo →
+              <Link href="/studio" className="btn-yt px-6 py-3.5 text-[15px]">
+                🌱 Open the studio — live demo →
               </Link>
             </motion.div>
             <motion.p
@@ -396,8 +378,8 @@ export default function Landing() {
               back to making.
             </p>
             <div className="mt-8 flex justify-center">
-              <Link href="/signup" className="btn-yt px-7 py-4 text-[16px]">
-                <YouTubeGlyph className="h-5 w-5" /> Connect with YouTube
+              <Link href="/studio" className="btn-yt px-7 py-4 text-[16px]">
+                🌱 Open the studio — live demo
               </Link>
             </div>
           </Reveal>

@@ -1,0 +1,13 @@
+{
+ "format": "screencast",
+ "topics": [
+  "agentic rag",
+  "python programming",
+  "ai engineering",
+  "freelancing tips"
+ ],
+ "hook": {
+  "text": "Want to start freelancing?",
+  "style": "question"
+ }
+}

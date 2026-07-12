@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai automation",
+  "freelancing skills",
+  "backend essentials",
+  "frontend stack"
+ ],
+ "hook": {
+  "text": "What will your AI automation stack look like in 2026?",
+  "style": "question"
+ }
+}

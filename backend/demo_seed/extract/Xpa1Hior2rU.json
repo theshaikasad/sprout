@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "cookbook launch",
+  "plant-based eating",
+  "mindful cooking"
+ ],
+ "hook": {
+  "text": "It feels surreal to finally share this cookbook with you.",
+  "style": "vulnerable-confession"
+ },
+ "_had_transcript": false
+}

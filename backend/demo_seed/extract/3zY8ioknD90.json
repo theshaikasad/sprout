@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "stuck in life",
+  "self-reflection",
+  "finding direction"
+ ],
+ "hook": {
+  "text": "Have you ever felt like your life is just stuck in the middle?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

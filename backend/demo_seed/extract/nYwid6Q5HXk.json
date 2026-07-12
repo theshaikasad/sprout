@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "llm architecture",
+  "model optimization",
+  "serverless fine-tuning"
+ ],
+ "hook": {
+  "text": "Chain-of-Thought is ugly, so what if we remove it?",
+  "style": "question"
+ }
+}

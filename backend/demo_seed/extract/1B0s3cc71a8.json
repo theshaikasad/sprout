@@ -1,0 +1,13 @@
+{
+ "format": "screencast",
+ "topics": [
+  "deep learning",
+  "ipo prediction",
+  "tensorflow",
+  "keras"
+ ],
+ "hook": {
+  "text": "Are you ready to build your first deep learning project and predict IPO gains?",
+  "style": "question"
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "format": "personal-essay",
+ "topics": [
+  "vulnerable storytelling",
+  "self-reflection",
+  "authenticity",
+  "life lessons"
+ ],
+ "hook": {
+  "text": "Have you ever had an experience that completely changed how you see yourself?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

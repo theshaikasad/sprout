@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai projects",
+  "python tutorials",
+  "quick builds",
+  "coding for busy professionals"
+ ],
+ "hook": {
+  "text": "the best way to develop your AI skills is by building projects",
+  "style": "stat"
+ },
+ "_had_transcript": true
+}

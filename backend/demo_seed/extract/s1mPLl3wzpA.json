@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "self-sabotage",
+  "personal growth",
+  "motivation"
+ ],
+ "hook": {
+  "text": "Have you ever found yourself giving up before you even begin?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

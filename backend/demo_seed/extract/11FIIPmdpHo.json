@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai and democracy",
+  "science and propaganda",
+  "friendship in science"
+ ],
+ "hook": {
+  "text": "Have you ever wondered about the questions surrounding AI that many avoid?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

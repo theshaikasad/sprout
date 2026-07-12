@@ -10,7 +10,7 @@ import json
 from datetime import date, datetime
 
 from .config import CACHE_DIR
-from .corpus import load_corpus
+from .corpus import demo_today, load_corpus
 from .db.models import User
 from .fingerprint import load_fingerprint
 from .lifecycle import list_planted, list_seeds
@@ -162,7 +162,7 @@ def _cadence() -> dict:
     if len(dates) < 3:
         return {"days_since_last": None, "median_gap_days": None}
     gaps = [(b - a).days for a, b in zip(dates[-11:-1], dates[-10:])]
-    days_since = (date.today() - dates[-1]).days
+    days_since = (demo_today() - dates[-1]).days
     return {
         "days_since_last": days_since,
         "median_gap_days": round(med(gaps)) if gaps else None,

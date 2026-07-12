@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "random forests",
+  "missing data",
+  "data clustering"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how random forests can tackle missing data?",
+  "style": "question"
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "speaker identification",
+  "voice systems",
+  "multilingual support",
+  "real-time diarization"
+ ],
+ "hook": {
+  "text": "What are the real challenges behind voice systems?",
+  "style": "question"
+ }
+}

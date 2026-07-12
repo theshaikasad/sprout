@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "automated evals",
+  "ai app improvement",
+  "llm evaluation"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw. In this video, I'll discuss how you can improve your AI apps with automated eval.",
+  "style": "question"
+ },
+ "_had_transcript": true
+}

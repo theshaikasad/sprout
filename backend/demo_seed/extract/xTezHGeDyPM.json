@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai evolution",
+  "chatgpt history",
+  "future of agents",
+  "key innovations"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw. In this video, I'm going to recap all the key AI innovations of the past few years.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

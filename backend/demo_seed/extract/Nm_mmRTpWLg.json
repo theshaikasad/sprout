@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "llm workflows",
+  "ai agents",
+  "python implementation",
+  "automation design"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

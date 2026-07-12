@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "python project management",
+  "uv tool",
+  "python installation"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Sha. In this video, I'll share the fastest way to install and use Python using a tool called UV.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "single life",
+  "social perks",
+  "self-discovery",
+  "relationship insight"
+ ],
+ "hook": {
+  "text": "The media tells the story that every part of being single is hell or embarrassing.",
+  "style": "stat"
+ },
+ "_had_transcript": false
+}

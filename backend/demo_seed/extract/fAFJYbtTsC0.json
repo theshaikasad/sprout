@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "fine-tuning llms",
+  "tool use",
+  "python example"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw. In this video, I'll discuss how to fine-tune a large language model to use tools.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

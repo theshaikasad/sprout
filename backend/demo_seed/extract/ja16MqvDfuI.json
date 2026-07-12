@@ -1,0 +1,13 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "healthy recipes",
+  "vegetarian meals",
+  "nutritional guidance"
+ ],
+ "hook": {
+  "text": "Today, we're making a vibrant and nutritious skincare salad in a jar!",
+  "style": "pattern-interrupt"
+ },
+ "_had_transcript": false
+}

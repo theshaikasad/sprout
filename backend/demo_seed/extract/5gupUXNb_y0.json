@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "self-improvement",
+  "simple skills",
+  "personal growth"
+ ],
+ "hook": {
+  "text": "You must understand this simple skill to get ahead in life.",
+  "style": "stat"
+ },
+ "_had_transcript": false
+}

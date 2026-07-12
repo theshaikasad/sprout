@@ -1,0 +1,13 @@
+{
+ "format": "vlog",
+ "topics": [
+  "daily running",
+  "fitness challenge",
+  "goal setting"
+ ],
+ "hook": {
+  "text": "What if you ran just one mile every day for an entire month?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

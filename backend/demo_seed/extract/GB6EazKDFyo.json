@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai agents",
+  "flight booking",
+  "autonomous actions"
+ ],
+ "hook": {
+  "text": "Most people still think AI just answers questions.",
+  "style": "stat"
+ }
+}

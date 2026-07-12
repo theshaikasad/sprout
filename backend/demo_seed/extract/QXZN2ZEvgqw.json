@@ -1,0 +1,12 @@
+{
+ "format": "screencast",
+ "topics": [
+  "data analysis",
+  "pandas tutorial",
+  "car sales data"
+ ],
+ "hook": {
+  "text": "In this video, we guide you through a real-world data analysis project using pandas.",
+  "style": "story"
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai agents",
+  "agency levels",
+  "ai workshops"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw. This is the first video in a larger series on AI agents.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

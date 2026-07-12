@@ -1,0 +1,156 @@
+{
+ "fetched_at": 1783163493.683114,
+ "items": [
+  {
+   "source": "hackernews",
+   "tag": "HN",
+   "title": "The Safari MCP server for web developers",
+   "url": "https://webkit.org/blog/18136/introducing-the-safari-mcp-server-for-web-developers/",
+   "discussion": "https://news.ycombinator.com/item?id=48769639",
+   "score": 264,
+   "comments": 73,
+   "age_hours": 33.6
+  },
+  {
+   "source": "github",
+   "tag": "GitHub",
+   "title": "Fundamental-Ava — Build digital human beings — autonomous, collaborative, and socially intelligent agents. FNzgGxU31RWiDgLr3GvxxSa42nRntvZNSG6aBMQ1pump",
+   "url": "https://github.com/TianhangZhuzth/Fundamental-Ava",
+   "discussion": null,
+   "score": 522,
+   "comments": null,
+   "age_hours": 106.1
+  },
+  {
+   "source": "news",
+   "tag": "Times Square Chronicles",
+   "title": "Why AI Agents Are Becoming the Next Competitive Advantage for Businesses",
+   "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQYkxDZTVYY0pkVmViLVVfc3Y1X2RqNnZWOFNCcmJFeFFSblRQRnRVWmJlSktVbERMaHY3Ykxxd0l4a3I1b2hrZ1F4dzNheERfSnp4Q2puZlZnTlNtUEsxaWxmMDlvRS1wSF9sbEd0MDFyVmN5bVBucy1qZ1NSRXlWdm85Szlhdkw1cFhuaFRSSEJTSWktcm0wX0I0UQ?oc=5",
+   "discussion": null,
+   "score": null,
+   "comments": null,
+   "age_hours": 5.1
+  },
+  {
+   "source": "hackernews",
+   "tag": "HN",
+   "title": "Launch HN: Manufact (YC S25) – MCP Cloud",
+   "url": "https://manufact.com",
+   "discussion": "https://news.ycombinator.com/item?id=48762862",
+   "score": 108,
+   "comments": 69,
+   "age_hours": 44.0
+  },
+  {
+   "source": "github",
+   "tag": "GitHub",
+   "title": "Talos — GPU worker client for the Talos network. Pairs with your Talos account, serves open-model inference jobs over a WebSocket, and reports uptime for payouts.",
+   "url": "https://github.com/jmerelnyc/Talos",
+   "discussion": null,
+   "score": 441,
+   "comments": null,
+   "age_hours": 44.5
+  },
+  {
+   "source": "news",
+   "tag": "Supply & Demand Chain Executive",
+   "title": "Lucanet Unveils AI Agents to Automate Finance and Tax Processes",
+   "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxNTFYtUk50UEFzaHlDRm5ySTd4NEozM05XNVhjV0xhcWpLZ2NyUURQV1gyeFhpWW9GUWhwYmt2S0JGRTVhOHhhdXYySEQ4WkNmT1Rla1puU29qQkRUNGZFUHFVVkRpZXgzRVhudVBkb2ItZ01NT3hlT3dLTmJjMnF1Z1RhaGd6SDFDYjJjTlhPZC02cXozY2o3SC1zWUt3d09nY1lYOHNla3g1WWZvalE5NFpjQ0VseXhHTUVQbVYyWWJPZ1hyWGh0NmJSNmk1cTF2?oc=5",
+   "discussion": null,
+   "score": null,
+   "comments": null,
+   "age_hours": 15.8
+  },
+  {
+   "source": "hackernews",
+   "tag": "HN",
+   "title": "Show HN: Mcpsnoop – Wireshark for MCP (transparent proxy and live TUI)",
+   "url": "https://github.com/kerlenton/mcpsnoop",
+   "discussion": "https://news.ycombinator.com/item?id=48777144",
+   "score": 56,
+   "comments": 16,
+   "age_hours": 18.3
+  },
+  {
+   "source": "github",
+   "tag": "GitHub",
+   "title": "macos-chatgpt-overlay-bar — ChatGPT for Mac, living in your menubar.",
+   "url": "https://github.com/ik190/macos-chatgpt-overlay-bar",
+   "discussion": null,
+   "score": 312,
+   "comments": null,
+   "age_hours": 194.5
+  },
+  {
+   "source": "news",
+   "tag": "Let's Data Science",
+   "title": "AI Agents Force Reconsideration of Online Personhood",
+   "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPU05kdWZHYVBodDhtQ2hHeEpuQ1pubVU1UXRSVTRwdlVaM1ZpVS1EN3I2RlJ3dkJpVDkwTjRXNUpTZDVpZGJXVTNUX29GakFwSlo2VTBvUjFPT0FacDZ5aVZ1MjlKY05wZ0VDWDc5bDVUNU1hcFdIUEFQWG93X3NpcGhINFJ2cERLMjRBYmQtY1Z3T0gwUGhocFBR?oc=5",
+   "discussion": null,
+   "score": null,
+   "comments": null,
+   "age_hours": 3.2
+  },
+  {
+   "source": "hackernews",
+   "tag": "HN",
+   "title": "Rage of the Falling Elite: How downward mobility fuels radical politics",
+   "url": "https://www.robkhenderson.com/p/rage-of-the-falling-elite",
+   "discussion": "https://news.ycombinator.com/item?id=48781292",
+   "score": 11,
+   "comments": 8,
+   "age_hours": 11.5
+  },
+  {
+   "source": "github",
+   "tag": "GitHub",
+   "title": "Godcoder — A local-first, open-source coding agent for your desktop. Bring your own LLM key; your code stays on your machine and only ever leaves to the model provider. The AI Agent builds its own Harnes.",
+   "url": "https://github.com/eli-labz/Godcoder",
+   "discussion": null,
+   "score": 279,
+   "comments": null,
+   "age_hours": 178.2
+  },
+  {
+   "source": "news",
+   "tag": "Mshale",
+   "title": "Why (Senior) Engineers Struggle To Build AI Agents — Philipp Schmid, Google DeepMind Kia (a7OPquxpNB)",
+   "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBNT0xDdmRLNGFUUFYtbVEzZnBndy1uWTZSSHBnY0ZVS1dWZlk2a0E1Q0UyX1BWZWRUaTdpMWgtVmt5RTYyX3hrcW9zZGVPUE52S3lNdWEyQzQ0eER2T0tlTQ?oc=5",
+   "discussion": null,
+   "score": null,
+   "comments": null,
+   "age_hours": 5.2
+  },
+  {
+   "source": "hackernews",
+   "tag": "HN",
+   "title": "Discovering Concept-Editing Algorithms with LLM Agents",
+   "url": "https://dmodel.ai/concept-erasure/",
+   "discussion": "https://news.ycombinator.com/item?id=48746983",
+   "score": 7,
+   "comments": 0,
+   "age_hours": 69.1
+  },
+  {
+   "source": "github",
+   "tag": "GitHub",
+   "title": "lemma-platform — The open-source workspace where humans and AI agents work as one team.",
+   "url": "https://github.com/lemma-work/lemma-platform",
+   "discussion": null,
+   "score": 217,
+   "comments": null,
+   "age_hours": 262.3
+  },
+  {
+   "source": "news",
+   "tag": "Yahoo Finance",
+   "title": "Meta Stock Drops. Zuckerberg Has a Warning About AI Agents",
+   "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPLXgzWTgwUTFxR3F4WGg1OHpkbHRVVEh5Q0QwY3RqYm52S2IxVVh0bVBaclNsSFpkZ09ERFA0Nmh5a3NVd3A5WUJ6RDRqMWlzVVVYdmNheUNkZVg3dGlxeUliREtVVngweGM2VWRYcThGWldTVTlnQXNkQXZfYllSUkN3NV81bnJtOV9RUVR1UndTWFBENGw5SlViWE9IR2wz?oc=5",
+   "discussion": null,
+   "score": null,
+   "comments": null,
+   "age_hours": 18.9
+  }
+ ],
+ "errors": {}
+}

@@ -1,0 +1,13 @@
+{
+ "format": "vlog",
+ "topics": [
+  "self-care routine",
+  "sunday rituals",
+  "skincare tips"
+ ],
+ "hook": {
+  "text": "How do you recharge before the week begins?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

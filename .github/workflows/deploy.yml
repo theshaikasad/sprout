@@ -79,8 +79,6 @@ jobs:
           # secretAccessor can read versions (not describe metadata). Avoids needing
           # secretmanager.secrets.get, which is only in roles/secretmanager.viewer.
           for secret in \
-            sprout-db-root-pass \
-            sprout-database-url \
             sprout-llm-api-key \
             sprout-youtube-api-key \
             sprout-telegram-bot-token \
@@ -124,26 +122,26 @@ jobs:
 
       - name: Deploy backend to Cloud Run
         if: github.event_name == 'push' || inputs.deploy_backend
-        env:
-          CLOUDSQL_CONN: ${{ env.GCP_PROJECT_ID }}:${{ env.GCP_REGION }}:${{ env.CLOUD_SQL_INSTANCE }}
         run: |
           set -euo pipefail
           IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/sprout/backend:latest"
+          # Single-tenant demo mode: the kuzu store is baked into the image
+          # (single-writer, hence max-instances=1). No Cloud SQL attachment.
           gcloud run deploy sprout-backend \
             --image "$IMAGE" \
             --region "${{ env.GCP_REGION }}" \
             --project "${{ env.GCP_PROJECT_ID }}" \
             --platform managed \
             --min-instances 1 \
-            --max-instances 3 \
+            --max-instances 1 \
             --cpu 2 \
             --memory 2Gi \
             --timeout 3600 \
             --port 8080 \
-            --add-cloudsql-instances "$CLOUDSQL_CONN" \
             --allow-unauthenticated \
-            --set-env-vars "^##^FRONTEND_URL=${{ env.FRONTEND_URL }}##CORS_ORIGINS=${{ env.CORS_ORIGINS }}##DB_HOST=/cloudsql/$CLOUDSQL_CONN##DB_PORT=5432##DB_NAME=cognee_meta##DB_USERNAME=postgres##CREATOR_HANDLE=${{ env.CREATOR_HANDLE }}##GOOGLE_OAUTH_REDIRECT_URI=${{ env.API_BASE }}/auth/youtube/callback" \
-            --set-secrets="SPROUT_DATABASE_URL=sprout-database-url:latest,DB_PASSWORD=sprout-db-root-pass:latest,LLM_API_KEY=sprout-llm-api-key:latest,YOUTUBE_API_KEY=sprout-youtube-api-key:latest,TELEGRAM_BOT_TOKEN=sprout-telegram-bot-token:latest,GOOGLE_OAUTH_CLIENT_ID=sprout-google-oauth-client-id:latest,GOOGLE_OAUTH_CLIENT_SECRET=sprout-google-oauth-client-secret:latest,CRON_SECRET=sprout-cron-secret:latest,TELEGRAM_LINK_SECRET=sprout-telegram-link-secret:latest,FIREBASE_SERVICE_ACCOUNT_JSON=sprout-firebase-service-account:latest"
+            --clear-cloudsql-instances \
+            --set-env-vars "^##^FRONTEND_URL=${{ env.FRONTEND_URL }}##CORS_ORIGINS=${{ env.CORS_ORIGINS }}##CREATOR_HANDLE=${{ env.CREATOR_HANDLE }}##CHAT_MODEL=gpt-4o-mini##GOOGLE_OAUTH_REDIRECT_URI=${{ env.API_BASE }}/auth/youtube/callback" \
+            --set-secrets="LLM_API_KEY=sprout-llm-api-key:latest,YOUTUBE_API_KEY=sprout-youtube-api-key:latest,TELEGRAM_BOT_TOKEN=sprout-telegram-bot-token:latest,GOOGLE_OAUTH_CLIENT_ID=sprout-google-oauth-client-id:latest,GOOGLE_OAUTH_CLIENT_SECRET=sprout-google-oauth-client-secret:latest,CRON_SECRET=sprout-cron-secret:latest,TELEGRAM_LINK_SECRET=sprout-telegram-link-secret:latest,FIREBASE_SERVICE_ACCOUNT_JSON=sprout-firebase-service-account:latest"
 
       - name: Build and push frontend image
         if: github.event_name == 'push' || inputs.deploy_frontend

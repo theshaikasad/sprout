@@ -89,16 +89,13 @@ async def _scheduled_refresh_loop():
 
 
 async def _bootstrap_demo_memory():
-    """Postgres: ensure demo user exists. In prod we skip Cognee graph building
-    entirely — Cloud Run cannot reach OpenAI for embeddings. The frontend
-    uses pre-built fallback JSON (fallback_suggest.json, fallback_graph.json,
-    fallback_backtest.json) shipped in the Docker image."""
-    from .cognee_context import is_postgres_multi_user
+    """Ensure the demo user exists and reads as onboarded, in every mode.
+
+    The demo world (kuzu graph + caches) ships pre-built in the image/repo, so
+    a fresh container must never re-ingest — it just needs the User row that
+    /connect, /connect/status, and the warmup look up."""
     from .db.models import Preference, User
     from .db.sync_session import init_sync_db, sync_session
-
-    if not is_postgres_multi_user():
-        return
 
     try:
         init_sync_db()
@@ -117,9 +114,9 @@ async def _bootstrap_demo_memory():
                 session.refresh(user)
             user.onboarding_status = "ready"
             user.onboarding_stage = "done"
-            user.onboarding_detail = "pre-built fallback data"
+            user.onboarding_detail = "pre-built demo world"
             session.commit()
-        print("demo bootstrap: user ready (pre-built fallback mode)", flush=True)
+        print("demo bootstrap: user ready (pre-built demo world)", flush=True)
     except Exception as e:
         print(f"demo bootstrap failed ({e})", flush=True)
 
@@ -202,17 +199,6 @@ _llm = AsyncOpenAI(api_key=LLM_API_KEY)
 
 LANE_A_TYPES = {"Video", "Topic", "Hook", "Format", "Creator", "Trend", "PatternNode", "Draft"}
 
-_CACHE_DIR = Path(__file__).resolve().parent.parent / ".cache"
-
-
-def _load_fallback(name: str):
-    """Load pre-built demo data when live Cognee graph is unavailable."""
-    p = _CACHE_DIR / name
-    if p.exists() and p.stat().st_size > 0:
-        return json.loads(p.read_text())
-    return None
-
-
 class FeedbackBody(BaseModel):
     trace: dict
     performance_pct: float
@@ -287,13 +273,8 @@ async def garden_route():
     streak_weeks = max(0, 12 - (cad.get("days_since_last") or 0) // 7) if cad.get("days_since_last") is not None else 0
 
     corpus = load_corpus()
-    try:
-        g = await Graph.load()
-        median = g.my_median_views() or 1.0
-    except Exception:
-        fb = _load_fallback("fallback_graph.json")
-        g_views = [n.get("views", 0) for n in (fb.get("nodes", []) if fb else []) if n.get("views")]
-        median = float(sorted(g_views)[len(g_views)//2]) if g_views else 1.0
+    g = await Graph.load()
+    median = g.my_median_views() or 1.0
 
     plants_by_id: dict[str, dict] = {}
     for v in corpus["live"] + corpus["holdout"]:
@@ -449,19 +430,9 @@ async def library():
 @app.get("/suggest")
 async def suggest_route(trend: str | None = None):
     try:
-        result = await suggest(trend)
-        if result.get("cards"):
-            return result
-    except Exception:
-        pass
-
-    from pathlib import Path
-    fallback_path = Path(__file__).resolve().parent.parent / ".cache" / "fallback_suggest.json"
-    if fallback_path.exists():
-        import json
-        return json.loads(fallback_path.read_text())
-
-    raise HTTPException(404, "No suggestions available — graph still warming up")
+        return await suggest(trend)
+    except ValueError as e:
+        raise HTTPException(404, str(e))
 
 
 @app.get("/gaps")
@@ -469,13 +440,7 @@ async def gaps_route(niche: str | None = None):
     """Graph anti-join: trending/competitor Topics with NO my_channel Video
     covering them — real evergreen gaps. Returns the literal Cypher too, for
     the RAG-contrast panel."""
-    try:
-        return await gap_finder(niche)
-    except Exception:
-        fb = _load_fallback("fallback_gaps.json")
-        if fb:
-            return fb
-        return {"cypher_query": "n/a", "raw_match_count": 0, "gaps": []}
+    return await gap_finder(niche)
 
 
 @app.post("/feedback")
@@ -504,22 +469,9 @@ async def decay_route(body: DecayBody):
 @app.get("/graph")
 async def graph_route():
     """Lane A skeleton for the viz panel (Entities/Events would drown it)."""
-    try:
-        g = await Graph.load()
-        keep = {nid for nid, p in g.props.items() if p.get("type") in LANE_A_TYPES}
-        if keep:
-            return _build_graph_response(g, keep)
-    except Exception:
-        pass
-
-    # Fallback: pre-built demo graph data (Postgres mode, empty graph)
-    from pathlib import Path
-    fallback_path = Path(__file__).resolve().parent.parent / ".cache" / "fallback_graph.json"
-    if fallback_path.exists():
-        import json
-        return json.loads(fallback_path.read_text())
-
-    return {"nodes": [], "edges": []}
+    g = await Graph.load()
+    keep = {nid for nid, p in g.props.items() if p.get("type") in LANE_A_TYPES}
+    return _build_graph_response(g, keep)
 
 
 def _build_graph_response(g: Graph, keep: set[str]) -> dict:
@@ -652,6 +604,8 @@ async def cadence_route():
     from datetime import date
     from statistics import median as med
 
+    from .corpus import demo_today
+
     corpus = load_corpus()
     dates = sorted(
         date.fromisoformat(v["published"])
@@ -660,7 +614,7 @@ async def cadence_route():
     if len(dates) < 3:
         return {"days_since_last": None}
     gaps = [(b - a).days for a, b in zip(dates[-11:-1], dates[-10:])]
-    days_since = (date.today() - dates[-1]).days
+    days_since = (demo_today() - dates[-1]).days
     median_gap = round(med(gaps)) if gaps else None
     return {
         "days_since_last": days_since,
@@ -734,9 +688,8 @@ async def track_route(force: bool = False):
     try:
         return await get_track(force)
     except Exception:
-        fb = _load_fallback("fallback_track.json")
-        if fb:
-            return fb
+        # Live YouTube stats can hiccup — degrade honestly, never serve stale JSON.
+        traceback.print_exc()
         return {"checked_at": time.time(), "delta": [], "headline": "Track warming up — check back soon"}
 
 
@@ -763,22 +716,15 @@ class ConnectBody(BaseModel):
 
 @app.post("/connect")
 async def connect_route(body: ConnectBody):
-    """Demo-only fast path — in prod, just sets status to ready (pre-built fallback data)."""
+    """Demo-only fast path — the demo world ships pre-built, so this just
+    (re)marks the demo user ready."""
     from .db.context import get_current_user
-    from .db.models import User
-    from .db.sync_session import sync_session
 
     ctx = get_current_user()
     if ctx.uid != "demo" and not ctx.is_demo:
         raise HTTPException(400, "use /onboarding/start after YouTube OAuth")
 
-    with sync_session() as session:
-        u = session.get(User, "demo")
-        if u:
-            u.onboarding_status = "ready"
-            u.onboarding_stage = "done"
-            u.onboarding_detail = "pre-built fallback data"
-            session.commit()
+    await _bootstrap_demo_memory()
     return {"ok": True, "channel": None, "recovered": True}
 
 
@@ -855,8 +801,6 @@ def _meaningful_title_tokens(title: str) -> set[str]:
 @app.get("/backtest")
 async def backtest_route(trend: str | None = None):
     """§10b temporal-holdout backtest — blind graph vs real holdout reveal."""
-    fb = _load_fallback("fallback_backtest.json")
-
     corpus = load_corpus()
     analytics = {}
     try:
@@ -868,12 +812,9 @@ async def backtest_route(trend: str | None = None):
     proof_trend = trend or BACKTEST_TREND
     try:
         result = await suggest(proof_trend)
-        cards = result.get("cards", [])
-    except Exception:
-        cards = []
-
-    if not cards and fb:
-        return fb
+    except ValueError as e:
+        raise HTTPException(404, str(e))
+    cards = result.get("cards", [])
 
     reveals = []
     for v in corpus["holdout"]:
@@ -943,16 +884,8 @@ async def contrast_route(trend: str | None = None):
     """§10a — plain vector RAG vs killer join on the same question."""
     try:
         return await run_contrast(trend)
-    except Exception:
-        fb = _load_fallback("fallback_contrast.json")
-        if fb:
-            return fb
-        return {"rag": [], "graph": [], "note": "Graph warming up — contrast will be available when memory is built"}
     except ValueError as e:
         raise HTTPException(404, str(e))
-    except Exception:
-        traceback.print_exc()
-        return await run_contrast(trend)
 
 
 # --- /chat: the agent that operates the studio -------------------------------
@@ -1212,6 +1145,29 @@ async def _run_tool_inner(name: str, args: dict) -> str:
     return f"unknown tool {name}"
 
 
+# /chat is a public, unauthenticated LLM endpoint — cap per-IP spend.
+_CHAT_RATE: dict[str, list[float]] = {}
+_CHAT_RATE_MAX = 20
+_CHAT_RATE_WINDOW_S = 3600
+
+
+def _chat_rate_ok(ip: str) -> bool:
+    now = time.monotonic()
+    if len(_CHAT_RATE) > 5000:  # bound memory under address churn
+        _CHAT_RATE.clear()
+    hits = [t for t in _CHAT_RATE.get(ip, []) if now - t < _CHAT_RATE_WINDOW_S]
+    if len(hits) >= _CHAT_RATE_MAX:
+        _CHAT_RATE[ip] = hits
+        return False
+    hits.append(now)
+    _CHAT_RATE[ip] = hits
+    return True
+
+
 @app.post("/chat")
-async def chat_route(body: ChatBody):
+async def chat_route(body: ChatBody, request: Request):
+    fwd = request.headers.get("x-forwarded-for") or ""
+    ip = fwd.split(",")[0].strip() or (request.client.host if request.client else "?")
+    if not _chat_rate_ok(ip):
+        raise HTTPException(429, "The companion needs a breather — try again in a bit.")
     return await agent_chat(body.message, body.history)

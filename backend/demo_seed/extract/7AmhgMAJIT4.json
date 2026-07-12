@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "memory architecture",
+  "ai memory",
+  "tech presentation"
+ ],
+ "hook": {
+  "text": "What is the perfect memory architecture?",
+  "style": "question"
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai essentials",
+  "building llm apps",
+  "entrepreneurship",
+  "large language models"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Sha.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

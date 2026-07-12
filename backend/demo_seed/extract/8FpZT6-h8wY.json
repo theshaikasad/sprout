@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "python tutor",
+  "claude code",
+  "output styles",
+  "ai workshops"
+ ],
+ "hook": {
+  "text": "We're going to talk about how to turn claude code into a Python tutor.",
+  "style": "stat"
+ },
+ "_had_transcript": true
+}

@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "claude skills",
+  "automation framework",
+  "ai delegation"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shah in this video.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

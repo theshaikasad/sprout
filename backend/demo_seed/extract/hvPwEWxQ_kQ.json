@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "propaganda analysis",
+  "media literacy",
+  "critical thinking"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how narratives are shaped in the media?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "self-improvement",
+  "mindfulness",
+  "personal growth"
+ ],
+ "hook": {
+  "text": "Are you just waiting for your life to start?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

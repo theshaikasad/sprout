@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "reinforcement learning",
+  "neural networks",
+  "essential concepts"
+ ],
+ "hook": {
+  "text": "Reinforcement Learning has helped train neural networks to win games...",
+  "style": "stat"
+ }
+}

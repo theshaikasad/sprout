@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "llm evaluations",
+  "model assessments",
+  "application benchmarks"
+ ],
+ "hook": {
+  "text": "In this lecture, we’re diving into what LLM Evaluations really mean.",
+  "style": "pattern-interrupt"
+ }
+}

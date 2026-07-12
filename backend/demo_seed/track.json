@@ -1,0 +1,76 @@
+{
+ "checked_at": 1783831805.626924,
+ "videos": {
+  "tkdVmBBrc6Q": {
+   "applied_pct": 25.72402044293016,
+   "views": 32472
+  },
+  "VLFFARE-0Gs": {
+   "applied_pct": -21.035310515719374,
+   "views": 20395
+  },
+  "ZchDP9PgY38": {
+   "applied_pct": -42.13256930463063,
+   "views": 14946
+  }
+ },
+ "last_result": {
+  "checked_at": 1783831805.626922,
+  "median_views": 25828,
+  "headline": "Your last one (How the bookish girl feels about everyon…) is beating your trailing baseline at 1.26× — nice. 🎉",
+  "uploads": [
+   {
+    "video_id": "tkdVmBBrc6Q",
+    "title": "How the bookish girl feels about everyone else",
+    "published": "2026-06-28",
+    "age_days": 14,
+    "views": 32472,
+    "views_delta": 0,
+    "ratio": 1.26,
+    "projected_ratio": 2.69,
+    "status": "above",
+    "improved": true
+   },
+   {
+    "video_id": "VLFFARE-0Gs",
+    "title": "Maybe it's time to leave Stockholm.",
+    "published": "2026-06-26",
+    "age_days": 16,
+    "views": 20395,
+    "views_delta": 0,
+    "ratio": 0.79,
+    "projected_ratio": 1.48,
+    "status": "on_track",
+    "improved": true
+   },
+   {
+    "video_id": "ZchDP9PgY38",
+    "title": "Do your desires deserve action?",
+    "published": "2026-06-25",
+    "age_days": 17,
+    "views": 14946,
+    "views_delta": 0,
+    "ratio": 0.58,
+    "projected_ratio": 1.02,
+    "status": "on_track",
+    "improved": true
+   }
+  ],
+  "improved_nodes": 6,
+  "improved_labels": [
+   "bookish humor",
+   "self-reflection",
+   "creative storytelling",
+   "talking-head",
+   "decision making",
+   "midsummer prep",
+   "slow living",
+   "personal reflection",
+   "vlog",
+   "desire management",
+   "living intentionally",
+   "mindful action",
+   "voiceover-broll"
+  ]
+ }
+}

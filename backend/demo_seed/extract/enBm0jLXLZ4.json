@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "git workflows",
+  "ai project management",
+  "github basics"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw. In this video, I'm going to give a beginner-friendly guide to GitHub.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

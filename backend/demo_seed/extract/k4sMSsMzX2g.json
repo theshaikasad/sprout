@@ -1,0 +1,13 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "google ai systems",
+  "open knowledge format",
+  "llm wiki",
+  "andre karpathy"
+ ],
+ "hook": {
+  "text": "Did you know that your AI system can be vastly improved with Google's latest release?",
+  "style": "question"
+ }
+}

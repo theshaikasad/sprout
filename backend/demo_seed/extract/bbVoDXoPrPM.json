@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "fine-tuning llms",
+  "rlhf techniques",
+  "direct policy optimization"
+ ],
+ "hook": {
+  "text": "hey everyone I'm sha here I'm going to talk about fine-tuning llms on human feedback",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

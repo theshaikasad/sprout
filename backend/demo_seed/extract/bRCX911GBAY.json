@@ -1,0 +1,14 @@
+{
+ "format": "vlog",
+ "topics": [
+  "introvert challenges",
+  "dinner party tips",
+  "social anxiety",
+  "self-improvement"
+ ],
+ "hook": {
+  "text": "Have you ever felt overwhelmed hosting a dinner party as an introvert?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

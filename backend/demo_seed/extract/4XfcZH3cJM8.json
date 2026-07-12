@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "hearing loss",
+  "personal experience",
+  "mental health",
+  "self-improvement"
+ ],
+ "hook": {
+  "text": "Okay. All right. So, I've been avoiding talking about this.",
+  "style": "vulnerable-confession"
+ },
+ "_had_transcript": true
+}

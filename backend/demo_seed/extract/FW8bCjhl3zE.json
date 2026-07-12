@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "nvidia dgx spark",
+  "ai supercomputer",
+  "gemma models",
+  "local inference"
+ ],
+ "hook": {
+  "text": "Today, we're diving into the groundbreaking NVIDIA DGX Spark, a mini AI supercomputer that fits right in your palm.",
+  "style": "story"
+ }
+}

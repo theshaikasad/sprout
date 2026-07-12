@@ -1,0 +1,13 @@
+{
+ "format": "live-coding",
+ "topics": [
+  "speech-to-text",
+  "real-time processing",
+  "assemblyai",
+  "machine learning"
+ ],
+ "hook": {
+  "text": "In this video, we're going to showcase the capabilities of AssemblyAI's Universal-3.5 Pro.",
+  "style": "pattern-interrupt"
+ }
+}

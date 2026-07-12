@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "claude code",
+  "software engineering",
+  "ai coding",
+  "harness engineering"
+ ],
+ "hook": {
+  "text": "Welcome everyone. I'm Shah and today I'm going to talk about how software engineering teams can basically onboard Claude Code onto their team.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

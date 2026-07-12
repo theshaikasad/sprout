@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "model context protocol",
+  "ai agents",
+  "custom mcp server",
+  "python programming"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw. This is the fifth video in a larger series on AI agents.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

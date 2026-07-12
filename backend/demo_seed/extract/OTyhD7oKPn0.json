@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "langchain memory",
+  "ai memory",
+  "will fu-hinthorn",
+  "founding engineer"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how memory can transform AI applications?",
+  "style": "question"
+ }
+}

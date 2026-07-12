@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "agentic engineering",
+  "workflow optimization",
+  "productivity techniques",
+  "tech innovation"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how to streamline your engineering process?",
+  "style": "question"
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "format": "interview",
+ "topics": [
+  "feeling lost",
+  "self-discovery",
+  "personal growth",
+  "mindfulness"
+ ],
+ "hook": {
+  "text": "Are you feeling lost in life and unsure of your next step?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

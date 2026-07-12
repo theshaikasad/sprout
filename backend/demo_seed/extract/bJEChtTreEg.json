@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "nvidia dgx",
+  "ai supercomputer",
+  "machine learning",
+  "hardware unboxing"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how AI can become more accessible right from your desk?",
+  "style": "question"
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "plant-based cooking",
+  "cookbook announcement",
+  "simple recipes"
+ ],
+ "hook": {
+  "text": "I’ve written a cookbook! Pick Up Limes fiiiinally has a cookbook!!",
+  "style": "vulnerable-confession"
+ },
+ "_had_transcript": false
+}

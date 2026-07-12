@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai adoption",
+  "freelancing tips",
+  "ai-first companies",
+  "building ai agents"
+ ],
+ "hook": {
+  "text": "Every company in tech is moving from AI-enabled to AI-first.",
+  "style": "stat"
+ }
+}

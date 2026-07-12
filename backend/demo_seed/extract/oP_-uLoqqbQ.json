@@ -1,0 +1,13 @@
+{
+ "format": "screencast",
+ "topics": [
+  "python oop",
+  "text-based game",
+  "garden simulator",
+  "interactive programming"
+ ],
+ "hook": {
+  "text": "Are you ready to build your own interactive text-based game using Python?",
+  "style": "question"
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "format": "screencast",
+ "topics": [
+  "full-stack development",
+  "genai project",
+  "fastapi",
+  "react"
+ ],
+ "hook": {
+  "text": "Want to start freelancing? Let me help.",
+  "style": "question"
+ }
+}

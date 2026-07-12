@@ -1,0 +1,14 @@
+{
+ "format": "vlog",
+ "topics": [
+  "meal prepping",
+  "healthy eating",
+  "slow living",
+  "mindful cooking"
+ ],
+ "hook": {
+  "text": "Ever wonder how to make your lunches healthier without breaking the bank?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

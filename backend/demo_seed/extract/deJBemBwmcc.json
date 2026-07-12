@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "claude skills",
+  "business automation",
+  "ai in business",
+  "workforce management"
+ ],
+ "hook": {
+  "text": "If you're running a business and drowning, conventional wisdom says to hire someone.",
+  "style": "question"
+ },
+ "_had_transcript": true
+}

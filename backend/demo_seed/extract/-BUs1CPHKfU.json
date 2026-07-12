@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "llm tools",
+  "openai agents",
+  "ai agents"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

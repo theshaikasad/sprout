@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "llm evaluations",
+  "ai safety",
+  "meta analytics"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how your personal conversations might be accessed through analytics?",
+  "style": "question"
+ }
+}

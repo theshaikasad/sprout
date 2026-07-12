@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "claude cowork",
+  "ai for non-coders",
+  "quickstart guide"
+ ],
+ "hook": {
+  "text": "Hey everyone, I'm Shaw.",
+  "style": "pattern-interrupt"
+ },
+ "_had_transcript": true
+}

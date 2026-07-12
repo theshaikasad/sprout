@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "groq platform",
+  "amazon bedrock",
+  "llm models",
+  "cloud api"
+ ],
+ "hook": {
+  "text": "Are you curious about the differences between Groq and Amazon Bedrock for LLMs?",
+  "style": "question"
+ }
+}

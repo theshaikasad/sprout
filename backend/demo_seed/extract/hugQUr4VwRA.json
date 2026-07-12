@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai problem solving",
+  "structured framework",
+  "applied ai",
+  "industry applications"
+ ],
+ "hook": {
+  "text": "Welcome everyone. I'm Sha. Today I'm going to talk about how to solve problems with AI.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

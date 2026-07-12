@@ -1,0 +1,13 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "hybrid search",
+  "rag techniques",
+  "bm25 embeddings",
+  "retrieval pipeline"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how hybrid search can revolutionize AI retrieval?",
+  "style": "question"
+ }
+}

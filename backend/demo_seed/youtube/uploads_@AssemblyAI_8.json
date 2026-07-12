@@ -1,0 +1,98 @@
+[
+ {
+  "video_id": "gygb4kqf2vk",
+  "title": "Universal 3.5 Pro Demo: Smarter Speech-to-Text with Contextual Awareness",
+  "description": "Universal 3.5 Pro: Smarter Speech-to-Text with Contextual Awareness 🧠🎙️\n\nIn this demo, we walk through the new contextual awareness capabilities of Universal 3.5 Pro—and how they dramatically improve transcription accuracy, especially for voice agents.\n\nWhat's covered:\n         🔹 Contextual prompting: Pass a description of your audio (\"cardiology consultation about chest pain\") and accuracy improves within that domain. The more specific the prompt, the better the results.\n         🔹 Key terms with context: Key terms are no longer applied blindly. Tell the model what a term is (\"The user's name is Zachary Klebanoff\") and it won't force the term onto acoustically similar phrases.\n         🔹 Dynamic mid-call prompt updates: Update the prompt in real time via the API (e.g., after a tool call identifies the caller) to boost accuracy as the conversation unfolds.\n         🔹 Conversation context (agent context): The model retains previous transcriptions in the session and accepts your voice agent's LLM-generated responses as context. If the agent asks \"What's your email?\", the model expects an email next — without over-biasing. We've seen significant word error rate reductions on voice agent datasets, even in poor audio conditions.\n\nWatch the full demo, including a live customer support scenario with dynamic context updates and mid-call tool calls.\n\n#SpeechToText #VoiceAI #VoiceAgents #ASR #AI\n\n\n▬▬▬▬▬▬▬▬▬▬▬▬ CONNECT ▬▬▬▬▬▬▬▬▬▬▬▬\n\n🖥️ Website: https://www.assemblyai.com\n🐦 Twitter: https://twitter.com/AssemblyAI\n🦾 Discord: https://discord.gg/Cd8MyVJAXd\n▶️  Subscribe: https://www.youtube.com/c/AssemblyAI?sub_confirmation=1\n🔥 We're hiring! Check our open roles: https://www.assemblyai.com/careers\n\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n#MachineLearning #DeepLearning",
+  "published": "2026-07-01",
+  "channel_id": "UCtatfZMf-8EkIwASXM4ts0A",
+  "channel_title": "AssemblyAI",
+  "tags": [],
+  "views": 99,
+  "likes": 3,
+  "comments": 0
+ },
+ {
+  "video_id": "EnZIYCQhxU8",
+  "title": "Clicky Meets Universal-3.5: Voice-Navigate Your Code",
+  "description": "Technical words are hard for speech recognition—but they don't have to be.\n\nThis demo shows how Clicky integrates AssemblyAI's Universal-3.5 model with dynamic key-term prompting. As the user scrolls through a codebase, Clicky automatically updates the transcription context with relevant identifiers, APIs, and technical terminology currently on screen.\n\nThe result is significantly more accurate recognition of developer-specific language, allowing users to ask natural voice questions like \"Where is PCMS16LE?\" or \"What is audio PCM16 data doing?\" and instantly navigate to the correct code.\n\nWhether you're building developer tools, voice interfaces, or AI assistants, this is an example of how contextual prompting can improve transcription accuracy for technical workflows.\n\n▬▬▬▬▬▬▬▬▬▬▬▬ CONNECT ▬▬▬▬▬▬▬▬▬▬▬▬\n\n🖥️ Website: https://www.assemblyai.com\n🐦 Twitter: https://twitter.com/AssemblyAI\n🦾 Discord: https://discord.gg/Cd8MyVJAXd\n▶️  Subscribe: https://www.youtube.com/c/AssemblyAI?sub_confirmation=1\n🔥 We're hiring! Check our open roles: https://www.assemblyai.com/careers\n\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n#MachineLearning #DeepLearning",
+  "published": "2026-06-30",
+  "channel_id": "UCtatfZMf-8EkIwASXM4ts0A",
+  "channel_title": "AssemblyAI",
+  "tags": [],
+  "views": 147,
+  "likes": 4,
+  "comments": 0
+ },
+ {
+  "video_id": "QySDfpb6U1Y",
+  "title": "Universal-3.5 Pro Demo: Context Carryover and more",
+  "description": "▬▬▬▬▬▬▬▬▬▬▬▬ CONNECT ▬▬▬▬▬▬▬▬▬▬▬▬\n\n🖥️ Website: https://www.assemblyai.com\n🐦 Twitter: https://twitter.com/AssemblyAI\n🦾 Discord: https://discord.gg/Cd8MyVJAXd\n▶️  Subscribe: https://www.youtube.com/c/AssemblyAI?sub_confirmation=1\n🔥 We're hiring! Check our open roles: https://www.assemblyai.com/careers\n\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n#MachineLearning #DeepLearning",
+  "published": "2026-06-24",
+  "channel_id": "UCtatfZMf-8EkIwASXM4ts0A",
+  "channel_title": "AssemblyAI",
+  "tags": [],
+  "views": 195,
+  "likes": 1,
+  "comments": 0
+ },
+ {
+  "video_id": "8YLynT_GBg0",
+  "title": "Live demo of AssemblyAI's Universal-3.5 Pro Realtime Speech-to-Text model",
+  "description": "▬▬▬▬▬▬▬▬▬▬▬▬ CONNECT ▬▬▬▬▬▬▬▬▬▬▬▬\n\n🖥️ Website: https://www.assemblyai.com\n🐦 Twitter: https://twitter.com/AssemblyAI\n🦾 Discord: https://discord.gg/Cd8MyVJAXd\n▶️  Subscribe: https://www.youtube.com/c/AssemblyAI?sub_confirmation=1\n🔥 We're hiring! Check our open roles: https://www.assemblyai.com/careers\n\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n#MachineLearning #DeepLearning",
+  "published": "2026-06-23",
+  "channel_id": "UCtatfZMf-8EkIwASXM4ts0A",
+  "channel_title": "AssemblyAI",
+  "tags": [],
+  "views": 511,
+  "likes": 6,
+  "comments": 2
+ },
+ {
+  "video_id": "QtDBjO4B_ug",
+  "title": "Build a Voice Agent in an Hour with Claude Code | AssemblyAI Workshop",
+  "description": "In this live workshop, AssemblyAI Product Manager Dan Ince builds a fully working appointment booking voice agent from scratch, using only the AssemblyAI Voice Agent API and Claude Code. \n\nNo pre-written code, custom tools or MCP servers. Just a docs URL and a few prompts. \n\nBy the end, you'll have a working voice agent with a frontend UI, tool calling, and a deployment you can share with anyone.\n\nWhat you'll walk away with:\n\n-A working voice agent app you can run locally or deploy to Railway\n-The exact Claude Code prompts used to scaffold backend, frontend, and tool calling\n-A reusable architecture pattern (Python backend for token auth + HTML frontend) that keeps your API key off the client\n-Techniques for appointment booking, tool chaining, and progressive tool reveal\n-Practical tips on turn detection, echo cancellation, and reducing latency\n-Answers from the most popular building FAQs\n\nWhat you'll need:\n\n🔑 A free AssemblyAI API key: https://www.assemblyai.com/products/voice-agent-api?utm_source=youtube&utm_medium=referral&utm_campaign=workshop&utm_content=claude_voice_agent\n🤖 Claude Code (VS Code plugin or the Claude app)\n🖥️ Docs link to drop in Claude Code: https://www.assemblyai.com/docs/voice-agents/voice-agent-api\n\n⏱ Jump to the build:\n11:39 — Live build starts: blank project in VS Code\n13:35 — Prompt 1: Scaffold Python backend + HTML frontend with token auth\n18:31 — Running the app locally for the first time\n24:51 — First working voice agent in the browser\n29:02 — Prompt 2: Add appointment booking tool call\n35:40 — Prompt 3: UI redesign (car mechanic booking agent)\n43:13 — Final live demo: voice agent handles a full MOT booking\n45:20 — Progressive tool reveal: how to eliminate tool-calling hallucinations\n47:18 — Turn detection tuning + echo cancellation tips\n54:00 — Deploying to Railway and generating a shareable URL\n\nThe full code is on GitHub: https://github.com/dan-ince-aai/apex-auto-voice-agent\n\n▬▬▬▬▬▬▬▬▬▬▬▬ CONNECT ▬▬▬▬▬▬▬▬▬▬▬▬\n\n🖥️ Website: https://www.assemblyai.com\n🐦 Twitter: https://twitter.com/AssemblyAI\n🦾 Discord: https://discord.gg/Cd8MyVJAXd\n▶️  Subscribe: https://www.youtube.com/c/AssemblyAI?sub_confirmation=1\n🔥 We're hiring! Check our open roles: https://www.assemblyai.com/careers\n\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n#voiceagents #voiceai",
+  "published": "2026-06-10",
+  "channel_id": "UCtatfZMf-8EkIwASXM4ts0A",
+  "channel_title": "AssemblyAI",
+  "tags": [],
+  "views": 569,
+  "likes": 17,
+  "comments": 1
+ },
+ {
+  "video_id": "Vvks-ridADM",
+  "title": "May 2026 Recap",
+  "description": "▬▬▬▬▬▬▬▬▬▬▬▬ CONNECT ▬▬▬▬▬▬▬▬▬▬▬▬\n\n🖥️ Website: https://www.assemblyai.com\n🐦 Twitter: https://twitter.com/AssemblyAI\n🦾 Reddit: https://reddit.com/r/assemblyai\n▶️  Subscribe: https://www.youtube.com/c/AssemblyAI?sub_confirmation=1\n🔥 We're hiring! Check our open roles: https://www.assemblyai.com/careers\n\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n#MachineLearning #DeepLearning",
+  "published": "2026-06-04",
+  "channel_id": "UCtatfZMf-8EkIwASXM4ts0A",
+  "channel_title": "AssemblyAI",
+  "tags": [],
+  "views": 199,
+  "likes": 6,
+  "comments": 1
+ },
+ {
+  "video_id": "_9Kqr4-hf68",
+  "title": "Voice AI: Beyond Transcription with Granola, CoLoop & EdgeTier",
+  "description": "At Granola’s London office, we hosted a live panel on how voice AI is moving beyond transcription into structured outputs, insights, and action.\n\nJoined by Jonathan from Granola, Adrien from CoLoop, Shane from EdgeTier, and moderated by Ryan from AssemblyAI, we dug into the full voice AI pipeline: transcription quality, diarization, post-call vs. real-time tradeoffs, multilingual support, noisy audio, evaluation, and what it takes to turn raw conversations into useful product experiences.\n\nThe conversation covered what actually matters when building with voice today—and what still needs to get better.\n\n▬▬▬▬▬▬▬▬▬▬▬▬ CONNECT ▬▬▬▬▬▬▬▬▬▬▬▬\n\n🖥️ Website: https://www.assemblyai.com\n🐦 Twitter: https://twitter.com/AssemblyAI\n🦾 Discord: https://discord.gg/Cd8MyVJAXd\n▶️  Subscribe: https://www.youtube.com/c/AssemblyAI?sub_confirmation=1\n🔥 We're hiring! Check our open roles: https://www.assemblyai.com/careers\n\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n#MachineLearning #DeepLearning #VoiceAI #VoiceAgents #AIAgents #LLM #SpeechToText #AssemblyAI #ConversationalAI",
+  "published": "2026-05-11",
+  "channel_id": "UCtatfZMf-8EkIwASXM4ts0A",
+  "channel_title": "AssemblyAI",
+  "tags": [],
+  "views": 349,
+  "likes": 4,
+  "comments": 0
+ },
+ {
+  "video_id": "vANGyXly3pM",
+  "title": "The Future IS Speaker Identification 🚀",
+  "description": "At our London meetup, panelists from Granola, CoLoop, EdgeTier, and AssemblyAI got into the real challenges behind voice systems: diarization, real-time vs post-call, multilingual support, noisy audio, and what it takes to turn conversations into useful product experiences.\n\n▬▬▬▬▬▬▬▬▬▬▬▬ CONNECT ▬▬▬▬▬▬▬▬▬▬▬▬\n\n🖥️ Website: https://www.assemblyai.com\n🐦 Twitter: https://twitter.com/AssemblyAI\n🦾 Discord: https://discord.gg/Cd8MyVJAXd\n▶️  Subscribe: https://www.youtube.com/c/AssemblyAI?sub_confirmation=1\n🔥 We're hiring! Check our open roles: https://www.assemblyai.com/careers\n\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n#MachineLearning #DeepLearning",
+  "published": "2026-05-11",
+  "channel_id": "UCtatfZMf-8EkIwASXM4ts0A",
+  "channel_title": "AssemblyAI",
+  "tags": [],
+  "views": 980,
+  "likes": 3,
+  "comments": 1
+ }
+]

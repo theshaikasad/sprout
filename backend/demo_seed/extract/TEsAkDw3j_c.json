@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai investment",
+  "market trends",
+  "venture capital"
+ ],
+ "hook": {
+  "text": "Have you ever wondered where the next big AI investments are headed?",
+  "style": "question"
+ }
+}

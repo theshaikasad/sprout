@@ -1,0 +1,13 @@
+{
+ "format": "personal-essay",
+ "topics": [
+  "constant reinvention",
+  "self-improvement",
+  "finding stability"
+ ],
+ "hook": {
+  "text": "Have you ever felt the pressure to constantly reinvent yourself?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

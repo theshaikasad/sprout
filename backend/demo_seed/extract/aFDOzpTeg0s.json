@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "linear regression",
+  "statistical methods",
+  "data interpretation",
+  "step-by-step guide"
+ ],
+ "hook": {
+  "text": "Have you ever wondered how to make sense of your data with linear regression?",
+  "style": "question"
+ }
+}

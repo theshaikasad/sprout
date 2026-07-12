@@ -1,0 +1,13 @@
+{
+ "format": "screencast",
+ "topics": [
+  "salary prediction",
+  "data cleaning",
+  "feature engineering",
+  "machine learning"
+ ],
+ "hook": {
+  "text": "In this video, we guide you through building a machine learning salary prediction model.",
+  "style": "story"
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "format": "live-coding",
+ "topics": [
+  "voice agent",
+  "assemblyai api",
+  "claude code"
+ ],
+ "hook": {
+  "text": "In this live workshop, we'll build a voice agent in just one hour.",
+  "style": "story"
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "mcp server",
+  "python programming",
+  "agentcon 2025",
+  "ai workshops"
+ ],
+ "hook": {
+  "text": "You're probably wondering, who is this guy? Why should I listen to him?",
+  "style": "question"
+ },
+ "_had_transcript": true
+}

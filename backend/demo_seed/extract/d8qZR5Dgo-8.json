@@ -1,0 +1,13 @@
+{
+ "format": "vlog",
+ "topics": [
+  "life admin",
+  "mini reset",
+  "personal productivity"
+ ],
+ "hook": {
+  "text": "Have you ever felt overwhelmed by everyday tasks?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

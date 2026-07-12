@@ -1,0 +1,13 @@
+{
+ "format": "voiceover-broll",
+ "topics": [
+  "salary prediction",
+  "model training",
+  "feature importance",
+  "developer salaries"
+ ],
+ "hook": {
+  "text": "In this video, we train and evaluate a linear regression model to predict developer salaries.",
+  "style": "question"
+ }
+}

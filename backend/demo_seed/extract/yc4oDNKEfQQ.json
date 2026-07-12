@@ -1,0 +1,12 @@
+{
+ "format": "screencast",
+ "topics": [
+  "llm gateway",
+  "python programming",
+  "api integration"
+ ],
+ "hook": {
+  "text": "In this video, you'll learn how to build an LLM gateway in Python.",
+  "style": "stat"
+ }
+}

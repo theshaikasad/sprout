@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "ai development",
+  "common mistakes",
+  "llm applications"
+ ],
+ "hook": {
+  "text": "I've been building AI systems long enough to have made every mistake in the book.",
+  "style": "story"
+ },
+ "_had_transcript": true
+}

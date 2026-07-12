@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "productivity hacks",
+  "journaling techniques",
+  "self-improvement"
+ ],
+ "hook": {
+  "text": "Have you ever wondered why traditional productivity hacks fail?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

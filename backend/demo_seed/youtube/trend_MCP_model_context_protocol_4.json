@@ -1,0 +1,82 @@
+[
+ {
+  "video_id": "cGuyrANVi4A",
+  "title": "How Model Context Protocol (MCP) actually works",
+  "description": "Google MCPs → https://goo.gle/3PYkjky \nBuild an ADK agent with Google MCPs → https://goo.gle/4o6h8DP \nConnect an MCP server to an AI agent → https://goo.gle/4uk7YW2 \n\nAPIs were built for deterministic programs, but AI models reason probabilistically. So how do you get your AI agents to talk to your tools and data without writing messy, custom integration code every time? Enter the Model Context Protocol (MCP). In this video, Smitha Kolan explains what MCP is, how it standardizes the way AI models discover and interact with external resources, and why it's becoming the new standard over traditional APIs for AI-powered applications\n\nChapters:\n0:00 - Intro: The problem with APIs and AI \n0:48 - What is Model Context Protocol (MCP)?\n1:26 - What exactly do MCPs connect to? \n2:43 - How MCP works (clients vs. servers) \n4:03 - MCP core components: Tools, prompts, resources & context \n5:20 - MCP vs. API: What is the difference? \n6:43 - Practical example: Building an AI assistant using MCP \n7:48 - Summary\n\nMore resources:\nLearn what AI agents and build an agent → https://goo.gle/AI-agents-explained\nLearn how to build a MCP server → https://goo.gle/MCP-servers-explained\nRead more about Google managed MCP servers → https://goo.gle/4e3Wobs \n\n🔗 Connect with Smitha online:\nYouTube → https://goo.gle/Smitha-on-YouTube \nLinkedin → https://goo.gle/Smitha-on-LinkedIn\nX → https://goo.gle/Smitha-on-X\n\nWatch more Modern AI Agents: From Theory to Production → https://goo.gle/Learn-with-Smitha\n🔔 Subscribe to Google Cloud Tech → https://goo.gle/GoogleCloudTech\n\n#AIAgents #MCP #ModelContextProtocol\n\nSpeaker: Smitha Kolan\nProducts Mentioned: AI Infrastructure",
+  "published": "2026-06-24",
+  "channel_id": "UCJS9pqu9BzkAMNTmzNMNhvg",
+  "channel_title": "Google Cloud Tech",
+  "tags": [],
+  "views": 120178,
+  "likes": 4137,
+  "comments": 57
+ },
+ {
+  "video_id": "2lmBj_XQq0I",
+  "title": "You NEED to try these 12 open-source AI projects RIGHT NOW",
+  "description": "Try Merlin AI for only $5/month with discount code MATT5: https://www.getmerlin.in/pricing\n\nLoop Library: https://signals.forwardfuture.ai/loop-library/\nLoop Skill: https://github.com/Forward-Future/loop-library\n\nShout out to here.now for hosting the Loop Library. \nFree, instant web hosting for agents: https://here.now/r/signals\n\nJoin My Newsletter for Regular AI Updates 👇🏼\nhttps://forwardfuture.ai\n\nMy Links 🔗\n👉🏻 X: https://x.com/matthewberman\n👉🏻 Forward Future X: https://x.com/forwardfuture\n👉🏻 Instagram: https://www.instagram.com/matthewberman_ai\n👉🏻 Discord: https://discord.gg/evGThyRv\n👉🏻 Spotify: https://open.spotify.com/show/6dBxDwxtHl1hpqHhfoXmy8\n\nMedia/Sponsorship Inquiries ✅ \nhttps://bit.ly/44TC45V\n\nChapters:\n0:00 Intro\n0:06 OpenMontage\n1:22 Deer Flow\n2:30 Anthropic Cybersecurity Skills\n3:48 Hyperframes\n4:45 Sponsor\n6:19 Codebase Memory MCP\n7:26 Matt Pockock Skills\n8:34 GStack\n10:13 Unlimited OCR\n11:14 SkillSpector\n12:05 Palmier Pro\n12:50 Hermes\n13:41 Voicebox\n\nLinks:\nhttps://github.com/calesthio/OpenMontage\nhttps://github.com/bytedance/deer-flow\nhttps://github.com/mukul975/Anthropic-Cybersecurity-Skills\nhttps://github.com/heygen-com/hyperframes\nhttps://github.com/DeusData/codebase-memory-mcp\nhttps://github.com/mattpocock/skills\nhttps://github.com/garrytan/gstack\nhttps://github.com/baidu/Unlimited-OCR\nhttps://github.com/nvidia/skillspector\nhttps://github.com/palmier-io/palmier-pro\nhttps://github.com/nousresearch/hermes-agent\nhttps://github.com/jamiepine/voicebox",
+  "published": "2026-06-24",
+  "channel_id": "UCawZsQWqfGSbCI5yjkdVkTA",
+  "channel_title": "Matthew Berman",
+  "tags": [
+   "ai",
+   "llm",
+   "artificial intelligence",
+   "large language model",
+   "openai",
+   "mistral",
+   "chatgpt",
+   "ai news",
+   "claude",
+   "anthropic",
+   "apple ai",
+   "apple intelligence",
+   "llama",
+   "meta ai",
+   "google ai"
+  ],
+  "views": 79236,
+  "likes": 3829,
+  "comments": 113
+ },
+ {
+  "video_id": "PqrKqhkj3gQ",
+  "title": "NEW Unreal Engine 5.8 MCP Tutorial (QuickStart Guide)",
+  "description": "Check Out Unreal Masterclass Here:\nhttps://smartpoly.teachable.com/p/the-ultimate-unreal-engine-5-masterclass-bundle\n\nHello guys welcome back to another video. In this video i'll be showing you how to setup and configure the new Unreal Engine 5.8 MCP plugin with claude code. If you're new to Unreal Engine, or Claude, I'll show the exact step-by-step process, from enabling the plugins, to install claude code. \n\nStartup Commands:\n1: set TERM=xterm-256color\n2: cd /d \"E:\\UnrealProjects\\MyMCPTutorial\"\n3: claude\n\nLINKS TO DOWNLOAD:\nCreate Claude Account: https://claude.ai/login\nClaude Code: https://code.claude.com/docs/en/quickstart\nGit-SCM: https://git-scm.com/install/windows\nUE5 DOCS: https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor?lang=en-US\nCheck out my Unreal Engine Courses:\nhttps://smartpoly.teachable.com/\n\nLINKS:\n---------------------------------------------------------------------------\nMy Courses: https://smartpoly.teachable.com \nSurvival Game Course: https://smartpoly.teachable.com/p/ue5-multiplayer-steam-survival-game-course-remastered\nChannel Membership: https://www.youtube.com/@SmartPoly/join\nSupport Me on PATREON: https://www.patreon.com/smartpoly\nBuy My Complete Projects: https://smartpoly.gumroad.com\nDonate: https://www.buymeacoffee.com/smartpoly\n---------------------------------------------------------------------------\nMY PC SPECS & AFFILIATE LINKS\n---------------------------------------------------------------------------\nMouse: https://amzn.to/46WMdjN\nKeyboard: https://amzn.to/3M11SpV\nLaptop: https://amzn.to/3M7kjJQ\nCPU: https://amzn.to/3tKTK6E\nRAM: https://amzn.to/45yvWjW\nGPU: https://amzn.to/3rUGMmm\nSSD 2TB: https://amzn.to/46QcGPS\nSSD 4TB: https://amzn.to/46T10f9\nPrimary Monitor 4K: https://amzn.to/3RZxqk5\nSecondary Monitor 1080p: https://amzn.to/3M6X16V\nMicrophone: https://amzn.to/3S0aLnx\nAudio: https://amzn.to/3S5z5Vm\nHeadset: https://amzn.to/45BeWJP",
+  "published": "2026-06-19",
+  "channel_id": "UCp1e34nrTQqVXkNU5ekH9CQ",
+  "channel_title": "Smart Poly",
+  "tags": [
+   "Unreal Engine 5",
+   "Unreal Engine 5 Release",
+   "Unreal Engine 5 New Features",
+   "Unreal Engine 5 Next-Gen",
+   "Unreal Engine 5 Nanite",
+   "Unreal Engine 5 Lumen",
+   "UE5 Release",
+   "UE5 Next Gen",
+   "UE5",
+   "Lyra Starter Game",
+   "Unreal Engine 5 Lyra Game Tutorial",
+   "UE5 Lyra Tutorial",
+   "Unreal Engine 5 Open World Tutorial",
+   "Unreal Engine 5 Open World GamesUnreal Engine 5",
+   "Unreal Engine 5 Open World Games"
+  ],
+  "views": 59434,
+  "likes": 2013,
+  "comments": 252
+ },
+ {
+  "video_id": "vbKKQATMZ-0",
+  "title": "Agentic AI Explained: The Complete 2026 Guide",
+  "description": "Most people think they understand AI, but they only understand the part where you type something into ChatGPT and it types something back. The gap between that and building an actual agent that can go do work for you is enormous.\n\nIn this video, I break down the entire AI stack in 30 minutes. We start with how large language models actually work, then climb through transformers, context engineering, RAG, reasoning models, and finally the most important distinction in AI right now: the difference between a model and an agent. A model thinks. An agent thinks and acts.\n\nBy the end, you'll understand how these systems work better than 95% of people posting about AI on the internet.\n\nChapters: \n\n00:00 – The Gap Nobody Tells You About\n01:51 – How LLMs Actually Work\n05:04 – The Transformer Architecture\n08:42 – BERT vs GPT History\n09:41 – Modalities and Multimodal Models\n12:03 – Prompt to Context Engineering\n16:45 – RAG Explained\n20:21 – Reasoning Models\n21:22 – Model vs Agent\n22:27 – The ReAct Pattern\n23:10 – Agentic Design Patterns\n24:13 – AI Evaluations\n26:43 – The Gen Academy\n29:43 – Closing\n\nYou’re right—that last version had titles only. Here’s a fully linkified, copy‑paste‑ready description block.\n\n\nResources mentioned in the video (and more to explore):\n\n👉 Join Mastering Agentic AI  Certification by The Gen Academy (Aug & Oct Cohort)\nhttps://maven.com/aishwarya-srinivasan/mastering-ai-agents?promoCode=SAVE20\nUse code: SAVE20 for 20% discount\n\n👉 My videos to watch next\n\n→ Vector Databases Explained – deep dive on embeddings & storage\nhttps://youtu.be/4pUYfY-b5CQ?si=Y3VdR5CmKTBlQwew\n\n→ RAG Explained\nhttps://youtu.be/v0ynfDPpe4E?si=qxCk6LHLHEcW0cCH\n\n👉 Mastering Claude Cowork (~2 hour lightning lesson - 12,000+ people have attended)\nhttps://maven.com/p/6f5db3/mastering-claude-cowork-become-an-ai-native-professional\n\n👉 Agentic AI Foundations\n\n→ Anthropic: Building Effective Agents\nhttps://www.anthropic.com/research/building-effective-agents\n\n→ OpenAI: A Practical Guide to Building Agents\nhttps://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/\n\n→ OpenAI Agents SDK\nhttps://developers.openai.com/api/docs/guides/agents\n\n→ OpenAI Agents SDK Python Docs\nhttps://openai.github.io/openai-agents-python/agents/\n\n👉 Agent Design Patterns\n\n→ ReAct: Synergizing Reasoning and Acting in Language Models\nhttps://arxiv.org/abs/2210.03629\n\n→ Google Research Blog on ReAct\nhttps://research.google/blog/react-synergizing-reasoning-and-acting-in-language-models/\n\n→ Reflexion: Language Agents with Verbal Reinforcement Learning\nhttps://arxiv.org/abs/2303.11366\n\n👉 MCP and Agent Interoperability\n\n→ Anthropic: Introducing the Model Context Protocol\nhttps://www.anthropic.com/news/model-context-protocol\n\n→ Model Context Protocol GitHub\nhttps://github.com/modelcontextprotocol\n\n→ Google: Agent2Agent Protocol\nhttps://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/\n\n→ A2A Protocol GitHub\nhttps://github.com/a2aproject/A2A\n\n👉 Context Engineering for Agents\n\n→ Anthropic: Effective Context Engineering for AI Agents\nhttps://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents\n\n→ Anthropic: Code Execution with MCP\nhttps://www.anthropic.com/engineering/code-execution-with-mcp\n\n→ Anthropic: Writing Effective Tools for Agents\nhttps://www.anthropic.com/engineering/writing-tools-for-agents\n\n👉 My Related Resources\n\n→ Designing Agentic AI Systems\nhttps://aishwaryasrinivasan.substack.com/p/designing-agentic-ai-systems\n\n→ All you need to know about AI agent frameworks\nhttps://substack.com/@aishwaryasrinivasan/note/p-201755139",
+  "published": "2026-06-19",
+  "channel_id": "UCzd4ZN716evEjtbJERBMTfg",
+  "channel_title": "Aishwarya Srinivasan",
+  "tags": [],
+  "views": 59181,
+  "likes": 1675,
+  "comments": 83
+ }
+]

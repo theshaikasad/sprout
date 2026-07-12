@@ -1,0 +1,12 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "agentic coding",
+  "llm models",
+  "ornith 1.0"
+ ],
+ "hook": {
+  "text": "In this video, I look at the Ornith 1.0 family of agentic coding models.",
+  "style": "question"
+ }
+}

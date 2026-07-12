@@ -1,0 +1,104 @@
+[
+ {
+  "video_id": "6GuyMZ-cSzE",
+  "title": "Python Tutorial for AI",
+  "description": "This Python mini-course is built by keeping in mind the use case of AI. Any AI aspirant who wants to learn AI using Python or want to build AI applications using Python will find this useful.\n\nCode link: https://resources.codebasics.io/kv98ik\n\nAI Engineering Cohort link: https://resources.codebasics.io/aOt61Y\n\n⭐️ Timestamps ⭐️\n0:00:00 Intro\n0:01:27 Why Python is popular in AI?\n0:02:47 Should you learn Python in Vibe Coding Era?\n0:04:14 Installation\n0:07:01 Data types, Lists, For loop\n0:21:29 Dict, Tuples\n0:31:24 Functions\n0:39:02 Classes\n0:47:23 Call LLM\n0:59:09 Error Handling\n1:05:39 Chatbot with Memory\n1:10:15 Structured Output\n1:14:34 File Handling\n1:19:42 API calling using requests\n1:26:26 FastAPI\n1:33:03 Database interactions\n1:39:36 Project\n\nDo you want to learn technology from me? Check https://codebasics.io/?utm_source=description&utm_medium=yt&utm_campaign=description&utm_id=description for my affordable video courses.\n\nNeed help building software or data analytics/AI solutions? My company https://www.atliq.com/ can help. Click on the Contact button on that website.\n\n🎥 Codebasics Hindi channel: https://www.youtube.com/channel/UCTmFBhuhMibVoSfYom1uXEg\n\n#️⃣ Social Media #️⃣\n\n🧑‍🤝‍🧑 Discord for Community Support:  https://discord.gg/r42Kbuk\n📸 Codebasics' Instagram: https://www.instagram.com/codebasicshub/\n📝 Codebasics' Linkedin :  https://www.linkedin.com/company/codebasics/\n📱 Dhaval's X handle : https://x.com/dpcodebasics\n\n------\n\n📝 Dhaval's Linkedin : https://www.linkedin.com/in/dhavalsays/\n📝 Hem's Linkedin: https://www.linkedin.com/in/hemvad/\n\n📽️ Hem's Instagram for daily tips: https://www.instagram.com/hemvadivel/\n📸 Dhaval's Personal Instagram: https://www.instagram.com/dhavalcodebasics\n\n🔗 Patreon: https://www.patreon.com/codebasics?fan_landing=true",
+  "published": "2026-07-01",
+  "channel_id": "UCh9nVJoWXmFb7sLApWGcLPQ",
+  "channel_title": "codebasics",
+  "tags": [
+   "yt:cc=on"
+  ],
+  "views": 9733,
+  "likes": 584,
+  "comments": 25
+ },
+ {
+  "video_id": "GB6EazKDFyo",
+  "title": "From Chatbot to AI Agent: Taking Action",
+  "description": "Most people still think AI just answers questions.\n\nBut ask it to book the cheapest flight tomorrow from A to B - and something changes.\nIt searches flights through the Expedia API.\nIt decides which one is cheapest.\nThen it actually books it.\n\nNo more simple Q&A. It's taking action for you.\n\nThat's an AI Agent - a program that takes input, thinks, and acts to complete a task.\n\nIt uses tools, memory, and knowledge - with the autonomy to make its own decisions.\n\nCheck out the full video link - https://youtu.be/O2gerCxEXvc?si=UKe-rLCLwJX0Ac-4\n\n#codebasics #genai #aiagent #short",
+  "published": "2026-06-29",
+  "channel_id": "UCh9nVJoWXmFb7sLApWGcLPQ",
+  "channel_title": "codebasics",
+  "tags": [],
+  "views": 5302,
+  "likes": 173,
+  "comments": 2
+ },
+ {
+  "video_id": "FW8bCjhl3zE",
+  "title": "NVIDIA DGX Spark - AI Supercomputer: First Impressions",
+  "description": "NVIDIA DGX Spark is a mini AI super computer that fits in your palm. In this video, we will unbox it, go  through initial setup and then run local inference using Gemma models through ollama. \n\n⭐️ Timestamps ⭐️\n0:00 Unboxing and Overview of the DGX Spark\n0:46 Powering Up and Connecting the DGX Spark\n2:19 Initial Setup and Viewing System Specs\n3:11 Hardware Architecture and Performance Overview\n4:56 Installing Olama and Running Gemma Locally\n6:10 Interacting with Gemma: Queries, Code Generation, and GPU Usage\n7:39 Preparing to Launch Claude with Local Gemma Model\n8:02 Installing Claude and Demonstrating Setup\n8:28 Generating a Static Website with Claude and Gemma\n11:07 Summary, Capabilities, and Future Use Cases\n\nDo you want to learn technology from me? Check https://codebasics.io/?utm_source=description&utm_medium=yt&utm_campaign=description&utm_id=description for my affordable video courses.\n\nNeed help building software or data analytics/AI solutions? My company https://www.atliq.com/ can help. Click on the Contact button on that website.\n\n🎥 Codebasics Hindi channel: https://www.youtube.com/channel/UCTmFBhuhMibVoSfYom1uXEg\n\n#️⃣ Social Media #️⃣\n\n🧑‍🤝‍🧑 Discord for Community Support:  https://discord.gg/r42Kbuk\n📸 Codebasics' Instagram: https://www.instagram.com/codebasicshub/\n📝 Codebasics' Linkedin :  https://www.linkedin.com/company/codebasics/\n📱 Dhaval's X handle : https://x.com/dpcodebasics\n\n------\n\n📝 Dhaval's Linkedin : https://www.linkedin.com/in/dhavalsays/\n📝 Hem's Linkedin: https://www.linkedin.com/in/hemvad/\n\n📽️ Hem's Instagram for daily tips: https://www.instagram.com/hemvadivel/\n📸 Dhaval's Personal Instagram: https://www.instagram.com/dhavalcodebasics\n\n🔗 Patreon: https://www.patreon.com/codebasics?fan_landing=true",
+  "published": "2026-06-26",
+  "channel_id": "UCh9nVJoWXmFb7sLApWGcLPQ",
+  "channel_title": "codebasics",
+  "tags": [
+   "yt:cc=on"
+  ],
+  "views": 22694,
+  "likes": 374,
+  "comments": 71
+ },
+ {
+  "video_id": "gaWOCrNNSzY",
+  "title": "Groq vs Amazon Bedrock for LLMs",
+  "description": "Groq is a free cloud platform that gives you access to GPT, LLaMA, and other major models through a single API key. \n\nFor learning projects it is the fastest way to get started. \n\nFor enterprise teams already on AWS, Amazon Bedrock offers the same model variety including Claude Opus, Amazon Nova, and Qwen, with the added benefit of staying inside one ecosystem.\n\nCheck out the full video link - https://youtu.be/cTBGIKAckKE?si=LThWZ17r9MI-5nmf\n\n#AIEngineering #Groq #AmazonBedrock #LLM #MachineLearning #short",
+  "published": "2026-06-25",
+  "channel_id": "UCh9nVJoWXmFb7sLApWGcLPQ",
+  "channel_title": "codebasics",
+  "tags": [],
+  "views": 30002,
+  "likes": 1015,
+  "comments": 12
+ },
+ {
+  "video_id": "eHS0WIWNtu0",
+  "title": "Claude Tutorial for Beginners | Claude Tutorial for Non technical People",
+  "description": "This is the Claude tutorial for a total beginners. Non technical people will find it specially useful. Claude is an AI tool by Anthropic which can not just answer the questions but help you build useful things.\n\nJoin the FREE Codebasics AI Community - https://www.skool.com/codebasics-ai-community/about\n\nFiles & Prompts to follow along the video - https://resources.codebasics.io/UChA3l\n\nAI PRO Subscription - https://resources.codebasics.io/NJgDfE\n\n⭐️ Timestamps ⭐️\n00:00 Intro\n02:12 Sign Up\n06:05 Interface Walk Through and one\n07:07 Security Settings\n08:26 Use Cases\n10:09 Importing context\n15:29 Expense organization and analysis\n23:42 Skill\n26:13 Cowork: Claude working on your computer\n32:34 Automate Powerpoint Presentaion\n39:55 Agentic Action (Audit foundation website)\n46:28 Build Chrome Extension\n55:44 Real Use Cases, For Your Practice\n\n\n\n------\n\nDo you want to learn technology from me? Check https://codebasics.io/?utm_source=description&utm_medium=yt&utm_campaign=description&utm_id=description for my affordable video courses.\n\nNeed help building software or data analytics/AI solutions? My company https://www.atliq.com/ can help. Click on the Contact button on that website.\n\n🎥 Codebasics Hindi channel: https://www.youtube.com/channel/UCTmFBhuhMibVoSfYom1uXEg\n\n#️⃣ Social Media #️⃣\n\n🧑‍🤝‍🧑 Discord for Community Support:  https://discord.gg/r42Kbuk\n📸 Codebasics' Instagram: https://www.instagram.com/codebasicshub/\n📝 Codebasics' Linkedin :  https://www.linkedin.com/company/codebasics/\n📱 Dhaval's X handle : https://x.com/dpcodebasics\n\n------\n\n📝 Dhaval's Linkedin : https://www.linkedin.com/in/dhavalsays/\n📝 Hem's Linkedin: https://www.linkedin.com/in/hemvad/\n\n📽️ Hem's Instagram for daily tips: https://www.instagram.com/hemvadivel/\n📸 Dhaval's Personal Instagram: https://www.instagram.com/dhavalcodebasics\n\n🔗 Patreon: https://www.patreon.com/codebasics?fan_landing=true",
+  "published": "2026-06-24",
+  "channel_id": "UCh9nVJoWXmFb7sLApWGcLPQ",
+  "channel_title": "codebasics",
+  "tags": [
+   "yt:cc=on"
+  ],
+  "views": 19123,
+  "likes": 529,
+  "comments": 11
+ },
+ {
+  "video_id": "bJEChtTreEg",
+  "title": "Unboxing NVIDIA's DGX Spark",
+  "description": "At Codebasics, we get excited about tech that makes AI more accessible and NVIDIA's DGX Spark does just that.\n\nIt's a small AI supercomputer that sits on your desk and runs large AI models locally, with no cloud and no monthly bill.\n\nIn this short, we unbox it and explain who it's really for: anyone doing AI research or serious machine learning.\n\nIt's pricey, but it's a clear sign that AI hardware is getting smaller and more personal.\n\n#NVIDIA #DGXSpark #AIHardware #MachineLearning #DataScience #short",
+  "published": "2026-06-23",
+  "channel_id": "UCh9nVJoWXmFb7sLApWGcLPQ",
+  "channel_title": "codebasics",
+  "tags": [],
+  "views": 59376,
+  "likes": 852,
+  "comments": 20
+ },
+ {
+  "video_id": "edwdY2zulZM",
+  "title": "Amazon Bedrock AgentCore: 3 Key Highlights",
+  "description": "Amazon Bedrock Agent Core comes down to three things. \n\n1. No infrastructure headaches so you focus on business value. \n2. Flexibility to use any framework or model. \n3. And enterprise grade security with IAM authentication and reliable scaling. It is AWS, so the reliability is already proven.\n\nCheck out the full video - https://youtu.be/cTBGIKAckKE?si=OCP2kpf5jyzendYz\n\n#AIAgents #AmazonBedrock #AIEngineering #LangChain #MachineLearning #short",
+  "published": "2026-06-19",
+  "channel_id": "UCh9nVJoWXmFb7sLApWGcLPQ",
+  "channel_title": "codebasics",
+  "tags": [],
+  "views": 4908,
+  "likes": 107,
+  "comments": 2
+ },
+ {
+  "video_id": "2_vFFQTLhds",
+  "title": "Software Engineer 1.0 → 2.0",
+  "description": "The software engineer role is changing fast. \n\nThis video breaks down what SE 2.0 actually looks like and how to get there. \n\nCheck out the full video - https://youtu.be/tJ50n3qzDmE?si=fELcywJFLBWnyx1-\n\n#AIEngineering #SoftwareEngineering #TechCareers #AITools #CareerGrowth #short",
+  "published": "2026-06-17",
+  "channel_id": "UCh9nVJoWXmFb7sLApWGcLPQ",
+  "channel_title": "codebasics",
+  "tags": [],
+  "views": 8986,
+  "likes": 252,
+  "comments": 4
+ }
+]

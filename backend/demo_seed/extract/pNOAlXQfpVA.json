@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "women's fashion",
+  "self-expression",
+  "personal style"
+ ],
+ "hook": {
+  "text": "Have you ever felt frustrated with the women's section of clothing stores?",
+  "style": "question"
+ },
+ "_had_transcript": false
+}

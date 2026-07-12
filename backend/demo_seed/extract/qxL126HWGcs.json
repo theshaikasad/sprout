@@ -1,0 +1,14 @@
+{
+ "format": "vlog",
+ "topics": [
+  "outdoor cooking",
+  "seafood adventure",
+  "slow living",
+  "asmr cooking"
+ ],
+ "hook": {
+  "text": "Join us for a mouthwatering seafood adventure!",
+  "style": "story"
+ },
+ "_had_transcript": false
+}

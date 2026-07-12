@@ -1,0 +1,13 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "model context protocol",
+  "ai integration",
+  "deterministic programs",
+  "probabilistic reasoning"
+ ],
+ "hook": {
+  "text": "How do you get your AI agents to talk to your tools and data?",
+  "style": "question"
+ }
+}

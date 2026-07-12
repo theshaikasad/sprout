@@ -1,0 +1,14 @@
+{
+ "format": "talking-head",
+ "topics": [
+  "onboarding ai teams",
+  "agent skills",
+  "applied ai",
+  "ai workshops"
+ ],
+ "hook": {
+  "text": "Today, I'm going to talk about how you can onboard your AI team with agent skills.",
+  "style": "question"
+ },
+ "_had_transcript": true
+}

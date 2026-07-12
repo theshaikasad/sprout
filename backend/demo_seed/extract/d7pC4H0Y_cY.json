@@ -1,0 +1,12 @@
+{
+ "format": "screencast",
+ "topics": [
+  "python app",
+  "food ordering",
+  "beginner project"
+ ],
+ "hook": {
+  "text": "Ready to build a real, interactive application from scratch?",
+  "style": "question"
+ }
+}
